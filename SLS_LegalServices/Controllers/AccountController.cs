@@ -9,6 +9,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using SLS_LegalServices.Models;
+using Unity.Attributes;
 
 namespace SLS_LegalServices.Controllers
 {
@@ -18,6 +19,7 @@ namespace SLS_LegalServices.Controllers
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
 
+        [InjectionConstructor()]
         public AccountController()
         {
         }
@@ -325,26 +327,16 @@ namespace SLS_LegalServices.Controllers
             var loginInfo = await AuthenticationManager.GetExternalLoginInfoAsync();
             if (loginInfo == null)
             {
-                return RedirectToAction("Login");
+                return RedirectToAction("Index", "User");
             }
 
-            // Sign in the user with this external login provider if the user already has a login
-            var result = await SignInManager.ExternalSignInAsync(loginInfo, isPersistent: false);
-            switch (result)
+            var user = UserManager.FindByName(loginInfo.DefaultUserName);
+            if (user != null)
             {
-                case SignInStatus.Success:
-                    return RedirectToLocal(returnUrl);
-                case SignInStatus.LockedOut:
-                    return View("Lockout");
-                case SignInStatus.RequiresVerification:
-                    return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = false });
-                case SignInStatus.Failure:
-                default:
-                    // If the user does not have an account, then prompt the user to create an account
-                    ViewBag.ReturnUrl = returnUrl;
-                    ViewBag.LoginProvider = loginInfo.Login.LoginProvider;
-                    return View("ExternalLoginConfirmation", new ExternalLoginConfirmationViewModel { Email = loginInfo.Email });
+                SignInManager.SignIn(user, true, true);
+                return RedirectToAction("Index", "User");
             }
+            return RedirectToAction("LoginError", "Account");
         }
 
         //
@@ -481,5 +473,11 @@ namespace SLS_LegalServices.Controllers
             }
         }
         #endregion
+
+        [AllowAnonymous]
+        public ActionResult LoginError()
+        {
+            return View();
+        }
     }
 }

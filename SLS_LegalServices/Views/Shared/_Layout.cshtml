@@ -1,44 +1,94 @@
 ﻿<!DOCTYPE html>
-<html>
-<head>
+<html class="no-js ie9" itemscope="itemscope" itemtype="http://schema.org/WebSite" lang="en">
+<head prefix="og: http://ogp.me/ns# profile: http://ogp.me/ns/profile# article: http://ogp.me/ns/article#">
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - My ASP.NET Application</title>
-    @Styles.Render("~/Content/css")
-    @Scripts.Render("~/bundles/modernizr")
-
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>
+        Student Legal Services
+    </title>
+    <meta content="-" name="description" />
+    <meta content="IE=edge" http-equiv="X-UA-Compatible" />
+    <link href="https://assets.iu.edu/favicon.ico" rel="shortcut icon" type="image/x-icon" /><!-- Canonical URL -->
+    <link href="~/Views/Home/index.cshtml" itemprop="url" rel="canonical" /><!-- Facebook Open Graph -->
+    <meta content=" Indiana Alzheimer Disease Center" property="og:title" />
+    <meta content="-" property="og:description" />
+    <meta content="~/Views/Home/index.cshtml" property="og:url" />
+    <meta content=" Indiana Alzheimer Disease Center" property="og:site_name" />
+    <meta content="en_US" property="og:locale" />
+    <meta content="website" property="og:type" /><!-- Twitter Card Tags -->
+    <meta content=" Indiana Alzheimer Disease Center" name="twitter:title" />
+    <meta content="-" name="twitter:description" />
+    <meta content="summary_large_image" name="twitter:card" /><!-- Google/Microdata Tags -->
+    <meta content="Records Retention Schedule" itemprop="name" />
+    <meta content="-" itemprop="description" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.iu.edu/style.css?family=BentonSans:regular,bold|BentonSansCond:regular|GeorgiaPro:regular">
+    <link rel="stylesheet" type="text/css" href="https://assets.iu.edu/web/fonts/icon-font.css">
+    <link rel="stylesheet" type="text/css" href="https://assets.iu.edu/web/3.x/css/iu-framework.min.css">
+    <link rel="stylesheet" type="text/css" href="https://assets.iu.edu/brand/3.x/brand.css">
+    <link rel="stylesheet" type="text/css" href="https://assets.iu.edu/search/3.x/search.css">
+    <link href="@Url.Content("/Content/kendo/kendo.common.min.css")" rel="stylesheet" />
+    <link href="@Url.Content("/Content/kendo/kendo.common-bootstrap.core.min.css")" rel="stylesheet" />
+    <link href="@Url.Content("/Content/kendo/kendo.bootstrap.min.css")" rel="stylesheet" />
+    <script src="@Url.Content("/Scripts/jquery-3.3.1.js")"></script>
+    <script src="@Url.Content("/Scripts/kendo/jszip.min.js")"></script>
+    <script src="@Url.Content("/Scripts/kendo/kendo.all.min.js")"></script>
+    <script src="@Url.Content("/Scripts/kendo/kendo.aspnetmvc.min.js")"></script>
+    <script src="@Url.Content("/Scripts/modernizr-2.8.3.js")"></script>
+    <script src="@Url.Content("/Scripts/bootstrap.min.js")"></script>
+    <link href="@Url.Content("/Content/Site.css")" rel="stylesheet" />
 </head>
-<body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
-            </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                    <li>@Html.ActionLink("About", "About", "Home")</li>
-                    <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
-                </ul>
-                @Html.Partial("_LoginPartial")
-            </div>
+
+<body class="mahogany no-banner has-page-title">
+    <div id="branding-bar" itemscope="itemscope" itemtype="http://schema.org/CollegeOrUniversity" role="complementary" aria-labelledby="campus-name">
+        <div class="row pad">
+            <img src="//assets.iu.edu/brand/3.x/trident-large.png" alt="IU" />
+            <p id="iu-campus">
+                <a href="https://www.iu.edu/" title="IUPUI">
+                    <span id="campus-name" class="show-on-desktop" itemprop="name">INDIANA UNIVERSITY</span>
+                    <span class="show-on-tablet" itemprop="name">INDIANA UNIVERSITY</span>
+                    <span class="show-on-mobile" itemprop="name">INDIANA UNIVERSITY</span>
+                </a>
+            </p>
         </div>
     </div>
-    <div class="container body-content">
-        @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
-        </footer>
+    <div id="toggles">
+        <div class="row pad">
+            <button class="button hide-for-large" data-toggle="offCanvas">Menu</button>
+        </div>
     </div>
+    <div class="off-canvas-wrapper-inner" data-off-canvas-wrapper="">
+        <div class="off-canvas-content" data-off-canvas-content="">
 
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
+            <div class="nav-secondary show-for-large">
+                <div class="row pad">
+                    <ul class="inline separators" itemscope="itemscope" itemtype="http://schema.org/SiteNavigationElement">@Html.Partial("_LoginPartial")</ul>
+                </div>
+            </div>
+            <div role="main">
+                @RenderBody()
+            </div>
+            <footer id="footer" role="contentinfo" itemscope="itemscope" itemtype="http://schema.org/CollegeOrUniversity">
+                <div class="row pad">
+                    <p class="tagline">Fulfilling <span>the</span> Promise</p>
+                    <p class="signature">
+                        <a href="https://www.iu.edu" class="signature-link">Indiana University</a>
+                    </p>
+                    <p class="copyright">
+                        <a href="https://www.iu.edu/copyright/index.html">Copyright</a> &#169; 2017 <span class="line-break-small">The Trustees of <a href="https://www.iu.edu/" itemprop="url"><span itemprop="name">Indiana University</span></a></span><span class="hide-on-mobile"> | </span><span class="line-break"><a href="/privacy" id="privacy-policy-link">Privacy Notice</a> | <a href="https://accessibility.iu.edu" id="accessibility-link" title="Having trouble accessing this web page because of a disability? Visit this page for assistance.">Accessibility</a></span>
+                    </p>
+                </div>
+            </footer>
+        </div><!-- /.off-canvas-content -->
+    </div><!-- /.off-canvas-wrappper-inner -->
+    <div class="off-canvas position-right" data-off-canvas="" data-position="right" id="offCanvas">
+        <div class="mobile off-canvas-list" itemscope="itemscope" itemtype="http://schema.org/SiteNavigationElement">
+            <ul>
+                @Html.Partial("_LoginPartial")
+            </ul>
+        </div>
+    </div><!-- /#offCanvas -->
     @RenderSection("scripts", required: false)
+    <script src="https://assets.iu.edu/web/3.x/js/iu-framework.min.js" type="text/javascript"></script>
+    <script src="https://assets.iu.edu/search/3.x/search.js" type="text/javascript"></script>
 </body>
 </html>

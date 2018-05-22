@@ -10,7 +10,7 @@ namespace SLS_LegalServices.Controllers
     {
         public ActionResult Index()
         {
-            return View();
+            return RedirectToAction("Index", "User");
         }
 
         public ActionResult About()
