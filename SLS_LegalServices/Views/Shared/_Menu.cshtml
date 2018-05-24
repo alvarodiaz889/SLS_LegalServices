@@ -1,0 +1,15 @@
+﻿<div id="megaStore">
+@(Html.Kendo().Menu()
+      .Name("Menu")
+      .Items(items =>
+      {
+          items.Add().Text("Home").Url("~/Home/Index");
+          items.Add().Text("Schedule");
+          items.Add().Text("Cases");
+          items.Add().Text("Intakes");
+          items.Add().Text("Reports");
+          items.Add().Text("Admin").Url("~/Admin/Index");
+      })
+    )
+
+ </div>

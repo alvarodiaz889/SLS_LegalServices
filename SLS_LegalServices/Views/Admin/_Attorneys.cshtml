@@ -1,0 +1,11 @@
+﻿@(Html.Kendo().Grid<SLS_LegalServices.Attorney>()
+          .Name("grid")
+          .Columns(columns =>
+          {
+          })
+          .Scrollable()
+          .DataSource(dataSource => dataSource
+              .Ajax()
+              .Read(read => read.Action("Read", "Attorneys"))
+          )
+)

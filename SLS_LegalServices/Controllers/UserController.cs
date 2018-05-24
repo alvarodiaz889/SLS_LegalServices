@@ -10,7 +10,7 @@ using System.Web.Mvc;
 
 namespace SLS_LegalServices.Controllers
 {
-    [Authorize]
+    //[Authorize]
     public class UserController : Controller
     {
         private IUserRepository userRepository;

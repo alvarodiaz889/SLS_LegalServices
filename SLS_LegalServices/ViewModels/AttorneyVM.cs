@@ -6,12 +6,13 @@ using System.Web;
 
 namespace SLS_LegalServices.ViewModels
 {
-    public class UserViewModel
+    public class AttorneyModel
     {
         public System.Guid UserId { get; set; }
 
         [Required]
         [MaxLength(50)]
+		[Display(Name = "User ID")]
         public string UserName { get; set; }
 
         [Required]
@@ -25,13 +26,6 @@ namespace SLS_LegalServices.ViewModels
         public string DisplayName { get; set; }
 
         public bool? Active { get; set; }
-
-        [UIHint("Roles")]
-        [Display(Name = "Roles")]
-        [Required]
-        public List<RoleViewModel> Roles { get; set; }
-
-        [Display(Name = "Roles")]
-        public string UserRoles { get; set; }
+        
     }
 }

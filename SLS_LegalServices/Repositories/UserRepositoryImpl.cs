@@ -16,7 +16,6 @@ namespace SLS_LegalServices.Repositories
         private SLS_LegalServicesEntities context;
         private UserManager<ApplicationUser> userManager;
         private IRoleRepository roleRepository;
-        private static Func<User, bool> isNotSuperAdmin = IsNotSuperAdmin;
 
         public UserRepositoryImpl() : this(new RoleRepositoryImpl()){ }
         public UserRepositoryImpl(IRoleRepository roleRepository)
@@ -29,14 +28,14 @@ namespace SLS_LegalServices.Repositories
         public List<UserViewModel> GetAllUsers()
         {
             List<UserViewModel> users = context.Users
-                .Where(isNotSuperAdmin)
                 .Select(u => new UserViewModel()
                 {
-                    UserName = u.US_Username,
-                    FirstName = u.US_FirstName,
-                    MiddleName = u.US_MiddleName,
-                    LastName = u.US_LastName,
-                    Email = u.US_Email,
+                    UserId = u.UserId,
+                    UserName = u.UserName,
+                    FirstName = u.FirstName,
+                    Active = u.Active,
+                    DisplayName = u.DisplayName,
+                    LastName = u.LastName
                 }).ToList();
                 users.ForEach(u => {
                     u.Roles = roleRepository.GetRolesByUsername(u.UserName).ToList();
@@ -59,7 +58,7 @@ namespace SLS_LegalServices.Repositories
         }
         private void DeleteUser(UserViewModel userViewModel)
         {
-            User user = context.Users.Where(u => u.US_Username == userViewModel.UserName).FirstOrDefault();
+            User user = context.Users.Where(u => u.UserName == userViewModel.UserName).FirstOrDefault();
             if (user == null)
                 throw new Exception("User does not exist.");
             context.Users.Remove(user);
@@ -88,7 +87,7 @@ namespace SLS_LegalServices.Repositories
         }
         private string InsertApplicationUser(UserViewModel userViewModel)
         {
-            ApplicationUser user = new ApplicationUser { UserName = userViewModel.UserName, Email = userViewModel.Email };
+            ApplicationUser user = new ApplicationUser { UserName = userViewModel.UserName};
             userManager.Create(user);
             return user.Id;
         }
@@ -96,20 +95,20 @@ namespace SLS_LegalServices.Repositories
         {
             User user = new User()
             {
-                US_Id = Guid.Parse(Id),
-                US_FirstName = userViewModel.FirstName,
-                US_LastName = userViewModel.LastName,
-                US_MiddleName = userViewModel.MiddleName,
-                US_Email = userViewModel.Email,
-                US_Username = userViewModel.UserName
+                UserId = Guid.Parse(Id),
+                FirstName = userViewModel.FirstName,
+                LastName = userViewModel.LastName,
+                Active = userViewModel.Active,
+                DisplayName = userViewModel.DisplayName,
+                UserName = userViewModel.UserName
             };
             context.Users.Add(user);
             return context.SaveChanges();
         }
         private void InsertRolesForUser(UserViewModel userViewModel)
         {
-            User user = context.Users.Where(u => u.US_Username == userViewModel.UserName).FirstOrDefault();
-            roleRepository.InsertMany(user.US_Id, userViewModel.Roles);
+            User user = context.Users.Where(u => u.UserName == userViewModel.UserName).FirstOrDefault();
+            roleRepository.InsertMany(user.UserId, userViewModel.Roles);
         }
         #endregion
 
@@ -122,13 +121,13 @@ namespace SLS_LegalServices.Repositories
         private int UpdateUser(UserViewModel userViewModel)
         {
             int rowsAffected = 0;
-            User user = context.Users.Where(u => u.US_Username == userViewModel.UserName).FirstOrDefault();
+            User user = context.Users.Where(u => u.UserName == userViewModel.UserName).FirstOrDefault();
             if (user != null)
             {
-                user.US_FirstName = userViewModel.FirstName;
-                user.US_LastName = userViewModel.LastName;
-                user.US_MiddleName = userViewModel.MiddleName;
-                user.US_Email = userViewModel.Email;
+                user.FirstName = userViewModel.FirstName;
+                user.LastName = userViewModel.LastName;
+                user.Active = userViewModel.Active;
+                user.DisplayName = userViewModel.DisplayName;
                 rowsAffected = context.SaveChanges();
             }
             return rowsAffected;
@@ -142,14 +141,15 @@ namespace SLS_LegalServices.Repositories
 
         public UserViewModel GetUserByUserName(string userName)
         {
-            UserViewModel user = context.Users.Where(u => u.US_Username == userName)
+            UserViewModel user = context.Users.Where(u => u.UserName == userName)
                 .Select(u => new UserViewModel()
                 {
-                    UserName = u.US_Username,
-                    FirstName = u.US_FirstName,
-                    MiddleName = u.US_MiddleName,
-                    LastName = u.US_LastName,   
-                    Email = u.US_Email,
+                    UserId = u.UserId,
+                    UserName = u.UserName,
+                    FirstName = u.FirstName,
+                    Active = u.Active,
+                    DisplayName = u.DisplayName,
+                    LastName = u.LastName
                 }).FirstOrDefault();
             if (user != null)
             {
@@ -162,15 +162,6 @@ namespace SLS_LegalServices.Repositories
         public void Dispose()
         {
             context.Dispose();
-        }
-
-        private static bool IsNotSuperAdmin(User user)
-        {
-            bool answer = true;
-            if (user?.US_IsSuperAdmin != null)
-                if ((bool)user?.US_IsSuperAdmin)
-                    answer = false;
-            return answer;
         }
         
     }

@@ -1,0 +1,80 @@
+﻿<script>
+    function onRequestEnd(e) {
+        if (e.type == "update" || e.type == "create" || e.type == "remove") {
+            $("#grid").data("kendoGrid").dataSource.read();
+        }
+    }
+
+    function onSave(e) {
+        var userName = e.sender.dataItem(e.container).UserName;
+        if (userName != null) {
+            if (userName.trim().length == 0) {
+                e.preventDefault();
+                alert("Username is Required.");
+            } else {
+                // check for dups
+                $.post("@Url.Action("GetUserViaAjax", "User")", { userName: userName }, function (data) {
+                    if (data != '' && e.model.isNew()) {
+                        e.preventDefault();
+                        alert('This Username already exists in the system.');
+                    }
+                });
+            }
+        } else {
+            e.preventDefault();
+            alert("Username is Required.");
+        }
+    }
+
+    function onEdit(e) {
+        //alert('On Edit');
+        var isNewUser = e.model.isNew();
+        if (!isNewUser) {
+            // disable UserName editing
+            var userNameObject = e.container.find("input[name=UserName]");
+            userNameObject.prop('disabled', true);
+        }
+    }
+
+</script>
+<div style="width: 80%; margin: 100px auto;">
+    @(Html.Kendo().Grid<SLS_LegalServices.ViewModels.UserViewModel>()
+                .Name("grid")
+                .Columns(columns =>
+                {
+                    columns.Bound(o => o.UserName).HtmlAttributes(new { @style = "vertical-align: top;" });
+                    columns.Bound(o => o.LastName).HtmlAttributes(new { @style = "vertical-align: top;" });
+                    columns.Bound(o => o.FirstName).HtmlAttributes(new { @style = "vertical-align: top;" });
+                    columns.Bound(o => o.Roles).ClientTemplate("#=UserRoles#").HtmlAttributes(new { @style = "vertical-align: top;" }).Filterable(false);
+                    columns.Command(command => { command.Edit().Text(" ").CancelText(" ").UpdateText(" "); command.Destroy().Text(" "); });
+                })
+                .Scrollable()
+                .DataSource(dataSource => dataSource
+                    .Ajax()
+                    .ServerOperation(true)
+                    .Model(model =>
+                        {
+                            model.Id(c => c.UserName);
+                            model.Field(e => e.Roles).DefaultValue(new List<RoleViewModel>());
+                            model.Field(e => e.UserId).DefaultValue(new Guid());
+                        })
+                    .Read(read => read.Action("Read", "User"))
+                    .Destroy(destroy => destroy.Action("Destroy", "User"))
+                    .Update(update => update.Action("Update", "User"))
+                    .Create(create => create.Action("Create", "User"))
+                    .Events(events => events.RequestEnd("onRequestEnd"))
+                )
+                .Pageable(pageable => pageable
+                .ButtonCount(5)
+                                    .PageSizes(new[] { 5, 10, 25, 50, 100 })
+                )
+            .Sortable()
+            .Filterable()
+            .ToolBar(toolbar => { toolbar.Create().Text("Add"); })
+            .Editable(editable => editable.Mode(GridEditMode.InLine))
+            .NoRecords("No Users.")
+            .Events(e => e.Save("onSave").Edit("onEdit"))
+    )
+</div>
+
+

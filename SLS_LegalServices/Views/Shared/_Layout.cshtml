@@ -64,8 +64,18 @@
                     <ul class="inline separators" itemscope="itemscope" itemtype="http://schema.org/SiteNavigationElement">@Html.Partial("_LoginPartial")</ul>
                 </div>
             </div>
-            <div role="main">
-                @RenderBody()
+            <div role="main" class="mainFrame">
+                <div class="mainFrameItem">
+                    <h1>
+                        SLS Manager
+                    </h1>
+                </div>
+                <div class="mainFrameItem">
+                    @Html.Partial("_Menu")
+                </div>
+                <div class="mainFrameItem">
+                    @RenderBody()
+                </div>
             </div>
             <footer id="footer" role="contentinfo" itemscope="itemscope" itemtype="http://schema.org/CollegeOrUniversity">
                 <div class="row pad">

@@ -12,25 +12,19 @@ namespace SLS_LegalServices
     using System;
     using System.Collections.Generic;
     
-    public partial class User
+    public partial class Attorney
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public User()
+        public Attorney()
         {
-            this.Attorneys = new HashSet<Attorney>();
-            this.Interns = new HashSet<Intern>();
+            this.Intern_Attorney = new HashSet<Intern_Attorney>();
         }
     
+        public int AttorneyId { get; set; }
         public System.Guid UserId { get; set; }
-        public string UserName { get; set; }
-        public string LastName { get; set; }
-        public string FirstName { get; set; }
-        public string DisplayName { get; set; }
-        public Nullable<bool> Active { get; set; }
     
+        public virtual User User { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Attorney> Attorneys { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Intern> Interns { get; set; }
+        public virtual ICollection<Intern_Attorney> Intern_Attorney { get; set; }
     }
 }

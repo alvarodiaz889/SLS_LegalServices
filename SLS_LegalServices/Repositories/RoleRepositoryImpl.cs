@@ -33,9 +33,9 @@ namespace SLS_LegalServices.Repositories
             List<AspNetRole> roles = context.AspNetRoles
                 .Where(r => r.AspNetUsers.Any(u => u.UserName == username))
                 .ToList();
-            User user = context.Users.Where(u => u.US_Username == username).FirstOrDefault();
+            User user = context.Users.Where(u => u.UserName == username).FirstOrDefault();
             foreach (AspNetRole role in roles)
-                userManager.RemoveFromRole(user.US_Id.ToString(), role.Id);
+                userManager.RemoveFromRole(user.UserId.ToString(), role.Id);
         }
 
         public void Dispose()

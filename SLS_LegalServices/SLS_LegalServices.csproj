@@ -231,11 +231,32 @@
     <Compile Include="AspNetUser.cs">
       <DependentUpon>SLS_DataModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Attorney.cs">
+      <DependentUpon>SLS_DataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CaseType.cs">
+      <DependentUpon>SLS_DataModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\AdminController.cs" />
+    <Compile Include="Controllers\AttorneysController.cs" />
+    <Compile Include="Controllers\CaseTypesController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Intern.cs">
+      <DependentUpon>SLS_DataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="InternSchedule.cs">
+      <DependentUpon>SLS_DataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Intern_Attorney.cs">
+      <DependentUpon>SLS_DataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Log.cs">
+      <DependentUpon>SLS_DataModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Migrations\201805181957121_firstMigration.cs" />
     <Compile Include="Migrations\201805181957121_firstMigration.Designer.cs">
@@ -246,8 +267,10 @@
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\IMainRepository.cs" />
     <Compile Include="Repositories\IRoleRepository.cs" />
     <Compile Include="Repositories\IUserRepository.cs" />
+    <Compile Include="Repositories\MainRepository.cs" />
     <Compile Include="Repositories\RoleRepositoryImpl.cs" />
     <Compile Include="Repositories\UserRepositoryImpl.cs" />
     <Compile Include="SLS_DataModel.Context.cs">
@@ -269,7 +292,9 @@
     <Compile Include="User.cs">
       <DependentUpon>SLS_DataModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="ViewModels\CaseTypesVM.cs" />
     <Compile Include="ViewModels\RoleViewModel.cs" />
+    <Compile Include="ViewModels\AttorneyVM.cs" />
     <Compile Include="ViewModels\UserViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -2812,9 +2837,14 @@
     <Content Include="SLS_DataModel.edmx.diagram">
       <DependentUpon>SLS_DataModel.edmx</DependentUpon>
     </Content>
-    <Content Include="Views\User\Index.cshtml" />
     <Content Include="Views\Account\LoginError.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\Roles.cshtml" />
+    <Content Include="Views\Shared\_Menu.cshtml" />
+    <Content Include="Views\Admin\Index.cshtml" />
+    <Content Include="Views\Admin\_SystemUsers.cshtml" />
+    <Content Include="Views\Admin\_CaseTypes.cshtml" />
+    <Content Include="Views\Admin\EditorTemplates\Active.cshtml" />
+    <Content Include="Views\Admin\_Attorneys.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

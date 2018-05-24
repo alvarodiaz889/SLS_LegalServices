@@ -18,3 +18,16 @@ select,
 textarea {
     max-width: 280px;
 }
+
+.mainFrame {
+    margin: 50px auto;
+    width: 80%;
+}
+
+.mainFrameItem {
+    margin: 20px 0;
+}
+
+.checkBoxBrid {
+}
+
