@@ -5,37 +5,43 @@
         }
     }
 
+    function DisplayList(list) {
+        let value = "";
+        for (let i = 0; i < list.length; i++) {
+            value += list[i].UserName + '<br/>';
+        }
+        console.log(value);
+        return value;
+    }
+
     function onEdit(e) {
     }
 </script>
-@(Html.Kendo().Grid<AttorneyVM>()
+@(Html.Kendo().Grid<InternVM>()
           .Name("AttorneyGrid")
           .Columns(columns =>
           {
               columns.Command(command => { command.Edit().Text(" ").CancelText(" ").UpdateText(" "); command.Destroy().Text(" "); }).Width(100);
-              columns.Bound(c => c.AttorneyId).Visible(false);
+              columns.Bound(c => c.InternId).Visible(false);
               columns.Bound(c => c.UserName).Width(120);
               columns.Bound(c => c.LastName);
               columns.Bound(c => c.FirstName);
-              columns.Bound(c => c.DisplayName);
-              columns.Bound(c => c.Active)
-                .ClientTemplate("<span> #= Active ? value='Active': 'Inactive' # </span>")
-                .EditorTemplateName("Active")
-                .Width(150)
-                .Title("Status");
+              columns.Bound(c => c.Status);
+              columns.Bound(c => c.CertifiedDate).Format("{0:dd/MM/yyyy}");
+              columns.Bound(c => c.Attorneys).ClientTemplate("#=DisplayList(Attorneys)#");
               columns.Template(@<text> </text>).Title("");
           })
           .Scrollable()
           .DataSource(dataSource => dataSource
               .Ajax()
               .Model(m => {
-                  m.Id(c => c.AttorneyId);
+                  m.Id(c => c.InternId);
                   m.Field(c => c.UserId).DefaultValue(Guid.NewGuid());
               })
-              .Read(read => read.Action("Read", "Attorneys"))
-              .Destroy(destroy => destroy.Action("Destroy", "Attorneys"))
-              .Update(update => update.Action("Update", "Attorneys"))
-              .Create(create => create.Action("Create", "Attorneys"))
+              .Read(read => read.Action("Read", "Intern"))
+              .Destroy(destroy => destroy.Action("Destroy", "Intern"))
+              .Update(update => update.Action("Update", "Intern"))
+              .Create(create => create.Action("Create", "Intern"))
               .Events(events => events.RequestEnd("onRequestEnd"))
           )
           .ToolBar(toolbar => { toolbar.Create().Text("Add"); })

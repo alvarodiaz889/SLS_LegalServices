@@ -1,0 +1,6 @@
+﻿@model IEnumerable<AttorneyVM>
+@(Html.Kendo().MultiSelectFor(m => m)
+                .BindTo((IEnumerable<AttorneyVM>)ViewBag.Attorneys)
+                .DataValueField("AttorneyId")
+                .DataTextField("DisplayName")
+)

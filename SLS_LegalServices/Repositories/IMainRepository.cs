@@ -30,6 +30,14 @@ namespace SLS_LegalServices.Repositories
         void CaseLogUpdate(LogVM vm);
         #endregion
 
+        #region Interns
+        List<InternVM> GetAllInterns();
+        void InternInsert(InternVM vm);
+        void InternDelete(InternVM vm);
+        void InternUpdate(InternVM vm);
+        List<AttorneyVM> GetAllAttorneysByIntern(InternVM intern);
+        #endregion
+
         void Dispose();
     }
 }

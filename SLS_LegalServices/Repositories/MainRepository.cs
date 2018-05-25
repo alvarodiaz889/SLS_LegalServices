@@ -53,7 +53,7 @@ namespace SLS_LegalServices.Repositories
         }
         #endregion
 
-        #region AttorneyVM
+        #region Attorneys
         public List<AttorneyVM> GetAllAttorneys()
         {
             return context.Attorneys.Select(s => new AttorneyVM {
@@ -109,7 +109,7 @@ namespace SLS_LegalServices.Repositories
         }
         #endregion
 
-        #region CaseLog
+        #region CaseLogs
         public List<LogVM> GetAllCaseLogs()
         {
             return context.Logs.Select(o => new LogVM()
@@ -168,11 +168,53 @@ namespace SLS_LegalServices.Repositories
         }
         #endregion
 
+        #region Interns
+        public List<InternVM> GetAllInterns()
+        {
+            List<InternVM> interns =  context.Interns.Select(o => new InternVM() {
+                InternId = o.InternId,
+                UserName = o.User.UserName,
+                FirstName = o.User.FirstName,
+                LastName = o.User.LastName,
+                Status = o.Status,
+                CertifiedDate = o.CertifiedDate,
+            }).ToList();
+            interns.ForEach(o => o.Attorneys = GetAllAttorneysByIntern(o));
+            return interns;
+        }
 
+        public void InternInsert(InternVM vm)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void InternDelete(InternVM vm)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void InternUpdate(InternVM vm)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<AttorneyVM> GetAllAttorneysByIntern(InternVM intern)
+        {
+            return context.Intern_Attorney.Where(o => o.InternId == intern.InternId)
+                .Select(o => new AttorneyVM() {
+                    AttorneyId = o.AttorneyId,
+                    UserName = o.Attorney.User.UserName,
+                    DisplayName = o.Attorney.User.DisplayName,
+                    FirstName = o.Attorney.User.FirstName,
+                    LastName = o.Attorney.User.LastName,
+                    Active = o.Attorney.User.Active,
+                    UserId = o.Attorney.UserId
+                }).ToList();
+        }
+        #endregion
         public void Dispose()
         {
             context.Dispose();
         }
-        
     }
 }

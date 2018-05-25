@@ -1,5 +1,4 @@
-﻿@using System.Collections
-@model IEnumerable<RoleViewModel>
+﻿@model IEnumerable<RoleViewModel>
 @(Html.Kendo().MultiSelectFor(m => m)
             .BindTo((IEnumerable<RoleViewModel>)ViewBag.Roles)
             .DataValueField("Id")

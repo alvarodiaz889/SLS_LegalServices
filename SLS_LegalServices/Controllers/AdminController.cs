@@ -12,11 +12,13 @@ namespace SLS_LegalServices.Controllers
 
         private IUserRepository userRepository;
         private IRoleRepository roleRepository;
+        private IMainRepository mainRepository;
 
-        public AdminController(IUserRepository userRepository, IRoleRepository roleRepository)
+        public AdminController(IUserRepository userRepository, IRoleRepository roleRepository, IMainRepository mainRepository)
         {
             this.userRepository = userRepository;
             this.roleRepository = roleRepository;
+            this.mainRepository = mainRepository;
         }
         public ActionResult Index()
         {
@@ -30,7 +32,9 @@ namespace SLS_LegalServices.Controllers
 
         public ActionResult Interns()
         {
-            return View();
+            ViewBag.DateName = "CertifiedDate";
+            ViewBag.Attorneys = mainRepository.GetAllAttorneys();
+            return PartialView("_Interns");
         }
 
         public ActionResult CaseTypes()

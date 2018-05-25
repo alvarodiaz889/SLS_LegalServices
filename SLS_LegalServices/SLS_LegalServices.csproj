@@ -243,6 +243,7 @@
     <Compile Include="Controllers\CaseLogController.cs" />
     <Compile Include="Controllers\CaseTypesController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\InternController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -293,6 +294,8 @@
     <Compile Include="User.cs">
       <DependentUpon>SLS_DataModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="ViewModels\InternScheduleVM.cs" />
+    <Compile Include="ViewModels\InternVM.cs" />
     <Compile Include="ViewModels\LogVM.cs" />
     <Compile Include="ViewModels\CaseTypesVM.cs" />
     <Compile Include="ViewModels\RoleViewModel.cs" />
@@ -2850,9 +2853,11 @@
     <Content Include="Views\Admin\_CaseLog.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\Date.cshtml" />
     <Content Include="Views\Admin\_Interns.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\AttorneyTemplate.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\Intern\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
