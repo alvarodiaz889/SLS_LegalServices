@@ -6,9 +6,10 @@ using System.Web;
 
 namespace SLS_LegalServices.ViewModels
 {
-    public class AttorneyModel
+    public class AttorneyVM
     {
-        public System.Guid UserId { get; set; }
+        public int AttorneyId { get; set; }
+        public Guid UserId { get; set; }
 
         [Required]
         [MaxLength(50)]
@@ -26,6 +27,8 @@ namespace SLS_LegalServices.ViewModels
         public string DisplayName { get; set; }
 
         public bool? Active { get; set; }
+
+        public UserViewModel UserVM { get; set; }
         
     }
 }

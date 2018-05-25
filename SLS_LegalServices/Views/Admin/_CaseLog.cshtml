@@ -1,0 +1,87 @@
+﻿<script>
+
+    function startChange() {
+        var endPicker = $("#end").data("kendoDatePicker"),
+            startDate = this.value();
+
+        if (startDate) {
+            startDate = new Date(startDate);
+            startDate.setDate(startDate.getDate() + 1);
+            endPicker.min(startDate);
+        }
+    }
+
+    function endChange() {
+        var startPicker = $("#start").data("kendoDatePicker"),
+            endDate = this.value();
+
+        if (endDate) {
+            endDate = new Date(endDate);
+            endDate.setDate(endDate.getDate() - 1);
+            startPicker.max(endDate);
+        }
+    }
+
+    function onRequestEnd(e) {
+        if (e.type == "update" || e.type == "create" || e.type == "remove") {
+            $("#CaseLogGrid").data("kendoGrid").dataSource.read();
+        }
+    }
+
+    function onEdit(e) {
+    }
+
+</script>
+@*<div>
+    <h6>From:</h6>
+    @(Html.Kendo().DatePicker()
+              .Name("start")
+              .Value("10/10/2011")
+              .Events(e => e.Change("startChange"))
+              .HtmlAttributes(new { style = "width: 100%" })
+    )
+
+    <h6>To:</h6>
+    @(Html.Kendo().DatePicker()
+              .Name("end")
+              .Value("10/10/2012")
+              .Events(e => e.Change("endChange"))
+              .HtmlAttributes(new { style = "width: 100%" })
+    )
+</div>*@
+
+
+@(Html.Kendo().Grid<LogVM>()
+            .Name("CaseLogGrid")
+            .Columns(columns =>
+            {
+                columns.Bound(c => c.LogId).Visible(false);
+                columns.Bound(c => c.LogDate).Format("{0:dd/MM/yyyy}").Width(120);
+                columns.Bound(c => c.UserName).Width(140);
+                columns.Bound(c => c.Action);
+                columns.Bound(c => c.Detail);
+                columns.Bound(c => c.LogParentId);
+                columns.Template(@<text> </text>).Title("");
+            })
+            .Scrollable()
+            .DataSource(dataSource => dataSource
+                .Ajax()
+                .Model(m =>
+                {
+                m.Id(c => c.LogId);
+                })
+                .Read(read => read.Action("Read", "CaseLog"))
+                .Destroy(destroy => destroy.Action("Destroy", "CaseLog"))
+                .Update(update => update.Action("Update", "CaseLog"))
+                .Create(create => create.Action("Create", "CaseLog"))
+                .Events(events => events.RequestEnd("onRequestEnd"))
+            )
+            .ToolBar(toolbar => { toolbar.Excel(); })
+            .Filterable()
+            .Excel(excel => excel
+                .FileName("CaseLog.xlsx")
+                .Filterable(true)
+                .AllPages(true)
+                .ProxyURL(Url.Action("Excel_Export_Save", "Schedule")))
+            .Events(e => e.Edit("onEdit"))
+)

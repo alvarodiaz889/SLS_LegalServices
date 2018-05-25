@@ -27,21 +27,24 @@ namespace SLS_LegalServices.Repositories
 
         public List<UserViewModel> GetAllUsers()
         {
-            List<UserViewModel> users = context.Users
-                .Select(u => new UserViewModel()
-                {
-                    UserId = u.UserId,
-                    UserName = u.UserName,
-                    FirstName = u.FirstName,
-                    Active = u.Active,
-                    DisplayName = u.DisplayName,
-                    LastName = u.LastName
-                }).ToList();
-                users.ForEach(u => {
-                    u.Roles = roleRepository.GetRolesByUsername(u.UserName).ToList();
-                    u.UserRoles = string.Join(",",u.Roles.Select(c => c.Role));
-                });
-
+            var query = from u in context.Users
+                        where !(from a in context.Attorneys
+                                select a.UserId)
+                        .Contains(u.UserId)
+                        select new UserViewModel {
+                            UserId = u.UserId,
+                            UserName = u.UserName,
+                            FirstName = u.FirstName,
+                            Active = u.Active,
+                            DisplayName = u.DisplayName,
+                            LastName = u.LastName
+                        };
+            List<UserViewModel> users = query.ToList();
+            users.ForEach(u => {
+                u.Roles = roleRepository.GetRolesByUserId(u.UserId.ToString()).ToList();
+                u.UserRoles = string.Join(",",u.Roles.Select(c => c.Role));
+            });
+            
             return users;
         }
 
@@ -153,7 +156,7 @@ namespace SLS_LegalServices.Repositories
                 }).FirstOrDefault();
             if (user != null)
             {
-                user.Roles = roleRepository.GetRolesByUsername(user.UserName).ToList();
+                user.Roles = roleRepository.GetRolesByUserId(user.UserId.ToString()).ToList();
                 user.UserRoles = string.Join(",", user.Roles.Select(c => c.Role));
             }
             

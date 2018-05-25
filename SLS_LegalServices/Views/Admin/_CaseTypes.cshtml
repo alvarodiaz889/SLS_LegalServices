@@ -1,7 +1,7 @@
 ﻿<script>
     function onRequestEnd(e) {
         if (e.type == "update" || e.type == "create" || e.type == "remove") {
-            $("#grid").data("kendoGrid").dataSource.read();
+            $("#CaseTypeGrid").data("kendoGrid").dataSource.read();
         }
     }
 
@@ -9,22 +9,24 @@
     }
 </script>
 @(Html.Kendo().Grid<CaseTypesVM>()
-          .Name("grid")
+          .Name("CaseTypeGrid")
           .Columns(columns =>
           {
-              columns.Bound(c => c.TypeId);
+              columns.Command(command => { command.Edit().Text(" ").CancelText(" ").UpdateText(" "); command.Destroy().Text(" "); }).Width(100);
+              columns.Bound(c => c.TypeId).Visible(false);
+              columns.Bound(c => c.TypeCode).Width(120);
               columns.Bound(c => c.Description);
-              columns.Bound(c => c.Active).ClientTemplate("<span> #= Active ? value='Active': 'Inactive' # </span>").EditorTemplateName("Active");
-              columns.Command(command => { command.Edit().Text(" ").CancelText(" ").UpdateText(" "); command.Destroy().Text(" "); });
+              columns.Bound(c => c.Active)
+                .ClientTemplate("<span> #= Active ? value='Active': 'Inactive' # </span>")
+                .EditorTemplateName("Active")
+                .Width(150)
+                .Title("Status");
+              columns.Template(@<text> </text>).Title("");
           })
           .Scrollable()
           .DataSource(dataSource => dataSource
               .Ajax()
-              .Model(m =>
-              {
-                  m.Id(c => c.TypeId);
-                  m.Field(c => c.TypeId).Editable(false);
-              })
+              .Model(m => m.Id(c => c.TypeId))
               .Read(read => read.Action("Read", "CaseTypes"))
               .Destroy(destroy => destroy.Action("Destroy", "CaseTypes"))
               .Update(update => update.Action("Update", "CaseTypes"))

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SLS_LegalServices.Repositories;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -8,6 +9,15 @@ namespace SLS_LegalServices.Controllers
 {
     public class AdminController : Controller
     {
+
+        private IUserRepository userRepository;
+        private IRoleRepository roleRepository;
+
+        public AdminController(IUserRepository userRepository, IRoleRepository roleRepository)
+        {
+            this.userRepository = userRepository;
+            this.roleRepository = roleRepository;
+        }
         public ActionResult Index()
         {
             return View();
@@ -30,12 +40,13 @@ namespace SLS_LegalServices.Controllers
 
         public ActionResult SystemUsers()
         {
+            ViewBag.Roles = roleRepository.GetAllRoles();
             return PartialView("_SystemUsers");
         }
 
         public ActionResult CaseLog()
         {
-            return View();
+            return PartialView("_CaseLog");
         }
     }
 }

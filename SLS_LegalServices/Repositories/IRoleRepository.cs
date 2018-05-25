@@ -15,7 +15,7 @@ namespace SLS_LegalServices.Repositories
         void Delete(RoleViewModel roleViewModel);
         void DeleteRoleByUserName(string username);
         List<RoleViewModel> GetAllRoles();
-        List<RoleViewModel> GetRolesByUsername(string username);
+        List<RoleViewModel> GetRolesByUserId(string id);
         void Dispose();
     }
 }

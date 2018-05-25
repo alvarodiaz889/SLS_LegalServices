@@ -240,6 +240,7 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\AttorneysController.cs" />
+    <Compile Include="Controllers\CaseLogController.cs" />
     <Compile Include="Controllers\CaseTypesController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\UserController.cs" />
@@ -292,6 +293,7 @@
     <Compile Include="User.cs">
       <DependentUpon>SLS_DataModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="ViewModels\LogVM.cs" />
     <Compile Include="ViewModels\CaseTypesVM.cs" />
     <Compile Include="ViewModels\RoleViewModel.cs" />
     <Compile Include="ViewModels\AttorneyVM.cs" />
@@ -2843,8 +2845,11 @@
     <Content Include="Views\Admin\Index.cshtml" />
     <Content Include="Views\Admin\_SystemUsers.cshtml" />
     <Content Include="Views\Admin\_CaseTypes.cshtml" />
-    <Content Include="Views\Admin\EditorTemplates\Active.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\Active.cshtml" />
     <Content Include="Views\Admin\_Attorneys.cshtml" />
+    <Content Include="Views\Admin\_CaseLog.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\Date.cshtml" />
+    <Content Include="Views\Admin\_Interns.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

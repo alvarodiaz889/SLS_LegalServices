@@ -14,7 +14,8 @@ namespace SLS_LegalServices
     
     public partial class InternSchedule
     {
-        public int InternId { get; set; }
+        public int InternScheduleID { get; set; }
+        public Nullable<int> InternId { get; set; }
         public string DayOfWeek { get; set; }
         public Nullable<System.DateTime> StartTime { get; set; }
         public Nullable<System.DateTime> EndTime { get; set; }

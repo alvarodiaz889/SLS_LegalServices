@@ -18,6 +18,7 @@ namespace SLS_LegalServices
 
             container.RegisterType<IRoleRepository, RoleRepositoryImpl>();
             container.RegisterType<IUserRepository, UserRepositoryImpl>();
+            container.RegisterType<IMainRepository, MainRepository>();
 
             DependencyResolver.SetResolver(new UnityDependencyResolver(container));
         }

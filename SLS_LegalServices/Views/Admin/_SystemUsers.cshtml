@@ -1,7 +1,7 @@
 ﻿<script>
     function onRequestEnd(e) {
         if (e.type == "update" || e.type == "create" || e.type == "remove") {
-            $("#grid").data("kendoGrid").dataSource.read();
+            $("#UsersGrid").data("kendoGrid").dataSource.read();
         }
     }
 
@@ -37,44 +37,45 @@
     }
 
 </script>
-<div style="width: 80%; margin: 100px auto;">
-    @(Html.Kendo().Grid<SLS_LegalServices.ViewModels.UserViewModel>()
-                .Name("grid")
-                .Columns(columns =>
-                {
-                    columns.Bound(o => o.UserName).HtmlAttributes(new { @style = "vertical-align: top;" });
-                    columns.Bound(o => o.LastName).HtmlAttributes(new { @style = "vertical-align: top;" });
-                    columns.Bound(o => o.FirstName).HtmlAttributes(new { @style = "vertical-align: top;" });
-                    columns.Bound(o => o.Roles).ClientTemplate("#=UserRoles#").HtmlAttributes(new { @style = "vertical-align: top;" }).Filterable(false);
-                    columns.Command(command => { command.Edit().Text(" ").CancelText(" ").UpdateText(" "); command.Destroy().Text(" "); });
-                })
-                .Scrollable()
-                .DataSource(dataSource => dataSource
-                    .Ajax()
-                    .ServerOperation(true)
-                    .Model(model =>
-                        {
-                            model.Id(c => c.UserName);
-                            model.Field(e => e.Roles).DefaultValue(new List<RoleViewModel>());
-                            model.Field(e => e.UserId).DefaultValue(new Guid());
-                        })
-                    .Read(read => read.Action("Read", "User"))
-                    .Destroy(destroy => destroy.Action("Destroy", "User"))
-                    .Update(update => update.Action("Update", "User"))
-                    .Create(create => create.Action("Create", "User"))
-                    .Events(events => events.RequestEnd("onRequestEnd"))
-                )
-                .Pageable(pageable => pageable
-                .ButtonCount(5)
-                                    .PageSizes(new[] { 5, 10, 25, 50, 100 })
-                )
-            .Sortable()
-            .Filterable()
-            .ToolBar(toolbar => { toolbar.Create().Text("Add"); })
-            .Editable(editable => editable.Mode(GridEditMode.InLine))
-            .NoRecords("No Users.")
-            .Events(e => e.Save("onSave").Edit("onEdit"))
-    )
-</div>
+
+@(Html.Kendo().Grid<UserViewModel>()
+            .Name("UsersGrid")
+            .Columns(columns =>
+            {
+            columns.Command(command => { command.Edit().Text(" ").CancelText(" ").UpdateText(" "); command.Destroy().Text(" "); }).Width(100); 
+            columns.Bound(o => o.UserName).HtmlAttributes(new { @style = "vertical-align: top;" });
+            columns.Bound(o => o.LastName).HtmlAttributes(new { @style = "vertical-align: top;" });
+            columns.Bound(o => o.FirstName).HtmlAttributes(new { @style = "vertical-align: top;" });
+            columns.Bound(o => o.Roles).ClientTemplate("#=UserRoles#").HtmlAttributes(new { @style = "vertical-align: top;" }).Filterable(false);
+            columns.Template(@<text> </text>).Title("");
+            })
+            .Scrollable()
+            .DataSource(dataSource => dataSource
+                .Ajax()
+                .ServerOperation(true)
+                .Model(model =>
+                    {
+                        model.Id(c => c.UserName);
+                        model.Field(e => e.Roles).DefaultValue(new List<RoleViewModel>());
+                        model.Field(e => e.UserId).DefaultValue(new Guid());
+                    })
+                .Read(read => read.Action("Read", "User"))
+                .Destroy(destroy => destroy.Action("Destroy", "User"))
+                .Update(update => update.Action("Update", "User"))
+                .Create(create => create.Action("Create", "User"))
+                .Events(events => events.RequestEnd("onRequestEnd"))
+            )
+            .Pageable(pageable => pageable
+            .ButtonCount(5)
+                                .PageSizes(new[] { 5, 10, 25, 50, 100 })
+            )
+        .Sortable()
+        .Filterable()
+        .ToolBar(toolbar => { toolbar.Create().Text("Add"); })
+        .Editable(editable => editable.Mode(GridEditMode.InLine))
+        .NoRecords("No Users.")
+        .Events(e => e.Save("onSave").Edit("onEdit"))
+)
+
 
 

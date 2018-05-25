@@ -15,6 +15,7 @@ namespace SLS_LegalServices
     public partial class CaseType
     {
         public int TypeId { get; set; }
+        public Nullable<int> TypeCode { get; set; }
         public string Description { get; set; }
         public Nullable<bool> Active { get; set; }
     }

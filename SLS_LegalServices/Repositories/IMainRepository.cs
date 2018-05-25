@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SLS_LegalServices.Repositories
 {
-    interface IMainRepository
+    public interface IMainRepository
     {
         #region CaseTypes
         List<CaseTypesVM> GetAllCaseTypes();
@@ -17,12 +17,19 @@ namespace SLS_LegalServices.Repositories
         #endregion
 
         #region Attorneys
-        List<AttorneyModel> GetAllAttorneys();
-        void AttorneyInsert(AttorneyModel vm);
-        void AttorneyDelete(AttorneyModel vm);
-        void AttorneyUpdate(AttorneyModel vm);
+        List<AttorneyVM> GetAllAttorneys();
+        void AttorneyInsert(AttorneyVM vm);
+        void AttorneyDelete(AttorneyVM vm);
+        void AttorneyUpdate(AttorneyVM vm);
         #endregion
 
+        #region CaseLog
+        List<LogVM> GetAllCaseLogs();
+        void CaseLogInsert(LogVM vm);
+        void CaseLogDelete(LogVM vm);
+        void CaseLogUpdate(LogVM vm);
+        #endregion
 
+        void Dispose();
     }
 }

@@ -30,9 +30,9 @@ namespace SLS_LegalServices
         public virtual DbSet<Attorney> Attorneys { get; set; }
         public virtual DbSet<Intern> Interns { get; set; }
         public virtual DbSet<Intern_Attorney> Intern_Attorney { get; set; }
-        public virtual DbSet<InternSchedule> InternSchedules { get; set; }
         public virtual DbSet<Log> Logs { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<CaseType> CaseTypes { get; set; }
+        public virtual DbSet<InternSchedule> InternSchedules { get; set; }
     }
 }

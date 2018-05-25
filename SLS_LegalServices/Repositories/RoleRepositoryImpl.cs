@@ -55,10 +55,10 @@ namespace SLS_LegalServices.Repositories
         }
         
 
-        public List<RoleViewModel> GetRolesByUsername(string username)
+        public List<RoleViewModel> GetRolesByUserId(string id)
         {
             List<RoleViewModel> roles = context.AspNetRoles
-                .Where(role => role.AspNetUsers.Any(user => user.UserName == username))
+                .Where(role => role.AspNetUsers.Any(user => user.Id == id))
                 .Select(r => new RoleViewModel()
                 {
                     Id = r.Id,
