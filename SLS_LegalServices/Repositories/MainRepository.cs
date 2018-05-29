@@ -70,7 +70,7 @@ namespace SLS_LegalServices.Repositories
         public void AttorneyInsert(AttorneyVM vm)
         {
             User user = new User {
-                UserId = vm.UserId,
+                UserId = Guid.NewGuid(),
                 Active = vm.Active,
                 UserName = vm.UserName,
                 FirstName = vm.FirstName,
@@ -185,17 +185,55 @@ namespace SLS_LegalServices.Repositories
 
         public void InternInsert(InternVM vm)
         {
-            throw new NotImplementedException();
+            User user = new User
+            {
+                UserId = Guid.NewGuid(),
+                UserName = vm.UserName,
+                FirstName = vm.FirstName,
+                LastName = vm.LastName,
+            };
+            Intern intern = new Intern
+            {
+                User = user,
+                CertifiedDate = vm.CertifiedDate,
+                Status = vm.Status
+            };
+            context.Interns.Add(intern);
+            context.SaveChanges();
+
+            foreach (var attorney in vm.Attorneys)
+            {
+                Intern_Attorney ia = new Intern_Attorney
+                {
+                    InternId = intern.InternId,
+                    AttorneyId = attorney.AttorneyId,
+                    CreationDate = DateTime.Now
+                };
+                context.Intern_Attorney.Add(ia);
+            }
+            
+            context.SaveChanges();
         }
 
         public void InternDelete(InternVM vm)
         {
-            throw new NotImplementedException();
+            Intern intern = context.Interns
+                .Include(a => a.User)
+                .Where(a => a.InternId == vm.InternId)
+                .FirstOrDefault();
+            User user = intern.User;
+            List<Intern_Attorney> intern_Attorneys = context.Intern_Attorney
+                .Where(ia => ia.InternId == vm.InternId).ToList();
+            context.Intern_Attorney.RemoveRange(intern_Attorneys);
+            context.Interns.Remove(intern);
+            context.Users.Remove(user);
+            context.SaveChanges();
         }
 
         public void InternUpdate(InternVM vm)
         {
-            throw new NotImplementedException();
+            InternDelete(vm);
+            InternInsert(vm);
         }
 
         public List<AttorneyVM> GetAllAttorneysByIntern(InternVM intern)
@@ -216,5 +254,71 @@ namespace SLS_LegalServices.Repositories
         {
             context.Dispose();
         }
+
+        #region InternSchedule
+        public List<InternScheduleVM> GetAllInternSchedules()
+        {
+            return context.InternSchedules
+                .Select(s => new InternScheduleVM() {
+                    DayOfWeek = s.DayOfWeek,
+                    EndTime = s.EndTime,
+                    InternId = s.InternId,
+                    InternScheduleID = s.InternScheduleID,
+                    StartTime = s.StartTime
+                }).ToList();
+        }
+
+        public void InternScheduleInsert(InternScheduleVM vm)
+        {
+            InternSchedule intern = new InternSchedule
+            {
+                InternId =vm.InternId,
+                DayOfWeek = vm.DayOfWeek,
+                EndTime = vm.EndTime,
+                InternScheduleID = vm.InternScheduleID,
+                StartTime = vm.StartTime
+            };
+            context.InternSchedules.Add(intern);
+            context.SaveChanges();
+        }
+
+        public void InternScheduleDelete(InternScheduleVM vm)
+        {
+            List<InternSchedule> internSchedule = context.InternSchedules
+                .Where(s => s.InternId == vm.InternId).ToList();
+            context.InternSchedules.RemoveRange(internSchedule);
+            context.SaveChanges();
+        }
+
+        public void InternScheduleUpdate(InternScheduleVM vm)
+        {
+            InternSchedule internSchedule = new InternSchedule
+            {
+                DayOfWeek = vm.DayOfWeek,
+                EndTime = vm.EndTime,
+                InternId = vm.InternId,
+                InternScheduleID = vm.InternScheduleID,
+                StartTime = vm.StartTime
+            };
+            context.InternSchedules.Attach(internSchedule);
+            context.Entry(internSchedule).State = EntityState.Modified;
+            context.SaveChanges();
+        }
+
+        public List<InternScheduleVM> GetAllScheduleByIntern(InternVM intern)
+        {
+            return context.InternSchedules
+                .Where(s => s.InternId == intern.InternId)
+                .Select(s => new InternScheduleVM()
+                {
+                    DayOfWeek = s.DayOfWeek,
+                    EndTime = s.EndTime,
+                    InternId = s.InternId,
+                    InternScheduleID = s.InternScheduleID,
+                    StartTime = s.StartTime
+                }).ToList();
+        }
+        #endregion
+
     }
 }

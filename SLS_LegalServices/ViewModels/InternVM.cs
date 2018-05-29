@@ -31,7 +31,7 @@ namespace SLS_LegalServices.ViewModels
 
         public List<InternSchedule> Schedules { get; set; }
 
-        [UIHint("AttorneyTemplate")]
+        [UIHint("_InternAttorneyDDL")]
         public List<AttorneyVM> Attorneys { get; set; }
     }
 }

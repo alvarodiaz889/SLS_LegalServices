@@ -57,7 +57,7 @@
           <Key>
             <PropertyRef Name="InternId" />
           </Key>
-          <Property Name="InternId" Type="int" Nullable="false" />
+          <Property Name="InternId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="UserId" Type="uniqueidentifier" Nullable="false" />
           <Property Name="CertifiedDate" Type="datetime" />
           <Property Name="Status" Type="varchar" MaxLength="50" />
@@ -275,7 +275,6 @@
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
           </AssociationSet>
           <EntitySet Name="Attorneys" EntityType="SLS_LegalServicesDataModel.Attorney" />
-          <EntitySet Name="Interns" EntityType="SLS_LegalServicesDataModel.Intern" />
           <EntitySet Name="Intern_Attorney" EntityType="SLS_LegalServicesDataModel.Intern_Attorney" />
           <EntitySet Name="Logs" EntityType="SLS_LegalServicesDataModel.Log" />
           <EntitySet Name="Users" EntityType="SLS_LegalServicesDataModel.User" />
@@ -287,6 +286,9 @@
             <End Role="Attorney" EntitySet="Attorneys" />
             <End Role="Intern_Attorney" EntitySet="Intern_Attorney" />
           </AssociationSet>
+          <EntitySet Name="CaseTypes" EntityType="SLS_LegalServicesDataModel.CaseType" />
+          <EntitySet Name="InternSchedules" EntityType="SLS_LegalServicesDataModel.InternSchedule" />
+          <EntitySet Name="Interns" EntityType="SLS_LegalServicesDataModel.Intern" />
           <AssociationSet Name="FK_Intern_Attorney_Intern" Association="SLS_LegalServicesDataModel.FK_Intern_Attorney_Intern">
             <End Role="Intern" EntitySet="Interns" />
             <End Role="Intern_Attorney" EntitySet="Intern_Attorney" />
@@ -295,8 +297,6 @@
             <End Role="User" EntitySet="Users" />
             <End Role="Intern" EntitySet="Interns" />
           </AssociationSet>
-          <EntitySet Name="CaseTypes" EntityType="SLS_LegalServicesDataModel.CaseType" />
-          <EntitySet Name="InternSchedules" EntityType="SLS_LegalServicesDataModel.InternSchedule" />
           <AssociationSet Name="FK_InternSchedule_Intern" Association="SLS_LegalServicesDataModel.FK_InternSchedule_Intern">
             <End Role="Intern" EntitySet="Interns" />
             <End Role="InternSchedule" EntitySet="InternSchedules" />
@@ -310,18 +310,6 @@
           <Property Name="UserId" Type="Guid" Nullable="false" />
           <NavigationProperty Name="User" Relationship="SLS_LegalServicesDataModel.FK_Attorney_Users" FromRole="Attorney" ToRole="User" />
           <NavigationProperty Name="Intern_Attorney" Relationship="SLS_LegalServicesDataModel.FK_Intern_Attorney_Attorney" FromRole="Attorney" ToRole="Intern_Attorney" />
-        </EntityType>
-        <EntityType Name="Intern">
-          <Key>
-            <PropertyRef Name="InternId" />
-          </Key>
-          <Property Name="InternId" Type="Int32" Nullable="false" />
-          <Property Name="UserId" Type="Guid" Nullable="false" />
-          <Property Name="CertifiedDate" Type="DateTime" Precision="3" />
-          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="Intern_Attorney" Relationship="SLS_LegalServicesDataModel.FK_Intern_Attorney_Intern" FromRole="Intern" ToRole="Intern_Attorney" />
-          <NavigationProperty Name="User" Relationship="SLS_LegalServicesDataModel.FK_Intern_Users" FromRole="Intern" ToRole="User" />
-          <NavigationProperty Name="InternSchedules" Relationship="SLS_LegalServicesDataModel.FK_InternSchedule_Intern" FromRole="Intern" ToRole="InternSchedule" />
         </EntityType>
         <EntityType Name="Intern_Attorney">
           <Key>
@@ -384,6 +372,38 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="CaseType">
+          <Key>
+            <PropertyRef Name="TypeId" />
+          </Key>
+          <Property Name="TypeId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TypeCode" Type="Int32" />
+          <Property Name="Description" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="Active" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="InternSchedule">
+          <Key>
+            <PropertyRef Name="InternScheduleID" />
+          </Key>
+          <Property Name="InternScheduleID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="InternId" Type="Int32" />
+          <Property Name="DayOfWeek" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="StartTime" Type="DateTime" Precision="3" />
+          <Property Name="EndTime" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Intern" Relationship="SLS_LegalServicesDataModel.FK_InternSchedule_Intern" FromRole="InternSchedule" ToRole="Intern" />
+        </EntityType>
+        <EntityType Name="Intern">
+          <Key>
+            <PropertyRef Name="InternId" />
+          </Key>
+          <Property Name="InternId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserId" Type="Guid" Nullable="false" />
+          <Property Name="CertifiedDate" Type="DateTime" Precision="3" />
+          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Intern_Attorney" Relationship="SLS_LegalServicesDataModel.FK_Intern_Attorney_Intern" FromRole="Intern" ToRole="Intern_Attorney" />
+          <NavigationProperty Name="User" Relationship="SLS_LegalServicesDataModel.FK_Intern_Users" FromRole="Intern" ToRole="User" />
+          <NavigationProperty Name="InternSchedules" Relationship="SLS_LegalServicesDataModel.FK_InternSchedule_Intern" FromRole="Intern" ToRole="InternSchedule" />
+        </EntityType>
         <Association Name="FK_Intern_Attorney_Intern">
           <End Type="SLS_LegalServicesDataModel.Intern" Role="Intern" Multiplicity="1" />
           <End Type="SLS_LegalServicesDataModel.Intern_Attorney" Role="Intern_Attorney" Multiplicity="*" />
@@ -408,26 +428,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="CaseType">
-          <Key>
-            <PropertyRef Name="TypeId" />
-          </Key>
-          <Property Name="TypeId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="TypeCode" Type="Int32" />
-          <Property Name="Description" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
-          <Property Name="Active" Type="Boolean" />
-        </EntityType>
-        <EntityType Name="InternSchedule">
-          <Key>
-            <PropertyRef Name="InternScheduleID" />
-          </Key>
-          <Property Name="InternScheduleID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="InternId" Type="Int32" />
-          <Property Name="DayOfWeek" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
-          <Property Name="StartTime" Type="DateTime" Precision="3" />
-          <Property Name="EndTime" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="Intern" Relationship="SLS_LegalServicesDataModel.FK_InternSchedule_Intern" FromRole="InternSchedule" ToRole="Intern" />
-        </EntityType>
         <Association Name="FK_InternSchedule_Intern">
           <End Type="SLS_LegalServicesDataModel.Intern" Role="Intern" Multiplicity="0..1" />
           <End Type="SLS_LegalServicesDataModel.InternSchedule" Role="InternSchedule" Multiplicity="*" />
@@ -488,16 +488,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Interns">
-            <EntityTypeMapping TypeName="SLS_LegalServicesDataModel.Intern">
-              <MappingFragment StoreEntitySet="Intern">
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="CertifiedDate" ColumnName="CertifiedDate" />
-                <ScalarProperty Name="UserId" ColumnName="UserId" />
-                <ScalarProperty Name="InternId" ColumnName="InternId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Intern_Attorney">
             <EntityTypeMapping TypeName="SLS_LegalServicesDataModel.Intern_Attorney">
               <MappingFragment StoreEntitySet="Intern_Attorney">
@@ -551,6 +541,16 @@
                 <ScalarProperty Name="DayOfWeek" ColumnName="DayOfWeek" />
                 <ScalarProperty Name="InternId" ColumnName="InternId" />
                 <ScalarProperty Name="InternScheduleID" ColumnName="InternScheduleID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Interns">
+            <EntityTypeMapping TypeName="SLS_LegalServicesDataModel.Intern">
+              <MappingFragment StoreEntitySet="Intern">
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="CertifiedDate" ColumnName="CertifiedDate" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="InternId" ColumnName="InternId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

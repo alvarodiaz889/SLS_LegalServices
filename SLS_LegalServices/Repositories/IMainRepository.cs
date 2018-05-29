@@ -38,6 +38,14 @@ namespace SLS_LegalServices.Repositories
         List<AttorneyVM> GetAllAttorneysByIntern(InternVM intern);
         #endregion
 
+        #region InternSchedule
+        List<InternScheduleVM> GetAllInternSchedules();
+        void InternScheduleInsert(InternScheduleVM vm);
+        void InternScheduleDelete(InternScheduleVM vm);
+        void InternScheduleUpdate(InternScheduleVM vm);
+        List<InternScheduleVM> GetAllScheduleByIntern(InternVM intern);
+        #endregion
+
         void Dispose();
     }
 }

@@ -1,7 +1,7 @@
 ﻿<script>
     function onRequestEnd(e) {
         if (e.type == "update" || e.type == "create" || e.type == "remove") {
-            $("#AttorneyGrid").data("kendoGrid").dataSource.read();
+            $("#InternGrid").data("kendoGrid").dataSource.read();
         }
     }
 
@@ -18,7 +18,7 @@
     }
 </script>
 @(Html.Kendo().Grid<InternVM>()
-          .Name("AttorneyGrid")
+          .Name("InternGrid")
           .Columns(columns =>
           {
               columns.Command(command => { command.Edit().Text(" ").CancelText(" ").UpdateText(" "); command.Destroy().Text(" "); }).Width(100);
@@ -37,6 +37,7 @@
               .Model(m => {
                   m.Id(c => c.InternId);
                   m.Field(c => c.UserId).DefaultValue(Guid.NewGuid());
+                  m.Field(c => c.Attorneys).DefaultValue(new List<AttorneyVM>());
               })
               .Read(read => read.Action("Read", "Intern"))
               .Destroy(destroy => destroy.Action("Destroy", "Intern"))

@@ -1,0 +1,40 @@
+﻿<script>
+    function onRequestEnd(e) {
+        if (e.type == "update" || e.type == "create" || e.type == "remove") {
+            $("#InternScheduleGrid").data("kendoGrid").dataSource.read();
+        }
+    }
+
+    function onEdit(e) {
+    }
+</script>
+@(Html.Kendo().Grid<InternScheduleVM>()
+        .Name("InternScheduleGrid")
+        .Columns(columns =>
+        {
+            columns.Command(command => { command.Edit().Text(" ").CancelText(" ").UpdateText(" "); command.Destroy().Text(" "); }).Width(100);
+            columns.Bound(c => c.InternScheduleID).Visible(false);
+            columns.Bound(c => c.DayOfWeek);
+            columns.Bound(c => c.StartTime);
+            columns.Bound(c => c.EndTime);
+                  
+            columns.Template(@<text> </text>).Title("");
+        })
+        .Scrollable()
+        .DataSource(dataSource => dataSource
+            .Ajax()
+            .Model(m => {
+                m.Id(c => c.InternScheduleID);
+            })
+            .Read(read => read.Action("Read", "InternSchedule"))
+            .Destroy(destroy => destroy.Action("Destroy", "InternSchedule"))
+            .Update(update => update.Action("Update", "InternSchedule"))
+            .Create(create => create.Action("Create", "InternSchedule"))
+            .Events(events => events.RequestEnd("onRequestEnd"))
+        )
+        .ToolBar(toolbar => { toolbar.Create().Text("Add"); })
+        .Editable(editable => editable.Mode(GridEditMode.InLine))
+        .Events(e => e.Edit("onEdit"))
+)
+
+
