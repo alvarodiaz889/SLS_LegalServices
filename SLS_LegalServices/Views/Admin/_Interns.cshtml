@@ -5,31 +5,92 @@
         }
     }
 
-    function DisplayList(list) {
+    function onRequestEndDetail(e) {
+        console.log(this);
+        //if (e.type == "update" || e.type == "create" || e.type == "remove") {
+        //    $(this).data("kendoGrid").dataSource.read();
+        //}
+    }
+
+    function DisplayAttorneys(list) {
+        if (!list)
+            return "";
         let value = "";
         for (let i = 0; i < list.length; i++) {
             value += list[i].UserName + '<br/>';
         }
-        console.log(value);
         return value;
     }
 
-    function onEdit(e) {
+    function DisplaySchedules(list) {
+        if (!list)
+            return "";
+        let value = "";
+        
+        for (let i = 0; i < list.length; i++) {
+
+            let first = 0;
+            let last = 0;
+
+            //Date coming in this format '/Date(1527683400000)/'
+
+            if (list[i].DayOfWeek)
+            {
+                let dayOfWeek = list[i].DayOfWeek;
+                value += dayOfWeek.substring(0, 3)
+            }
+            if (list[i].StartTime)
+            {
+                let startTime = list[i].StartTime;
+                first = startTime.indexOf('(') + 1;
+                last = startTime.indexOf(')');
+                let startTimeConverted = new Date(parseInt(startTime.substring(first, last)));
+                value += ' ' + formatAMPM(startTimeConverted);
+            }
+            if (list[i].EndTime)
+            {
+                let endTime = list[i].EndTime;
+                first = endTime.indexOf('(') + 1;
+                last = endTime.indexOf(')');
+                let endTimeConverted = new Date(parseInt(endTime.substring(first, last)));
+                value += ' - ' + formatAMPM(endTimeConverted);
+            }
+            
+            value += '<br/>';
+        }
+        return value;
+    }
+
+    function formatAMPM(date) {
+        var hours = date.getHours();
+        var minutes = date.getMinutes();
+        var ampm = hours >= 12 ? 'pm' : 'am';
+        hours = hours % 12;
+        hours = hours ? hours : 12; // the hour '0' should be '12'
+        minutes = minutes < 10 ? '0' + minutes : minutes;
+        var strTime = hours + ':' + minutes + ' ' + ampm;
+        return strTime;
+    }
+
+    function OnDetailCollapse(e)
+    {
+        $("#InternGrid").data("kendoGrid").dataSource.read();
     }
 </script>
+<input type="hidden" id="parentIdInput" />
 @(Html.Kendo().Grid<InternVM>()
           .Name("InternGrid")
           .Columns(columns =>
           {
               columns.Command(command => { command.Edit().Text(" ").CancelText(" ").UpdateText(" "); command.Destroy().Text(" "); }).Width(100);
               columns.Bound(c => c.InternId).Visible(false);
-              columns.Bound(c => c.UserName).Width(120);
-              columns.Bound(c => c.LastName);
-              columns.Bound(c => c.FirstName);
-              columns.Bound(c => c.Status);
-              columns.Bound(c => c.CertifiedDate).Format("{0:dd/MM/yyyy}");
-              columns.Bound(c => c.Attorneys).ClientTemplate("#=DisplayList(Attorneys)#");
-              columns.Template(@<text> </text>).Title("");
+              columns.Bound(c => c.UserName).Width(200);
+              columns.Bound(c => c.LastName).Width(200);
+              columns.Bound(c => c.FirstName).Width(200);
+              columns.Bound(c => c.Attorneys).ClientTemplate("#=DisplayAttorneys(Attorneys)#").Width(200);
+              columns.Bound(c => c.Status).Width(200);
+              columns.Bound(c => c.CertifiedDate).Format("{0:dd/MM/yyyy}").Width(200);
+              columns.Bound(c => c.Schedules).ClientTemplate("#=DisplaySchedules(Schedules)#").Width(200);
           })
           .Scrollable()
           .DataSource(dataSource => dataSource
@@ -38,6 +99,7 @@
                   m.Id(c => c.InternId);
                   m.Field(c => c.UserId).DefaultValue(Guid.NewGuid());
                   m.Field(c => c.Attorneys).DefaultValue(new List<AttorneyVM>());
+                  m.Field(c => c.Schedules).DefaultValue(new List<InternScheduleVM>());
               })
               .Read(read => read.Action("Read", "Intern"))
               .Destroy(destroy => destroy.Action("Destroy", "Intern"))
@@ -46,6 +108,43 @@
               .Events(events => events.RequestEnd("onRequestEnd"))
           )
           .ToolBar(toolbar => { toolbar.Create().Text("Add"); })
-          .Editable(editable => editable.Mode(GridEditMode.InLine))
-          .Events(e => e.Edit("onEdit"))
+          .Editable(editable => editable.Mode(GridEditMode.PopUp)
+            .TemplateName("EditIntern").Window(w => w.Title("Edit").Name("editWindow").Width(800)))
+          .HtmlAttributes(new { @style = "height:450px"})
+          .ClientDetailTemplateId("detailTemplate")
+          .Events(e => e.DetailCollapse("OnDetailCollapse"))
 )
+
+<script id="detailTemplate" type="text/kendo-tmpl">
+    <div style="width:50%">
+        @(Html.Kendo().Grid<InternScheduleVM>()
+            .Name("InternScheduleGrid_#=InternId#")
+            .Columns(columns =>
+            {
+                columns.Command(command => { command.Edit().Text(" ").CancelText(" ").UpdateText(" "); command.Destroy().Text(" "); }).Width(100);
+                columns.Bound(c => c.InternScheduleID).Visible(false);
+                columns.Bound(c => c.DayOfWeek);
+                columns.Bound(c => c.StartTime).Format("{0:HH:mm:ss}");
+                columns.Bound(c => c.EndTime).Format("{0:HH:mm:ss}");
+            })
+            .Scrollable()
+            .DataSource(dataSource => dataSource
+                .Ajax()
+                .Model(m =>
+                {
+                    m.Id(c => c.InternScheduleID);
+                    m.Field(c => c.StrInternId).DefaultValue("#=InternId#");
+                })
+                .Read(read => read.Action("Read", "InternSchedule",new { internId = "#=InternId#" }))
+                .Destroy(destroy => destroy.Action("Destroy", "InternSchedule"))
+                .Update(update => update.Action("Update", "InternSchedule"))
+                .Create(create => create.Action("Create", "InternSchedule"))
+                .Events(events => events.RequestEnd("onRequestEndDetail"))
+            )
+            .ToolBar(toolbar => { toolbar.Create().Text("Add"); })
+            .Editable(editable => editable.Mode(GridEditMode.InLine))
+            .ToClientTemplate()
+
+        )
+    </div>
+</script>

@@ -1,0 +1,6 @@
+﻿@model Nullable<DateTime>
+
+@(Html.Kendo().TimePickerFor(m =>m).Name(ViewBag.StartTime)
+        .Value(Model)
+        .HtmlAttributes(new { style = "width: 100%" })
+)

@@ -1,0 +1,25 @@
+﻿@model IEnumerable<InternScheduleVM>
+<script>
+    function onRequestEnd(e) {
+        if (e.type == "update" || e.type == "create" || e.type == "remove") {
+            $("#InternScheduleGrid").data("kendoGrid").dataSource.read();
+        }
+    }
+
+    function onRequestStart(e) {
+    }
+
+    function getParentId() {
+        let parentId = $('#parentIdInput').val();
+        return {
+            internId: parentId
+        };
+    }
+
+</script>
+<p>
+</p>
+
+
+
+

@@ -42,6 +42,7 @@ namespace SLS_LegalServices.Repositories
         List<InternScheduleVM> GetAllInternSchedules();
         void InternScheduleInsert(InternScheduleVM vm);
         void InternScheduleDelete(InternScheduleVM vm);
+        void InternScheduleDeleteAllFromIntern(InternScheduleVM vm);
         void InternScheduleUpdate(InternScheduleVM vm);
         List<InternScheduleVM> GetAllScheduleByIntern(InternVM intern);
         #endregion

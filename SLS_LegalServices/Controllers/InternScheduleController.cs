@@ -19,9 +19,9 @@ namespace SLS_LegalServices.Controllers
             this.mainRepository = mainRepository;
         }
 
-        public JsonResult Read([DataSourceRequest]DataSourceRequest request)
+        public JsonResult Read([DataSourceRequest]DataSourceRequest request, int internId)
         {
-            List<InternScheduleVM> users = mainRepository.GetAllInternSchedules();
+            List<InternScheduleVM> users = mainRepository.GetAllScheduleByIntern(new InternVM {InternId = internId });
             DataSourceResult result = users.AsQueryable().ToDataSourceResult(request);
             return Json(result, JsonRequestBehavior.AllowGet);
         }
@@ -31,6 +31,7 @@ namespace SLS_LegalServices.Controllers
         {
             if (ModelState.IsValid)
             {
+                vm.InternId = Int32.Parse(vm.StrInternId);
                 mainRepository.InternScheduleInsert(vm);
             }
 

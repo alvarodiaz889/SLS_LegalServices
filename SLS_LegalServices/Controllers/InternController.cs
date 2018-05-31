@@ -51,6 +51,24 @@ namespace SLS_LegalServices.Controllers
             {
                 repository.InternUpdate(obj);
             }
+            else {
+                // app is generating an error when binding the StartTime and EndTime
+                // but like those properties are managed in the nested grid they're being ignored here
+                int count = 0;
+                foreach (var key in ModelState.Keys)
+                {
+                    if (!key.Contains("StartTime") && !key.Contains("EndTime"))
+                    {
+                        if (ModelState[key].Errors.Count > 0)
+                            count++;
+                    }
+                }
+                if (count == 0)
+                {
+                    obj.Schedules = repository.GetAllScheduleByIntern(obj);
+                    repository.InternUpdate(obj);
+                }
+            }
             return Json(new[] { obj }.ToDataSourceResult(request, ModelState));
         }
     }

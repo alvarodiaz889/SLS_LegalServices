@@ -19,6 +19,7 @@ namespace SLS_LegalServices
         {
             this.Attorneys = new HashSet<Attorney>();
             this.Interns = new HashSet<Intern>();
+            this.Logs = new HashSet<Log>();
         }
     
         public System.Guid UserId { get; set; }
@@ -32,5 +33,7 @@ namespace SLS_LegalServices
         public virtual ICollection<Attorney> Attorneys { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Intern> Interns { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Log> Logs { get; set; }
     }
 }

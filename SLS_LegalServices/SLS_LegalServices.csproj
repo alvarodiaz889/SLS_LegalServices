@@ -749,6 +749,7 @@
     <Content Include="Content\kendo\kendo.silver.mobile.min.css.map" />
     <Content Include="Content\kendo\kendo.uniform.min.css.map" />
     <Content Include="Content\kendo\kendo.uniform.mobile.min.css.map" />
+    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
     <Content Include="Scripts\jquery-3.3.1.min.js" />
@@ -2854,8 +2855,12 @@
     <Content Include="Views\Admin\_CaseLog.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\Date.cshtml" />
     <Content Include="Views\Admin\_Interns.cshtml" />
-    <Content Include="Views\Shared\EditorTemplates\_InternAttorneyDDL.cshtml" />
-    <Content Include="Views\Shared\EditorTemplates\_InternSchedule.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\InternAttorneyDDL.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\InternSchedule.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\StartTime.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\EndTime.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\DaysOfWeek.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\EditIntern.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

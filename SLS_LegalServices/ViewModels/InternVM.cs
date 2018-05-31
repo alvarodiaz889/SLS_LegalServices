@@ -29,9 +29,9 @@ namespace SLS_LegalServices.ViewModels
         public DateTime? CertifiedDate { get; set; }
         public string Status { get; set; }
 
-        public List<InternSchedule> Schedules { get; set; }
+        public List<InternScheduleVM> Schedules { get; set; }
 
-        [UIHint("_InternAttorneyDDL")]
+        [UIHint("InternAttorneyDDL")]
         public List<AttorneyVM> Attorneys { get; set; }
     }
 }

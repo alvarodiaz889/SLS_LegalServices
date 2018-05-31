@@ -119,9 +119,9 @@ namespace SLS_LegalServices.Repositories
                 Detail = o.Detail,
                 LogDate = o.LogDate,
                 LogId = o.LogId,
-                LogParentId = o.LogParentId,
+                CaseId = o.CaseId,
                 LogType = o.LogType,
-                UserName = o.UserName
+                UserName = o.User.UserName
             }).ToList();
         }
 
@@ -134,9 +134,9 @@ namespace SLS_LegalServices.Repositories
                 Detail = vm.Detail,
                 LogDate = vm.LogDate,
                 LogId = vm.LogId,
-                LogParentId = vm.LogParentId,
+                CaseId = vm.CaseId,
                 LogType = vm.LogType,
-                UserName = vm.UserName
+                CreatedById = vm.CreatedById
             };
             context.Logs.Add(log);
             context.SaveChanges();
@@ -158,9 +158,9 @@ namespace SLS_LegalServices.Repositories
                 Detail = vm.Detail,
                 LogDate = vm.LogDate,
                 LogId = vm.LogId,
-                LogParentId = vm.LogParentId,
+                CaseId = vm.CaseId,
                 LogType = vm.LogType,
-                UserName = vm.UserName
+                CreatedById = vm.CreatedById
             };
             context.Logs.Attach(log);
             context.Entry(log).State = EntityState.Modified;
@@ -179,7 +179,10 @@ namespace SLS_LegalServices.Repositories
                 Status = o.Status,
                 CertifiedDate = o.CertifiedDate,
             }).ToList();
-            interns.ForEach(o => o.Attorneys = GetAllAttorneysByIntern(o));
+            interns.ForEach(o => {
+                o.Attorneys = GetAllAttorneysByIntern(o);
+                o.Schedules = GetAllScheduleByIntern(o);
+            });
             return interns;
         }
 
@@ -224,9 +227,12 @@ namespace SLS_LegalServices.Repositories
             User user = intern.User;
             List<Intern_Attorney> intern_Attorneys = context.Intern_Attorney
                 .Where(ia => ia.InternId == vm.InternId).ToList();
+            List<InternSchedule> internSchedules = context.InternSchedules
+                .Where(s => s.InternId == vm.InternId).ToList();
             context.Intern_Attorney.RemoveRange(intern_Attorneys);
-            context.Interns.Remove(intern);
+            context.InternSchedules.RemoveRange(internSchedules);
             context.Users.Remove(user);
+            context.Interns.Remove(intern);
             context.SaveChanges();
         }
 
@@ -282,11 +288,19 @@ namespace SLS_LegalServices.Repositories
             context.SaveChanges();
         }
 
-        public void InternScheduleDelete(InternScheduleVM vm)
+        public void InternScheduleDeleteAllFromIntern(InternScheduleVM vm)
         {
             List<InternSchedule> internSchedule = context.InternSchedules
                 .Where(s => s.InternId == vm.InternId).ToList();
             context.InternSchedules.RemoveRange(internSchedule);
+            context.SaveChanges();
+        }
+
+        public void InternScheduleDelete(InternScheduleVM vm)
+        {
+            InternSchedule internSchedule = context.InternSchedules
+                .Where(s => s.InternScheduleID == s.InternScheduleID).FirstOrDefault();
+            context.InternSchedules.Remove(internSchedule);
             context.SaveChanges();
         }
 

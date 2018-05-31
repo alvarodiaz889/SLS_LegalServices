@@ -10,7 +10,6 @@
         <AssociationConnector Association="SLS_LegalServicesDataModel.AspNetUserRoles" ManuallyRouted="false" />
         <EntityTypeShape EntityType="SLS_LegalServicesDataModel.Attorney" Width="1.5" PointX="8" PointY="1.25" />
         <EntityTypeShape EntityType="SLS_LegalServicesDataModel.Intern_Attorney" Width="1.5" PointX="10.25" PointY="0.75" />
-        <EntityTypeShape EntityType="SLS_LegalServicesDataModel.Log" Width="1.5" PointX="2.75" PointY="5.875" />
         <EntityTypeShape EntityType="SLS_LegalServicesDataModel.User" Width="1.5" PointX="5.75" PointY="2.5" />
         <AssociationConnector Association="SLS_LegalServicesDataModel.FK_Attorney_Users" />
         <AssociationConnector Association="SLS_LegalServicesDataModel.FK_Intern_Attorney_Attorney" />
@@ -20,6 +19,8 @@
         <AssociationConnector Association="SLS_LegalServicesDataModel.FK_Intern_Attorney_Intern" />
         <AssociationConnector Association="SLS_LegalServicesDataModel.FK_Intern_Users" />
         <AssociationConnector Association="SLS_LegalServicesDataModel.FK_InternSchedule_Intern" />
+        <EntityTypeShape EntityType="SLS_LegalServicesDataModel.Log" Width="1.5" PointX="2.5" PointY="6.25" />
+        <AssociationConnector Association="SLS_LegalServicesDataModel.FK_Log_Users" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

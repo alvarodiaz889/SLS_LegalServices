@@ -1,9 +1,10 @@
-﻿<div class="wrapper">
+﻿<div class="wrapper" style="height:500px">
     @(Html.Kendo().TabStrip()
         .Name("tabstrip")
         .Items(tabstrip =>
         {
             tabstrip.Add().Text("Attorneys")
+                .Selected(true)
                 .LoadContentFrom(Url.Content("~/Admin/Attorneys"));
 
             tabstrip.Add().Text("Interns")
@@ -13,11 +14,11 @@
                 .LoadContentFrom(Url.Content("~/Admin/CaseTypes"));
 
             tabstrip.Add().Text("System Users")
-                .Selected(true)
                 .LoadContentFrom(Url.Content("~/Admin/SystemUsers"));
 
             tabstrip.Add().Text("Case Log")
                 .LoadContentFrom(Url.Content("~/Admin/CaseLog"));
         })
+        .HtmlAttributes(new { @style = "height:500px" })
     )
 </div>
