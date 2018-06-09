@@ -1,0 +1,12 @@
+﻿@model IntakeVM
+
+<div class="grid halves">
+@{
+    foreach (var viewName in (List<string>)ViewBag.SectionList)
+    {
+        <div class="grid-item">
+            @Html.Partial(viewName,Model)
+        </div>
+    }
+}
+</div>

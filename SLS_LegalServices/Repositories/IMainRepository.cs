@@ -47,6 +47,27 @@ namespace SLS_LegalServices.Repositories
         List<InternScheduleVM> GetAllScheduleByIntern(InternVM intern);
         #endregion
 
+        #region Intakes
+
+        List<IntakeVM> GetAllIntakes();
+        IntakeVM GetIntakeById(int id);
+        void IntakeInsert(IntakeVM vm);
+        void IntakeDelete(IntakeVM vm);
+        void IntakeUpdate(IntakeVM vm);
+
+        #endregion
+
+        #region Cases
+
+        List<CaseVM> GetAllCases();
+        void CaseInsert(CaseVM vm);
+        void CaseDelete(CaseVM vm);
+        void CaseUpdate(CaseVM vm);
+
+        #endregion
+
+
+
         void Dispose();
     }
 }

@@ -6,10 +6,9 @@
     }
 
     function onRequestEndDetail(e) {
-        console.log(this);
-        //if (e.type == "update" || e.type == "create" || e.type == "remove") {
-        //    $(this).data("kendoGrid").dataSource.read();
-        //}
+        if (e.type == "update" || e.type == "create" || e.type == "remove") {
+            this.read();
+        }
     }
 
     function DisplayAttorneys(list) {
@@ -82,7 +81,7 @@
           .Name("InternGrid")
           .Columns(columns =>
           {
-              columns.Command(command => { command.Edit().Text(" ").CancelText(" ").UpdateText(" "); command.Destroy().Text(" "); }).Width(100);
+              columns.Command(command => { command.Edit().Text(" ").CancelText("Cancel").UpdateText("Update"); command.Destroy().Text(" "); }).Width(100);
               columns.Bound(c => c.InternId).Visible(false);
               columns.Bound(c => c.UserName).Width(200);
               columns.Bound(c => c.LastName).Width(200);
@@ -109,7 +108,7 @@
           )
           .ToolBar(toolbar => { toolbar.Create().Text("Add"); })
           .Editable(editable => editable.Mode(GridEditMode.PopUp)
-            .TemplateName("EditIntern").Window(w => w.Title("Edit").Name("editWindow").Width(800)))
+            .TemplateName("EditIntern").Window(w => w.Title("Edit Intern").Name("editWindow").Width(800)))
           .HtmlAttributes(new { @style = "height:450px"})
           .ClientDetailTemplateId("detailTemplate")
           .Events(e => e.DetailCollapse("OnDetailCollapse"))
@@ -144,7 +143,6 @@
             .ToolBar(toolbar => { toolbar.Create().Text("Add"); })
             .Editable(editable => editable.Mode(GridEditMode.InLine))
             .ToClientTemplate()
-
         )
     </div>
 </script>

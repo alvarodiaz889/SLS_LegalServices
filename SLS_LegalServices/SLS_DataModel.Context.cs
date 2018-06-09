@@ -30,9 +30,21 @@ namespace SLS_LegalServices
         public virtual DbSet<Attorney> Attorneys { get; set; }
         public virtual DbSet<Intern_Attorney> Intern_Attorney { get; set; }
         public virtual DbSet<User> Users { get; set; }
-        public virtual DbSet<CaseType> CaseTypes { get; set; }
         public virtual DbSet<InternSchedule> InternSchedules { get; set; }
         public virtual DbSet<Intern> Interns { get; set; }
         public virtual DbSet<Log> Logs { get; set; }
+        public virtual DbSet<CaseAttorney> CaseAttorneys { get; set; }
+        public virtual DbSet<CaseDocument> CaseDocuments { get; set; }
+        public virtual DbSet<CaseIntern> CaseInterns { get; set; }
+        public virtual DbSet<CaseMoney> CaseMoneys { get; set; }
+        public virtual DbSet<CaseNote> CaseNotes { get; set; }
+        public virtual DbSet<CasePartyContact> CasePartyContacts { get; set; }
+        public virtual DbSet<CaseReferralSource> CaseReferralSources { get; set; }
+        public virtual DbSet<CaseType> CaseTypes { get; set; }
+        public virtual DbSet<CaseCertifiedIntern> CaseCertifiedInterns { get; set; }
+        public virtual DbSet<Case> Cases { get; set; }
+        public virtual DbSet<CaseStatusLookup> CaseStatusLookups { get; set; }
+        public virtual DbSet<GenericValuesLookup> GenericValuesLookups { get; set; }
+        public virtual DbSet<CaseParty> CaseParties { get; set; }
     }
 }

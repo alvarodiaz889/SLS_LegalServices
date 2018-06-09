@@ -1,15 +1,5 @@
 ﻿@model InternVM
-<style>
-    .k-edit-form-container {
-        width: inherit;
-    }
 
-    .col-md-10 input {
-        width: 80%;
-        height: 25px;
-    }
-
-</style>
 <div style="width:100%">
 
     @using (Html.BeginForm("ContactForm", "Scheduling", null, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
@@ -20,7 +10,7 @@
         <div class="form-group">
             @Html.LabelFor(s => s.UserName)
 
-            <div class="col-md-10">
+            <div>
                 @Html.EditorFor(s => s.UserName)
             </div>
         </div>
@@ -28,7 +18,7 @@
         <div class="form-group">
             @Html.LabelFor(s => s.LastName)
 
-            <div class="col-md-10">
+            <div>
                 @Html.EditorFor(s => s.LastName)
             </div>
         </div>
@@ -36,7 +26,7 @@
         <div class="form-group">
             @Html.LabelFor(s => s.FirstName)
 
-            <div class="col-md-10">
+            <div>
                 @Html.EditorFor(s => s.FirstName)
             </div>
         </div>
@@ -44,7 +34,7 @@
         <div class="form-group">
             @Html.LabelFor(s => s.Attorneys)
 
-            <div class="col-md-10">
+            <div>
                 @Html.EditorFor(s => s.Attorneys)
             </div>
         </div>
@@ -52,7 +42,7 @@
         <div class="form-group">
             @Html.LabelFor(s => s.CertifiedDate)
 
-            <div class="col-md-10">
+            <div>
                 @Html.EditorFor(s => s.CertifiedDate)
             </div>
         </div>
@@ -60,7 +50,7 @@
         <div class="form-group">
             @Html.LabelFor(s => s.Status)
 
-            <div class="col-md-10">
+            <div>
                 @Html.EditorFor(s => s.Status)
             </div>
         </div>

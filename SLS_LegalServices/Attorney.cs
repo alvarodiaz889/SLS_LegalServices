@@ -18,6 +18,8 @@ namespace SLS_LegalServices
         public Attorney()
         {
             this.Intern_Attorney = new HashSet<Intern_Attorney>();
+            this.CaseAttorneys = new HashSet<CaseAttorney>();
+            this.CaseMoneys = new HashSet<CaseMoney>();
         }
     
         public int AttorneyId { get; set; }
@@ -26,5 +28,9 @@ namespace SLS_LegalServices
         public virtual User User { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Intern_Attorney> Intern_Attorney { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<CaseAttorney> CaseAttorneys { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<CaseMoney> CaseMoneys { get; set; }
     }
 }

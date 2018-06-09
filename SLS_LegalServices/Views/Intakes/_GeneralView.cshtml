@@ -1,0 +1,66 @@
+﻿@model IntakeVM
+
+<div class="grid halves">
+    <div class="grid-item">
+        <input type="submit" value="Enrollment Not Verified" class="button" />
+    </div>
+    <div class="grid-item">
+        <input type="submit" value="Student Activity Fee Not Verified" class="button" />
+    </div>
+    <div class="grid-item"></div>
+    <div class="grid-item">
+        <h4 style="text-align:right" id="fullName">Vedder, Eddie</h4>
+    </div>
+</div>
+<div class="grid thirds">
+
+    <div class="grid-item">
+        <div>
+            @Html.LabelFor(model => model.LastName, new { @class = "form-item-label" })
+        </div>
+        <div>
+            @Html.TextBoxFor(model => model.LastName, new { @class = "form-item-label" })
+        </div>
+    </div>
+
+    <div class="grid-item">
+        <div>
+            @Html.LabelFor(model => model.FirstName)
+        </div>
+        <div>
+            @Html.EditorFor(model => model.FirstName)
+        </div>
+    </div>
+
+    <div class="grid-item">
+        <div>
+            @Html.LabelFor(model => model.CaseIntern)
+        </div>
+        <div>
+            @Html.EditorFor(model => model.CaseIntern)
+        </div>
+    </div>
+
+    <div class="grid-item">
+        <div>
+            @Html.LabelFor(model => model.IUStudentId)
+        </div>
+        <div>
+            @Html.EditorFor(model => model.IUStudentId)
+        </div>
+    </div>
+
+    <div class="grid-item">
+        <div>
+            @Html.LabelFor(model => model.CaseType)
+        </div>
+        <div>
+            @Html.EditorFor(model => model.CaseType)
+        </div>
+    </div>
+
+    <div class="grid-item"></div>
+
+</div>
+
+

@@ -1,0 +1,21 @@
+﻿@{
+    var values = ViewData.ModelMetadata.AdditionalValues;
+}
+
+@(Html.Kendo().DropDownList()
+    .Name((string)values["Name"])
+    .DataTextField((string)values["DataTextField"])
+    .DataValueField((string)values["DataValueField"])
+    .HtmlAttributes(new { style = "width:100%" })
+    .Filter("contains")
+    .Value("23")
+    .OptionLabel("-- Select --")
+    .DataSource(source =>
+    {
+        source.Read(read =>
+        {
+            read.Action((string)values["Action"], (string)values["Controller"]);
+        })
+        .ServerFiltering(true);
+    })
+)

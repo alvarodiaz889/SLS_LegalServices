@@ -1,0 +1,47 @@
+﻿
+<script>
+    function onRequestEnd(e) {
+        if (e.type == "update" || e.type == "create" || e.type == "remove") {
+            $("#IntakesGrid").data("kendoGrid").dataSource.read();
+        }
+    }
+
+    function onRequestStart(e) {
+        if (e.type == "update" || e.type == "create" || e.type == "remove") {
+            alert('On request Start');
+        }
+    }
+
+    function onBeforeEdit(e) {
+        e.preventDefault();
+        var modelId = e.model.CaseId;
+        window.location.href = "/Intakes/Details/?id=" + modelId;
+    }
+    
+    
+</script>
+@(Html.Kendo().Grid<IntakeVM>()
+    .Name("IntakesGrid")
+    .Columns(columns =>
+    {
+        columns.Command(command => { command.Edit().Text("edit");}).Width(100);
+        columns.Bound(c => c.CaseId).Visible(false);
+        columns.Bound(c => c.FirstName).Width(120);
+        columns.Template(@<text> </text>).Title("");
+        columns.Command(command => { command.Destroy().Text("remove"); }).Width(100);
+    })
+    .Scrollable()
+    .DataSource(dataSource => dataSource
+        .Ajax()
+        .Model(m => m.Id(c => c.CaseId))
+        .Read(read => read.Action("Read", "Intakes"))
+        .Destroy(destroy => destroy.Action("Destroy", "Intakes"))
+        .Update(update => update.Action("Update", "Intakes"))
+        .Create(create => create.Action("Create", "Intakes"))
+        .Events(e => { e.RequestEnd("onRequestEnd"); })
+    )
+    .ToolBar(toolbar => { toolbar.Create().Text("Add"); })
+    .Editable(editable => editable.Mode(GridEditMode.InLine))
+    .Events(e => { e.BeforeEdit("onBeforeEdit"); })
+)
+

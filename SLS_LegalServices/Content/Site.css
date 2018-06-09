@@ -12,30 +12,83 @@
     white-space: normal;
 }
 
-/* Set width on the form input elements since they're 100% wide by default */
-input,
-select,
-textarea {
-    max-width: 280px;
-}
 
 .mainFrame {
     margin: 50px auto;
     width: 80%;
     height: 700px;
+    box-sizing: border-box;
 }
 
 .mainFrameItem {
     margin: 20px 0;
+    overflow-y: auto;
 }
 
-/*.checkBoxBrid {
-}*/
+/** pop up intern view*/
+.k-edit-form-container {
+    width: inherit;
+}
 
 .form-group {
-    margin: 0 0 20px 0;
-    width: 45%;
+    margin: 0 0;
+    width: 50%;
     height: 100px;
     float: left;
-    padding: 1% 1%;
+    box-sizing:border-box;
+    padding: 10px 20px;
+}
+
+.form-group input {
+    width: 100%;
+    height: 35px;
+    margin: 0;
+    box-sizing:border-box;
+    border-radius: 5px;
+}
+/* intake items*/
+.section-item {
+    margin: 0 0;
+    padding: 0 0;
+    width: 50%;
+    float: left;
+    border-style: groove;
+    height: 200px;
+}
+/**/
+
+@media screen and (max-width: 1000px) {
+    .section-item {
+        margin: 0 0;
+        padding: 0 0;
+        width: 100%;
+        float: left;
+        border-style: groove;
+        height: 400px;
+        overflow: scroll;
+    }
+}
+
+@media screen and (max-width: 2000px) and (min-width: 1001px) {
+    .section-item {
+        margin: 0 0;
+        padding: 0 0;
+        width: 100%;
+        float: left;
+        border-style: groove;
+        height: 400px;
+        overflow: scroll;
+    }
+}
+
+@media screen and (min-width: 2001px) {
+    .section-item {
+        margin: 0 0;
+        padding: 0 0;
+        width: 50%;
+        float: left;
+        border-style: groove;
+        height: 400px;
+        overflow: scroll;   
+    }
 }

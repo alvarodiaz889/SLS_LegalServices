@@ -12,20 +12,28 @@ namespace SLS_LegalServices
     using System;
     using System.Collections.Generic;
     
-    public partial class CaseType
+    public partial class CaseParty
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public CaseType()
+        public CaseParty()
         {
-            this.Cases = new HashSet<Case>();
+            this.CasePartyContacts = new HashSet<CasePartyContact>();
         }
     
-        public int TypeId { get; set; }
-        public string TypeCode { get; set; }
-        public string Description { get; set; }
-        public Nullable<bool> Active { get; set; }
+        public int CasePartyId { get; set; }
+        public int CaseId { get; set; }
+        public string PartyType { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string OrganizationName { get; set; }
+        public string Gender { get; set; }
+        public string AcademicStatus { get; set; }
+        public string SocialStatus { get; set; }
+        public string CitizenshipStatus { get; set; }
+        public string IUStudentId { get; set; }
     
+        public virtual Case Case { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Case> Cases { get; set; }
+        public virtual ICollection<CasePartyContact> CasePartyContacts { get; set; }
     }
 }

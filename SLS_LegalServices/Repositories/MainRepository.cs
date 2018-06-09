@@ -1,4 +1,5 @@
-﻿using SLS_LegalServices.ViewModels;
+﻿using SLS_LegalServices.Helpers;
+using SLS_LegalServices.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -172,6 +173,7 @@ namespace SLS_LegalServices.Repositories
         public List<InternVM> GetAllInterns()
         {
             List<InternVM> interns =  context.Interns.Select(o => new InternVM() {
+                UserId = o.UserId,
                 InternId = o.InternId,
                 UserName = o.User.UserName,
                 FirstName = o.User.FirstName,
@@ -220,26 +222,53 @@ namespace SLS_LegalServices.Repositories
 
         public void InternDelete(InternVM vm)
         {
-            Intern intern = context.Interns
-                .Include(a => a.User)
+            var intern = context.Interns
                 .Where(a => a.InternId == vm.InternId)
                 .FirstOrDefault();
-            User user = intern.User;
-            List<Intern_Attorney> intern_Attorneys = context.Intern_Attorney
-                .Where(ia => ia.InternId == vm.InternId).ToList();
-            List<InternSchedule> internSchedules = context.InternSchedules
-                .Where(s => s.InternId == vm.InternId).ToList();
-            context.Intern_Attorney.RemoveRange(intern_Attorneys);
-            context.InternSchedules.RemoveRange(internSchedules);
-            context.Users.Remove(user);
+            context.Users.Remove(intern.User);
             context.Interns.Remove(intern);
             context.SaveChanges();
         }
 
         public void InternUpdate(InternVM vm)
         {
-            InternDelete(vm);
-            InternInsert(vm);
+            //User and Intern
+            User user = new User
+            {
+                UserId = vm.UserId,
+                UserName = vm.UserName,
+                FirstName = vm.FirstName,
+                LastName = vm.LastName,
+            };
+            Intern intern = new Intern
+            {
+                InternId = vm.InternId,
+                UserId = vm.UserId,
+                User = user,
+                CertifiedDate = vm.CertifiedDate,
+                Status = vm.Status
+            };
+            context.Users.Attach(user);
+            context.Entry(user).State = EntityState.Modified;
+            context.Interns.Attach(intern);
+            context.Entry(intern).State = EntityState.Modified;
+            context.SaveChanges();
+            //Intern-Attorney
+            context.Intern_Attorney.RemoveRange(intern.Intern_Attorney);
+            context.SaveChanges();
+
+            foreach (var attorney in vm.Attorneys)
+            {
+                Intern_Attorney ia = new Intern_Attorney
+                {
+                    InternId = intern.InternId,
+                    AttorneyId = attorney.AttorneyId,
+                    CreationDate = DateTime.Now
+                };
+                context.Intern_Attorney.Add(ia);
+            }
+
+            context.SaveChanges();
         }
 
         public List<AttorneyVM> GetAllAttorneysByIntern(InternVM intern)
@@ -332,7 +361,71 @@ namespace SLS_LegalServices.Repositories
                     StartTime = s.StartTime
                 }).ToList();
         }
+
+
         #endregion
+
+        #region Intakes
+
+        public List<IntakeVM> GetAllIntakes()
+        {
+            return context.Cases
+                .Where(c => c.CaseNo == null)
+                .Select(ModelHelper.GetIntakeFromModelFunc)
+                .ToList();
+        }
+
+        public IntakeVM GetIntakeById(int id)
+        {
+            return context.Cases
+                .Where(c => c.CaseId == id)
+                .Select(ModelHelper.GetIntakeFromModelFunc)
+                .FirstOrDefault();
+        }
+
+        public void IntakeInsert(IntakeVM vm)
+        {
+            context.Cases.Add(ModelHelper.GetIntakeFromViewModel(vm));
+            context.SaveChanges();
+        }
+
+        public void IntakeDelete(IntakeVM vm)
+        {
+            Case obj = context.Cases.Where(c => c.CaseId == vm.CaseId).FirstOrDefault();
+            context.Cases.Remove(obj);
+            context.SaveChanges();
+        }
+
+        public void IntakeUpdate(IntakeVM vm)
+        {
+            Case obj = ModelHelper.GetIntakeFromViewModel(vm);
+            context.Cases.Attach(obj);
+            context.Entry(obj).State = EntityState.Modified;
+            context.SaveChanges();
+        }
+
+        public List<CaseVM> GetAllCases()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CaseInsert(CaseVM vm)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CaseDelete(CaseVM vm)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CaseUpdate(CaseVM vm)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
 
     }
 }

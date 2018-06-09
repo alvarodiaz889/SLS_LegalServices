@@ -12,18 +12,13 @@ namespace SLS_LegalServices
     using System;
     using System.Collections.Generic;
     
-    public partial class Log
+    public partial class CaseAttorney
     {
-        public int LogId { get; set; }
-        public string LogType { get; set; }
-        public Nullable<int> CaseId { get; set; }
-        public Nullable<System.DateTime> LogDate { get; set; }
-        public Nullable<System.Guid> CreatedById { get; set; }
-        public string Action { get; set; }
-        public string Detail { get; set; }
-        public Nullable<int> Active { get; set; }
+        public int AttorneyId { get; set; }
+        public int CaseId { get; set; }
+        public System.DateTime CreationDate { get; set; }
     
-        public virtual User User { get; set; }
+        public virtual Attorney Attorney { get; set; }
         public virtual Case Case { get; set; }
     }
 }

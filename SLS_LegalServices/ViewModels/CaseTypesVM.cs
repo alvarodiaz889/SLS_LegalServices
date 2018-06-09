@@ -10,6 +10,6 @@ namespace SLS_LegalServices.ViewModels
         public int TypeId { get; set; }
         public string Description { get; set; }
         public bool? Active { get; set; }
-        public int? TypeCode { get; set; }
+        public string TypeCode { get; set; }
     }
 }

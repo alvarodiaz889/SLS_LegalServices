@@ -234,21 +234,60 @@
     <Compile Include="Attorney.cs">
       <DependentUpon>SLS_DataModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Case.cs">
+      <DependentUpon>SLS_DataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CaseAttorney.cs">
+      <DependentUpon>SLS_DataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CaseCertifiedIntern.cs">
+      <DependentUpon>SLS_DataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CaseDocument.cs">
+      <DependentUpon>SLS_DataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CaseIntern.cs">
+      <DependentUpon>SLS_DataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CaseMoney.cs">
+      <DependentUpon>SLS_DataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CaseNote.cs">
+      <DependentUpon>SLS_DataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CaseParty.cs">
+      <DependentUpon>SLS_DataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CasePartyContact.cs">
+      <DependentUpon>SLS_DataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CaseReferralSource.cs">
+      <DependentUpon>SLS_DataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CaseStatusLookup.cs">
+      <DependentUpon>SLS_DataModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="CaseType.cs">
       <DependentUpon>SLS_DataModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\AttorneysController.cs" />
+    <Compile Include="Controllers\CasesController.cs" />
     <Compile Include="Controllers\CaseLogController.cs" />
     <Compile Include="Controllers\CaseTypesController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\IntakesController.cs" />
     <Compile Include="Controllers\InternController.cs" />
     <Compile Include="Controllers\InternScheduleController.cs" />
     <Compile Include="Controllers\UserController.cs" />
+    <Compile Include="GenericValuesLookup.cs">
+      <DependentUpon>SLS_DataModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\ModelHelper.cs" />
     <Compile Include="Intern.cs">
       <DependentUpon>SLS_DataModel.tt</DependentUpon>
     </Compile>
@@ -295,6 +334,8 @@
     <Compile Include="User.cs">
       <DependentUpon>SLS_DataModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="ViewModels\CaseVM.cs" />
+    <Compile Include="ViewModels\IntakeVM.cs" />
     <Compile Include="ViewModels\InternScheduleVM.cs" />
     <Compile Include="ViewModels\InternVM.cs" />
     <Compile Include="ViewModels\LogVM.cs" />
@@ -2861,10 +2902,22 @@
     <Content Include="Views\Shared\EditorTemplates\EndTime.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\DaysOfWeek.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\EditIntern.cshtml" />
+    <Content Include="Views\Case\Index.cshtml" />
+    <Content Include="Views\Intakes\Index.cshtml" />
+    <Content Include="Views\Intakes\Details.cshtml" />
+    <Content Include="Views\Intakes\_NotesView.cshtml" />
+    <Content Include="Views\Intakes\_GeneralView.cshtml" />
+    <Content Include="Views\Intakes\_ContactsView.cshtml" />
+    <Content Include="Views\Intakes\_PartiesView.cshtml" />
+    <Content Include="Views\Intakes\_ReferralSourcesView.cshtml" />
+    <Content Include="Views\Intakes\_DocumentsView.cshtml" />
+    <Content Include="Views\Intakes\_MoneyView.cshtml" />
+    <Content Include="Views\Intakes\_LogView.cshtml" />
+    <Content Include="Views\Intakes\_NarrativeView.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\DDLookup.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Views\InterSchedule\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

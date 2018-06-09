@@ -1,5 +1,11 @@
 ﻿@model Nullable<DateTime>
-
-@(Html.Kendo().DatePickerFor(m =>m).Name(ViewBag.DateName)
-        .Value(Model)
+<style>
+    .k-datepicker {
+        width: 100%;
+    }
+</style>
+@(Html.Kendo().DatePickerFor(m =>m)
+    .HtmlAttributes(new { @style = "width:100p%" })
+    .Name(ViewBag.DateName)
+    .Value(Model)
 )
