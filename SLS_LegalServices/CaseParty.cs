@@ -14,12 +14,6 @@ namespace SLS_LegalServices
     
     public partial class CaseParty
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public CaseParty()
-        {
-            this.CasePartyContacts = new HashSet<CasePartyContact>();
-        }
-    
         public int CasePartyId { get; set; }
         public int CaseId { get; set; }
         public string PartyType { get; set; }
@@ -31,9 +25,11 @@ namespace SLS_LegalServices
         public string SocialStatus { get; set; }
         public string CitizenshipStatus { get; set; }
         public string IUStudentId { get; set; }
+        public Nullable<int> AddressId { get; set; }
+        public Nullable<int> EmailId { get; set; }
     
         public virtual Case Case { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<CasePartyContact> CasePartyContacts { get; set; }
+        public virtual Address Address { get; set; }
+        public virtual Email Email { get; set; }
     }
 }

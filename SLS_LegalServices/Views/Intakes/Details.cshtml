@@ -1,5 +1,8 @@
 ﻿@model IntakeVM
-
+@{ 
+    var id = (Model != null)? Model.CaseId :0; 
+}
+<input id="modelId" type="hidden" value="@id" />
 <div class="grid halves">
 @{
     foreach (var viewName in (List<string>)ViewBag.SectionList)

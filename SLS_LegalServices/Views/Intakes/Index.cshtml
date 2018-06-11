@@ -6,12 +6,6 @@
         }
     }
 
-    function onRequestStart(e) {
-        if (e.type == "update" || e.type == "create" || e.type == "remove") {
-            alert('On request Start');
-        }
-    }
-
     function onBeforeEdit(e) {
         e.preventDefault();
         var modelId = e.model.CaseId;

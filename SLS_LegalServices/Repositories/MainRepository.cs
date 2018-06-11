@@ -383,10 +383,29 @@ namespace SLS_LegalServices.Repositories
                 .FirstOrDefault();
         }
 
-        public void IntakeInsert(IntakeVM vm)
+        public int IntakeInsert(IntakeVM vm)
         {
-            context.Cases.Add(ModelHelper.GetIntakeFromViewModel(vm));
-            context.SaveChanges();
+            int insertedId = 0;
+            int rowsAfected = 0;
+            Case caseObj = ModelHelper.GetIntakeFromViewModel(vm);
+            caseObj.Status = "Pending";
+            caseObj.CreationDate = DateTime.Now;
+
+            context.Cases.Add(caseObj);
+            rowsAfected = context.SaveChanges();
+            insertedId = caseObj.CaseId;
+            if (rowsAfected > 0 && vm.CaseInternId.HasValue)
+            {
+                CaseIntern ci = new CaseIntern
+                {
+                    CaseId = caseObj.CaseId,
+                    InternId = vm.CaseInternId.Value,
+                    CreationDate = DateTime.Now
+                };
+                context.CaseInterns.Add(ci);
+                context.SaveChanges();
+            }
+            return insertedId;
         }
 
         public void IntakeDelete(IntakeVM vm)
@@ -398,10 +417,30 @@ namespace SLS_LegalServices.Repositories
 
         public void IntakeUpdate(IntakeVM vm)
         {
-            Case obj = ModelHelper.GetIntakeFromViewModel(vm);
+            Case obj = context.Cases.Where(c => c.CaseId == vm.CaseId).FirstOrDefault();
+            obj.FirstName = vm.FirstName;
+            obj.LastName = vm.LastName;
+            obj.IUStudentId = vm.IUStudentId;
+            obj.TypeId = vm.TypeId;
+
             context.Cases.Attach(obj);
             context.Entry(obj).State = EntityState.Modified;
             context.SaveChanges();
+            if (vm.CaseInternId.HasValue)
+            {
+                List<CaseIntern> caseInternList = context.CaseInterns
+                    .Where(c => c.InternId == vm.CaseInternId.Value).ToList();
+                context.CaseInterns.RemoveRange(caseInternList);
+                CaseIntern ci = new CaseIntern
+                {
+                    CaseId = obj.CaseId,
+                    InternId = vm.CaseInternId.Value,
+                    CreationDate = DateTime.Now
+                };
+                context.CaseInterns.Add(ci);
+                context.SaveChanges();
+            }
+
         }
 
         public List<CaseVM> GetAllCases()

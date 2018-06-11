@@ -8,7 +8,6 @@
     .DataValueField((string)values["DataValueField"])
     .HtmlAttributes(new { style = "width:100%" })
     .Filter("contains")
-    .Value("23")
     .OptionLabel("-- Select --")
     .DataSource(source =>
     {
@@ -18,4 +17,5 @@
         })
         .ServerFiltering(true);
     })
+    .Events(e => e.Change((string)values["Change"]))
 )

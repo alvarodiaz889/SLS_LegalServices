@@ -36,6 +36,7 @@
     <script src="@Url.Content("/Scripts/modernizr-2.8.3.js")"></script>
     <script src="@Url.Content("/Scripts/bootstrap.min.js")"></script>
     <link href="@Url.Content("/Content/Site.css")" rel="stylesheet" />
+    <script src="@Url.Content("/Scripts/site.js")"></script>
 </head>
 
 <body class="mahogany no-banner has-page-title">
@@ -65,14 +66,21 @@
                 </div>
             </div>
             <div role="main" class="mainFrame">
-                <div class="mainFrameItem">
-                    <h1>
-                        SLS Manager
-                    </h1>
-                </div>
-                <div class="mainFrameItem">
-                    @Html.Partial("_Menu")
-                </div>
+                @if (Request.IsAuthenticated)
+                {
+                    <div class="mainFrameItem">
+                        <h1>
+                            SLS Manager
+                        </h1>
+                    </div>
+                }
+                @if (Request.IsAuthenticated)
+                {
+                    <div class="mainFrameItem">
+                        @Html.Partial("_Menu")
+                    </div>
+                }
+
                 <div class="mainFrameItem">
                     @RenderBody()
                 </div>

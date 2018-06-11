@@ -1,4 +1,92 @@
 ﻿@model IntakeVM
+@{
+    var strFullName = Model != null ? Model.FullName : string.Empty;
+    var strCreationDate = Model != null ? Model.CreationDate.ToString() : string.Empty;
+}
+<script>
+    function whenChanging()
+    {
+        alert('whenChanging');
+        let idValue = $("#modelId").val();
+        let urlAction = '';
+        if (idValue == 0)
+            urlAction = "@Url.Action("Create", "Intakes")"
+        else
+            urlAction = "@Url.Action("Update", "Intakes")"
+        updateRecord(urlAction);
+    }
+
+    function updateRecord(url)
+    {
+        alert(url);
+        let LastName = $("#LastName").val();
+        let FirstName = $("#FirstName").val();
+        let CaseIntern = $("#CaseIntern").val();
+        let IUStudentId = $("#IUStudentId").val();
+        let CaseType = $("#CaseType").val();
+        let CaseId = $("#modelId").val();
+
+        $.post(url,
+            {
+                CaseId: CaseId,
+                LastName: LastName,
+                FirstName: FirstName,
+                CaseInternId: CaseIntern,
+                IUStudentId: IUStudentId,
+                TypeId: CaseType,
+            },
+            function (data) {
+                console.log(data);
+                if (data)
+                {
+                    $("#modelId").val(data);
+                    updateValues();
+                }
+            });
+        
+    }
+
+    function updateValues()
+    {
+        $.get("@Url.Action("GetIntakeById", "Intakes")",
+            {
+                id: $("#modelId").val()
+            },
+            function (data) {
+                console.log(data);
+                let lastName = data.LastName ? data.LastName : '';
+                let firstName = data.FirstName ? data.FirstName : '';
+                let fullName = (lastName && firstName) ? lastName + ', ' + firstName : lastName + ' ' + firstName;
+                let creationDate = convertDate(data.CreationDate);
+                let displayValue = creationDate.getMonth() + '/';
+                displayValue += creationDate.getDate() + '/'
+                displayValue += creationDate.getFullYear() + ' '
+                displayValue += formatAMPM(creationDate)
+                $("#fullName").text(fullName);
+                $("#lblCreationDate").text(displayValue);
+        });
+    }
+
+    function convertDate(value) {
+        let first = 0;
+        let last = 0;
+        first = value.indexOf('(') + 1;
+        last = value.indexOf(')');
+        return new Date(parseInt(value.substring(first, last)));
+    }
+
+    function formatAMPM(date) {
+        var hours = date.getHours();
+        var minutes = date.getMinutes();
+        var ampm = hours >= 12 ? 'pm' : 'am';
+        hours = hours % 12;
+        hours = hours ? hours : 12; // the hour '0' should be '12'
+        minutes = minutes < 10 ? '0' + minutes : minutes;
+        var strTime = hours + ':' + minutes + ' ' + ampm;
+        return strTime;
+    }
+
+</script>
 
 <div class="grid halves">
     <div class="grid-item">
@@ -9,17 +97,17 @@
     </div>
     <div class="grid-item"></div>
     <div class="grid-item">
-        <h4 style="text-align:right" id="fullName">Vedder, Eddie</h4>
+        <h4 style="text-align:right" id="fullName">@strFullName</h4>
     </div>
 </div>
 <div class="grid thirds">
 
     <div class="grid-item">
         <div>
-            @Html.LabelFor(model => model.LastName, new { @class = "form-item-label" })
+            @Html.LabelFor(model => model.LastName)
         </div>
         <div>
-            @Html.TextBoxFor(model => model.LastName, new { @class = "form-item-label" })
+            @Html.TextBoxFor(model => model.LastName, new { onchange = "whenChanging()" })
         </div>
     </div>
 
@@ -28,7 +116,7 @@
             @Html.LabelFor(model => model.FirstName)
         </div>
         <div>
-            @Html.EditorFor(model => model.FirstName)
+            @Html.TextBoxFor(model => model.FirstName, new { onchange = "whenChanging()" })
         </div>
     </div>
 
@@ -46,7 +134,7 @@
             @Html.LabelFor(model => model.IUStudentId)
         </div>
         <div>
-            @Html.EditorFor(model => model.IUStudentId)
+            @Html.TextBoxFor(model => model.IUStudentId, new { onchange = "whenChanging()" })
         </div>
     </div>
 
@@ -59,7 +147,9 @@
         </div>
     </div>
 
-    <div class="grid-item"></div>
+    <div class="grid-item">
+        <label id="lblCreationDate">@strCreationDate</label>
+    </div>
 
 </div>
 

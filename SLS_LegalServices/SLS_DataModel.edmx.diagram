@@ -25,7 +25,6 @@
         <EntityTypeShape EntityType="SLS_LegalServicesDataModel.CaseIntern" Width="1.5" PointX="10.25" PointY="9.75" />
         <EntityTypeShape EntityType="SLS_LegalServicesDataModel.CaseMoney" Width="1.5" PointX="13.25" PointY="0.875" />
         <EntityTypeShape EntityType="SLS_LegalServicesDataModel.CaseNote" Width="1.5" PointX="15.25" PointY="7.625" />
-        <EntityTypeShape EntityType="SLS_LegalServicesDataModel.CasePartyContact" Width="1.75" PointX="17.5" PointY="11" />
         <EntityTypeShape EntityType="SLS_LegalServicesDataModel.CaseReferralSource" Width="1.75" PointX="15.25" PointY="15.5" />
         <EntityTypeShape EntityType="SLS_LegalServicesDataModel.CaseType" Width="1.5" PointX="10.75" PointY="13" />
         <AssociationConnector Association="SLS_LegalServicesDataModel.FK_CaseAttorneys_Attorney" />
@@ -34,23 +33,30 @@
         <AssociationConnector Association="SLS_LegalServicesDataModel.FK_CaseInterns_Intern" />
         <AssociationConnector Association="SLS_LegalServicesDataModel.FK_CaseNotes_Users" />
         <EntityTypeShape EntityType="SLS_LegalServicesDataModel.CaseCertifiedIntern" Width="1.5" PointX="10.25" PointY="7" />
-        <EntityTypeShape EntityType="SLS_LegalServicesDataModel.Case" Width="1.5" PointX="13" PointY="7.5" />
         <EntityTypeShape EntityType="SLS_LegalServicesDataModel.CaseStatusLookup" Width="1.5" PointX="5.375" PointY="8.75" />
         <EntityTypeShape EntityType="SLS_LegalServicesDataModel.GenericValuesLookup" Width="1.5" PointX="7.375" PointY="8.75" />
+        <AssociationConnector Association="SLS_LegalServicesDataModel.FK_CaseCertifiedInterns_Intern" />
+        <EntityTypeShape EntityType="SLS_LegalServicesDataModel.CaseParty" Width="1.5" PointX="15.25" PointY="11" />
+        <EntityTypeShape EntityType="SLS_LegalServicesDataModel.Case" Width="1.5" PointX="13" PointY="7.5" />
         <AssociationConnector Association="SLS_LegalServicesDataModel.FK_CaseAttorneys_Cases" />
         <AssociationConnector Association="SLS_LegalServicesDataModel.FK_CaseCertifiedInterns_Cases" />
-        <AssociationConnector Association="SLS_LegalServicesDataModel.FK_CaseCertifiedInterns_Intern" />
         <AssociationConnector Association="SLS_LegalServicesDataModel.FK_CaseDocuments_Cases" />
         <AssociationConnector Association="SLS_LegalServicesDataModel.FK_CaseInterns_Cases" />
         <AssociationConnector Association="SLS_LegalServicesDataModel.FK_CaseMoneys_Cases" />
         <AssociationConnector Association="SLS_LegalServicesDataModel.FK_CaseNotes_Cases" />
+        <AssociationConnector Association="SLS_LegalServicesDataModel.FK_CaseParties_Cases" />
         <AssociationConnector Association="SLS_LegalServicesDataModel.FK_CaseReferralSources_Cases" />
         <AssociationConnector Association="SLS_LegalServicesDataModel.FK_Cases_CaseType" />
         <AssociationConnector Association="SLS_LegalServicesDataModel.FK_Cases_Users" />
         <AssociationConnector Association="SLS_LegalServicesDataModel.FK_Log_Cases" />
-        <EntityTypeShape EntityType="SLS_LegalServicesDataModel.CaseParty" Width="1.5" PointX="15.25" PointY="11" />
-        <AssociationConnector Association="SLS_LegalServicesDataModel.FK_CaseParties_Cases" />
-        <AssociationConnector Association="SLS_LegalServicesDataModel.FK_CasePartyContacts_CaseParties" />
+        <EntityTypeShape EntityType="SLS_LegalServicesDataModel.Address" Width="1.5" PointX="15.25" PointY="18.75" />
+        <EntityTypeShape EntityType="SLS_LegalServicesDataModel.Email" Width="1.5" PointX="15.25" PointY="25.25" />
+        <EntityTypeShape EntityType="SLS_LegalServicesDataModel.Telephone" Width="1.5" PointX="15.25" PointY="22.625" />
+        <AssociationConnector Association="SLS_LegalServicesDataModel.FK_Addresses_Cases" />
+        <AssociationConnector Association="SLS_LegalServicesDataModel.FK_CaseParties_Addresses" />
+        <AssociationConnector Association="SLS_LegalServicesDataModel.FK_CaseParties_Emails" />
+        <AssociationConnector Association="SLS_LegalServicesDataModel.FK_Emails_Cases" />
+        <AssociationConnector Association="SLS_LegalServicesDataModel.FK_Telephones_Cases" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

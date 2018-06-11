@@ -219,6 +219,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Address.cs">
+      <DependentUpon>SLS_DataModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\IdentityConfig.cs" />
@@ -258,9 +261,6 @@
     <Compile Include="CaseParty.cs">
       <DependentUpon>SLS_DataModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="CasePartyContact.cs">
-      <DependentUpon>SLS_DataModel.tt</DependentUpon>
-    </Compile>
     <Compile Include="CaseReferralSource.cs">
       <DependentUpon>SLS_DataModel.tt</DependentUpon>
     </Compile>
@@ -281,6 +281,9 @@
     <Compile Include="Controllers\InternController.cs" />
     <Compile Include="Controllers\InternScheduleController.cs" />
     <Compile Include="Controllers\UserController.cs" />
+    <Compile Include="Email.cs">
+      <DependentUpon>SLS_DataModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="GenericValuesLookup.cs">
       <DependentUpon>SLS_DataModel.tt</DependentUpon>
     </Compile>
@@ -331,6 +334,9 @@
       <DependentUpon>SLS_DataModel.edmx</DependentUpon>
     </Compile>
     <Compile Include="Startup.cs" />
+    <Compile Include="Telephone.cs">
+      <DependentUpon>SLS_DataModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="User.cs">
       <DependentUpon>SLS_DataModel.tt</DependentUpon>
     </Compile>
@@ -1830,6 +1836,7 @@
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
+    <Content Include="Scripts\Site.js" />
     <Content Include="SLS_DataModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>SLS_DataModel.edmx</DependentUpon>

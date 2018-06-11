@@ -11,7 +11,7 @@ namespace SLS_LegalServices.ViewModels
     {
         public int CaseId { get; set; }
         public string CaseNo { get; set; }
-        public int TypeId { get; set; }
+        public int? TypeId { get; set; }
         public string Status { get; set; }
         public DateTime CreationDate { get; set; }
         public Guid CreatedById { get; set; }
@@ -27,9 +27,19 @@ namespace SLS_LegalServices.ViewModels
         public string IUStudentId { get; set; }
         public bool EnrollmentVerified { get; set; }
         public bool StudentActivityFeeVerified { get; set; }
+
+        //Extra fields
         public string AdverseParty { get; set; }
         public string Intern { get; set; }
         public string Interview { get; set; }
+        public string FullName {
+            get {
+                string lastName = LastName ?? string.Empty;
+                string firstName = FirstName ?? string.Empty;
+                var full = (lastName == "" || firstName == "" ) ? lastName + " " + firstName : lastName + ", " + firstName;
+                return full;
+            }
+        }
 
         [UIHint("DDLookup")]
         [Display(Name = "Type")]
@@ -38,8 +48,11 @@ namespace SLS_LegalServices.ViewModels
         [AdditionalMetadata("DataValueField", "TypeId")]
         [AdditionalMetadata("Controller", "Intakes")]
         [AdditionalMetadata("Action", "GetTypes")]
+        [AdditionalMetadata("Change", "whenChanging")]
         public CaseType CaseType { get; set; }
 
+
+        public int? CaseInternId { get; set; }
         [UIHint("DDLookup")]
         [Display(Name = "Assigned Intern")]
         [AdditionalMetadata("Name", "CaseIntern")]
@@ -47,6 +60,7 @@ namespace SLS_LegalServices.ViewModels
         [AdditionalMetadata("DataValueField", "InternId")]
         [AdditionalMetadata("Controller", "Intakes")]
         [AdditionalMetadata("Action", "GetInterns")]
+        [AdditionalMetadata("Change", "whenChanging")]
         public InternVM CaseIntern { get; set; }
 
     }

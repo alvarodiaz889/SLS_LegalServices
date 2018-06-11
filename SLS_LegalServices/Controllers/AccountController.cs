@@ -283,42 +283,6 @@ namespace SLS_LegalServices.Controllers
             // Request a redirect to the external login provider
             return new ChallengeResult(provider, Url.Action("ExternalLoginCallback", "Account", new { ReturnUrl = returnUrl }));
         }
-
-        //
-        // GET: /Account/SendCode
-        [AllowAnonymous]
-        public async Task<ActionResult> SendCode(string returnUrl, bool rememberMe)
-        {
-            var userId = await SignInManager.GetVerifiedUserIdAsync();
-            if (userId == null)
-            {
-                return View("Error");
-            }
-            var userFactors = await UserManager.GetValidTwoFactorProvidersAsync(userId);
-            var factorOptions = userFactors.Select(purpose => new SelectListItem { Text = purpose, Value = purpose }).ToList();
-            return View(new SendCodeViewModel { Providers = factorOptions, ReturnUrl = returnUrl, RememberMe = rememberMe });
-        }
-
-        //
-        // POST: /Account/SendCode
-        [HttpPost]
-        [AllowAnonymous]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> SendCode(SendCodeViewModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View();
-            }
-
-            // Generate the token and send it
-            if (!await SignInManager.SendTwoFactorCodeAsync(model.SelectedProvider))
-            {
-                return View("Error");
-            }
-            return RedirectToAction("VerifyCode", new { Provider = model.SelectedProvider, ReturnUrl = model.ReturnUrl, RememberMe = model.RememberMe });
-        }
-
         //
         // GET: /Account/ExternalLoginCallback
         [AllowAnonymous]
@@ -327,16 +291,16 @@ namespace SLS_LegalServices.Controllers
             var loginInfo = await AuthenticationManager.GetExternalLoginInfoAsync();
             if (loginInfo == null)
             {
-                return RedirectToAction("Index", "User");
+                return RedirectToAction("LoginError", "Home");
             }
 
             var user = UserManager.FindByName(loginInfo.DefaultUserName);
             if (user != null)
             {
                 SignInManager.SignIn(user, true, true);
-                return RedirectToAction("Index", "User");
+                return RedirectToAction("Index", "Home");
             }
-            return RedirectToAction("LoginError", "Account");
+            return RedirectToAction("LoginError", "Home");
         }
 
         //

@@ -18,7 +18,7 @@ namespace SLS_LegalServices
         public int CaseId { get; set; }
         public System.DateTime CreationDate { get; set; }
     
-        public virtual Case Case { get; set; }
         public virtual Intern Intern { get; set; }
+        public virtual Case Case { get; set; }
     }
 }

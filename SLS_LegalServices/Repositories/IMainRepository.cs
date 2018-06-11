@@ -51,7 +51,7 @@ namespace SLS_LegalServices.Repositories
 
         List<IntakeVM> GetAllIntakes();
         IntakeVM GetIntakeById(int id);
-        void IntakeInsert(IntakeVM vm);
+        int IntakeInsert(IntakeVM vm);
         void IntakeDelete(IntakeVM vm);
         void IntakeUpdate(IntakeVM vm);
 

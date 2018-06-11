@@ -1,5 +1,6 @@
 ﻿using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
+using Microsoft.AspNet.Identity;
 using SLS_LegalServices.Repositories;
 using SLS_LegalServices.ViewModels;
 using System;
@@ -10,6 +11,7 @@ using System.Web.Mvc;
 
 namespace SLS_LegalServices.Controllers
 {
+    [Authorize]
     public class IntakesController : Controller
     {
         private IMainRepository repository;
@@ -64,6 +66,7 @@ namespace SLS_LegalServices.Controllers
 
         public JsonResult GetTypes(string text)
         {
+            //Circular Reference need to be fixed
             var types = context.CaseTypes.ToList();
 
             if (!string.IsNullOrEmpty(text))
@@ -72,6 +75,34 @@ namespace SLS_LegalServices.Controllers
             }
 
             return Json(types, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult GetIntakeById(int id)
+        {
+            var intake = repository.GetIntakeById(id);
+            return Json(intake, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public ActionResult Create(IntakeVM obj)
+        {
+            int id = 0;
+            if (ModelState.IsValid)
+            {
+                obj.CreatedById = Guid.Parse(User.Identity.GetUserId());
+                id = repository.IntakeInsert(obj);
+            }
+            return Json(id);
+        }
+
+        [HttpPost]
+        public ActionResult Update(IntakeVM obj)
+        {
+            if (ModelState.IsValid)
+            {
+                repository.IntakeUpdate(obj);
+            }
+            return Json(obj.CaseId);
         }
 
         protected override void Dispose(bool disposing)
