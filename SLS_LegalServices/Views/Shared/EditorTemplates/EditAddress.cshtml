@@ -1,37 +1,37 @@
-﻿@model AddressVM
+﻿@model InternVM
 
-<div>
+<div style="width:100%">
 
-    @using (Html.BeginForm("", "", null, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+    @using (Html.BeginForm("ContactForm", "Scheduling", null, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
     {
         @Html.ValidationSummary(true, "")
 
 
-        <div>
-            @Html.LabelFor(s => s.Type)
+        <div class="form-group">
+            @Html.LabelFor(s => s.UserName)
 
             <div>
-                @Html.TextBoxFor(s => s.Type)
+                @Html.EditorFor(s => s.UserName)
             </div>
         </div>
 
-        <div>
-            @Html.LabelFor(s => s.Address1)
+        <div class="form-group">
+            @Html.LabelFor(s => s.LastName)
 
             <div>
-                @Html.TextBoxFor(s => s.Address1)
+                @Html.EditorFor(s => s.LastName)
             </div>
         </div>
 
-        <div>
-            @Html.LabelFor(s => s.Address2)
+        <div class="form-group">
+            @Html.LabelFor(s => s.FirstName)
 
             <div>
-                @Html.EditorFor(s => s.Address2)
+                @Html.EditorFor(s => s.FirstName)
             </div>
         </div>
 
-        <div class="grid-item">
+        <div class="form-group">
             @Html.LabelFor(s => s.Attorneys)
 
             <div>
@@ -39,7 +39,7 @@
             </div>
         </div>
 
-        <div class="grid-item">
+        <div class="form-group">
             @Html.LabelFor(s => s.CertifiedDate)
 
             <div>
@@ -47,7 +47,7 @@
             </div>
         </div>
 
-        <div class="grid-item">
+        <div class="form-group">
             @Html.LabelFor(s => s.Status)
 
             <div>

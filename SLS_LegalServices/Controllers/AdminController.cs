@@ -32,8 +32,6 @@ namespace SLS_LegalServices.Controllers
 
         public ActionResult Interns()
         {
-            ViewBag.StartTime = "StartTime";
-            ViewBag.EndTime = "EndTime";
             ViewBag.DateName = "CertifiedDate";
             ViewBag.Attorneys = mainRepository.GetAllAttorneys();
             return PartialView("_Interns");

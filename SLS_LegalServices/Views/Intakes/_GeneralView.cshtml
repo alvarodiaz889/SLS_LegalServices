@@ -6,7 +6,7 @@
 <script>
     function whenChanging()
     {
-        alert('whenChanging');
+        //alert('whenChanging');
         let idValue = $("#modelId").val();
         let urlAction = '';
         if (idValue == 0)
@@ -18,7 +18,6 @@
 
     function updateRecord(url)
     {
-        alert(url);
         let LastName = $("#LastName").val();
         let FirstName = $("#FirstName").val();
         let CaseIntern = $("#CaseIntern").val();
@@ -31,7 +30,7 @@
                 CaseId: CaseId,
                 LastName: LastName,
                 FirstName: FirstName,
-                CaseInternId: CaseIntern,
+                InternId: CaseIntern,
                 IUStudentId: IUStudentId,
                 TypeId: CaseType,
             },
@@ -148,7 +147,12 @@
     </div>
 
     <div class="grid-item">
-        <label id="lblCreationDate">@strCreationDate</label>
+        <div>
+            @Html.LabelFor(model => model.CreationDate)
+        </div>
+        <div>
+            <label id="lblCreationDate">@strCreationDate</label>
+        </div>
     </div>
 
 </div>

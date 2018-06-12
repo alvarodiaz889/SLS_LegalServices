@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 
 namespace SLS_LegalServices.ViewModels
 {
@@ -15,10 +16,6 @@ namespace SLS_LegalServices.ViewModels
         private string _strInternId;
         public string StrInternId {
             get {
-                //if (InternId.HasValue)
-                //    return InternId.Value.ToString();
-                //else
-                //    return string.Empty;
                 return _strInternId;
             }
             set {
@@ -29,19 +26,12 @@ namespace SLS_LegalServices.ViewModels
         [UIHint("DaysOfWeek")]
         public string DayOfWeek { get; set; }
 
-        private DateTime? _startTime;
-        [UIHint("StartTime")]
-        public DateTime? StartTime {
-            get { return _startTime; }
-            set { _startTime = value; }
-        }
+        [UIHint("TimePicker")]
+        [AdditionalMetadata("Name", "StartTime")]
+        public DateTime? StartTime { get; set; }
 
-        private DateTime? _endTime;
-        [UIHint("EndTime")]
-        public DateTime? EndTime
-        {
-            get { return _endTime; }
-            set { _endTime = value; }
-        }
+        [UIHint("TimePicker")]
+        [AdditionalMetadata("Name", "EndTime")]
+        public DateTime? EndTime { get; set; }
     }
 }

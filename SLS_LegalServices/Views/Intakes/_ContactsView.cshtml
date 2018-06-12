@@ -1,1 +1,109 @@
-﻿<h2>Contact Information</h2>
+﻿@model IntakeVM
+@{
+    int intakeId = Model != null ? Model.CaseId : 0 ;
+}
+<style>
+    .k-grid-content {
+        height: auto;
+    }
+</style>
+<h6>Contact Information</h6>
+<script>
+    function onRequestEnd(e) {
+        console.log(e);
+        if (e.type == "update" || e.type == "create" || e.type == "remove") {
+            //$("#TelephoneGrid").data("kendoGrid").dataSource.read();
+            //$("#EmailGrid").data("kendoGrid").dataSource.read();
+            //$("#AddressGrid").data("kendoGrid").dataSource.read();
+            this.read();
+        }
+    }
+
+    function onEdit(e) {
+    }
+</script>
+<h6>Telephone Number(s)</h6>
+@(Html.Kendo().Grid<TelephoneVM>()
+    .Name("TelephoneGrid")
+    .Columns(columns =>
+    {
+        columns.Command(command => { command.Edit().Text(" ").CancelText(" ").UpdateText(" "); command.Destroy().Text(" "); }).Width(100);
+        columns.Bound(c => c.TelephoneId).Visible(false);
+        columns.Bound(c => c.Type);
+        columns.Bound(c => c.Number);
+        columns.Template(@<text> </text>).Title("");
+    })
+    .Scrollable()
+    .DataSource(dataSource => dataSource
+        .Ajax()
+        .Model(m => {
+            m.Id(c => c.TelephoneId);
+            m.Field(c => c.CaseId).DefaultValue(intakeId);
+        })
+        .Read(read => read.Action("Read", "Telephone", new { intakeId = intakeId }))
+        .Destroy(destroy => destroy.Action("Destroy", "Telephone"))
+        .Update(update => update.Action("Update", "Telephone"))
+        .Create(create => create.Action("Create", "Telephone"))
+        .Events(events => events.RequestEnd("onRequestEnd"))
+    )
+    .ToolBar(toolbar => { toolbar.Create().Text("Add"); })
+    .Editable(editable => editable.Mode(GridEditMode.InLine))
+)
+
+<h6>Email Address(es)</h6>
+@(Html.Kendo().Grid<EmailVM>()
+    .Name("EmailGrid")
+    .Columns(columns =>
+    {
+        columns.Command(command => { command.Edit().Text(" ").CancelText(" ").UpdateText(" "); command.Destroy().Text(" "); }).Width(100);
+        columns.Bound(c => c.EmailId).Visible(false);
+        columns.Bound(c => c.Type);
+        columns.Bound(c => c.Email1);
+        columns.Template(@<text> </text>).Title("");
+    })
+    .Scrollable()
+    .DataSource(dataSource => dataSource
+        .Ajax()
+        .Model(m =>
+        {
+            m.Id(c => c.EmailId);
+            m.Field(c => c.CaseId).DefaultValue(intakeId);
+        })
+        .Read(read => read.Action("Read", "Email", new { intakeId = intakeId }))
+        .Destroy(destroy => destroy.Action("Destroy", "Email"))
+        .Update(update => update.Action("Update", "Email"))
+        .Create(create => create.Action("Create", "Email"))
+        .Events(events => events.RequestEnd("onRequestEnd"))
+    )
+    .ToolBar(toolbar => { toolbar.Create().Text("Add"); })
+    .Editable(editable => editable.Mode(GridEditMode.InLine))
+)
+
+<h6>Address(es)</h6>
+@(Html.Kendo().Grid<AddressVM>()
+    .Name("AddressGrid")
+    .Columns(columns =>
+    {
+        columns.Command(command => { command.Edit().Text(" ").CancelText(" ").UpdateText(" "); command.Destroy().Text(" "); }).Width(100);
+        columns.Bound(c => c.AddressId).Visible(false);
+        columns.Bound(c => c.Type);
+        columns.Bound(c => c.FullAddress);
+        columns.Template(@<text> </text>).Title("");
+    })
+    .Scrollable()
+    .DataSource(dataSource => dataSource
+        .Ajax()
+        .Model(m =>
+        {
+            m.Id(c => c.AddressId);
+            m.Field(c => c.CaseId).DefaultValue(intakeId);
+        })
+        .Read(read => read.Action("Read", "Address", new { intakeId = intakeId }))
+        .Destroy(destroy => destroy.Action("Destroy", "Address"))
+        .Update(update => update.Action("Update", "Address"))
+        .Create(create => create.Action("Create", "Address"))
+        .Events(events => events.RequestEnd("onRequestEnd"))
+    )
+    .ToolBar(toolbar => { toolbar.Create().Text("Add"); })
+    .Editable(editable => editable.Mode(GridEditMode.InLine))
+)

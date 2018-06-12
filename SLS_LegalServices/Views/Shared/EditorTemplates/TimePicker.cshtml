@@ -1,0 +1,8 @@
+﻿@model Nullable<DateTime>
+@{ 
+    var values = ViewData.ModelMetadata.AdditionalValues;
+}
+@(Html.Kendo().TimePickerFor(m =>m).Name((string)values["Name"])
+        .Value(Model)
+        .HtmlAttributes(new { style = "width: 100%" })
+)

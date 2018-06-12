@@ -16,7 +16,7 @@ namespace SLS_LegalServices
     {
         public int TelephoneId { get; set; }
         public string Type { get; set; }
-        public int CaseId { get; set; }
+        public Nullable<int> CaseId { get; set; }
         public string Number { get; set; }
     
         public virtual Case Case { get; set; }

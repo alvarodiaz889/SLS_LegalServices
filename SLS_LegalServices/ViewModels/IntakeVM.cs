@@ -13,6 +13,8 @@ namespace SLS_LegalServices.ViewModels
         public string CaseNo { get; set; }
         public int? TypeId { get; set; }
         public string Status { get; set; }
+
+        [Display(Name = "Created")]
         public DateTime CreationDate { get; set; }
         public Guid CreatedById { get; set; }
         public bool MayWeRecordYourInterview { get; set; }
@@ -49,10 +51,10 @@ namespace SLS_LegalServices.ViewModels
         [AdditionalMetadata("Controller", "Intakes")]
         [AdditionalMetadata("Action", "GetTypes")]
         [AdditionalMetadata("Change", "whenChanging")]
-        public CaseType CaseType { get; set; }
+        public CaseTypesVM CaseType { get; set; }
 
 
-        public int? CaseInternId { get; set; }
+        public int? InternId { get; set; }
         [UIHint("DDLookup")]
         [Display(Name = "Assigned Intern")]
         [AdditionalMetadata("Name", "CaseIntern")]

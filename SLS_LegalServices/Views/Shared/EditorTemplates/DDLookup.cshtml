@@ -1,5 +1,6 @@
 ﻿@{
     var values = ViewData.ModelMetadata.AdditionalValues;
+    var selectedValue = (int)ViewData[(string)values["DataValueField"]];
 }
 
 @(Html.Kendo().DropDownList()
@@ -9,6 +10,7 @@
     .HtmlAttributes(new { style = "width:100%" })
     .Filter("contains")
     .OptionLabel("-- Select --")
+    .Value(selectedValue.ToString())
     .DataSource(source =>
     {
         source.Read(read =>

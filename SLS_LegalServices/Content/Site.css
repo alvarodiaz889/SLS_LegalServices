@@ -16,7 +16,8 @@
 .mainFrame {
     margin: 50px auto;
     width: 80%;
-    height: 700px;
+    height: auto;
+    min-height: 500px;
     box-sizing: border-box;
 }
 
@@ -45,50 +46,4 @@
     margin: 0;
     box-sizing:border-box;
     border-radius: 5px;
-}
-/* intake items*/
-.section-item {
-    margin: 0 0;
-    padding: 0 0;
-    width: 50%;
-    float: left;
-    border-style: groove;
-    height: 200px;
-}
-/**/
-
-@media screen and (max-width: 1000px) {
-    .section-item {
-        margin: 0 0;
-        padding: 0 0;
-        width: 100%;
-        float: left;
-        border-style: groove;
-        height: 400px;
-        overflow: scroll;
-    }
-}
-
-@media screen and (max-width: 2000px) and (min-width: 1001px) {
-    .section-item {
-        margin: 0 0;
-        padding: 0 0;
-        width: 100%;
-        float: left;
-        border-style: groove;
-        height: 400px;
-        overflow: scroll;
-    }
-}
-
-@media screen and (min-width: 2001px) {
-    .section-item {
-        margin: 0 0;
-        padding: 0 0;
-        width: 50%;
-        float: left;
-        border-style: groove;
-        height: 400px;
-        overflow: scroll;   
-    }
 }

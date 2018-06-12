@@ -249,7 +249,7 @@
           </Key>
           <Property Name="TelephoneId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Type" Type="varchar" MaxLength="50" Nullable="false" />
-          <Property Name="CaseId" Type="int" Nullable="false" />
+          <Property Name="CaseId" Type="int" />
           <Property Name="Number" Type="varchar" MaxLength="50" Nullable="false" />
         </EntityType>
         <EntityType Name="Users">
@@ -628,7 +628,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Telephones_Cases">
-          <End Role="Cases" Type="Self.Cases" Multiplicity="1" />
+          <End Role="Cases" Type="Self.Cases" Multiplicity="0..1" />
           <End Role="Telephones" Type="Self.Telephones" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Cases">
@@ -938,7 +938,6 @@
           </AssociationSet>
           <EntitySet Name="Addresses" EntityType="SLS_LegalServicesDataModel.Address" />
           <EntitySet Name="Emails" EntityType="SLS_LegalServicesDataModel.Email" />
-          <EntitySet Name="Telephones" EntityType="SLS_LegalServicesDataModel.Telephone" />
           <AssociationSet Name="FK_Addresses_Cases" Association="SLS_LegalServicesDataModel.FK_Addresses_Cases">
             <End Role="Case" EntitySet="Cases" />
             <End Role="Address" EntitySet="Addresses" />
@@ -955,6 +954,7 @@
             <End Role="Case" EntitySet="Cases" />
             <End Role="Email" EntitySet="Emails" />
           </AssociationSet>
+          <EntitySet Name="Telephones" EntityType="SLS_LegalServicesDataModel.Telephone" />
           <AssociationSet Name="FK_Telephones_Cases" Association="SLS_LegalServicesDataModel.FK_Telephones_Cases">
             <End Role="Case" EntitySet="Cases" />
             <End Role="Telephone" EntitySet="Telephones" />
@@ -1510,16 +1510,6 @@
           <NavigationProperty Name="CaseParties" Relationship="SLS_LegalServicesDataModel.FK_CaseParties_Emails" FromRole="Email" ToRole="CaseParty" />
           <NavigationProperty Name="Case" Relationship="SLS_LegalServicesDataModel.FK_Emails_Cases" FromRole="Email" ToRole="Case" />
         </EntityType>
-        <EntityType Name="Telephone">
-          <Key>
-            <PropertyRef Name="TelephoneId" />
-          </Key>
-          <Property Name="TelephoneId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Type" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="CaseId" Type="Int32" Nullable="false" />
-          <Property Name="Number" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="Case" Relationship="SLS_LegalServicesDataModel.FK_Telephones_Cases" FromRole="Telephone" ToRole="Case" />
-        </EntityType>
         <Association Name="FK_Addresses_Cases">
           <End Type="SLS_LegalServicesDataModel.Case" Role="Case" Multiplicity="0..1" />
           <End Type="SLS_LegalServicesDataModel.Address" Role="Address" Multiplicity="*" />
@@ -1568,8 +1558,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="Telephone">
+          <Key>
+            <PropertyRef Name="TelephoneId" />
+          </Key>
+          <Property Name="TelephoneId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Type" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CaseId" Type="Int32" />
+          <Property Name="Number" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Case" Relationship="SLS_LegalServicesDataModel.FK_Telephones_Cases" FromRole="Telephone" ToRole="Case" />
+        </EntityType>
         <Association Name="FK_Telephones_Cases">
-          <End Type="SLS_LegalServicesDataModel.Case" Role="Case" Multiplicity="1" />
+          <End Type="SLS_LegalServicesDataModel.Case" Role="Case" Multiplicity="0..1" />
           <End Type="SLS_LegalServicesDataModel.Telephone" Role="Telephone" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Case">

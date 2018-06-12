@@ -33,6 +33,7 @@ namespace SLS_LegalServices.Helpers
                 StudentActivityFeeVerified = obj.StudentActivityFeeVerified
             };
         }
+
         public static Func<IntakeVM, Case> GetIntakeFromViewModelFunc = GetIntakeFromViewModel;
         public static Case GetIntakeFromViewModel(IntakeVM obj)
         {
@@ -58,5 +59,30 @@ namespace SLS_LegalServices.Helpers
                 StudentActivityFeeVerified = obj.StudentActivityFeeVerified
             };
         }
+
+        public static Func<CaseType, CaseTypesVM> GetCaseTypeFromModelFunc = GetCaseTypeFromModel;
+        public static CaseTypesVM GetCaseTypeFromModel(CaseType obj)
+        {
+            return new CaseTypesVM
+            {
+                Active = obj.Active,
+                Description = obj.Description,
+                TypeCode = obj.TypeCode,
+                TypeId = obj.TypeId
+            };
+        }
+
+        public static Func<CaseTypesVM, CaseType> GetCaseTypeFromViewModelFunc = GetCaseTypeFromViewModel;
+        public static CaseType GetCaseTypeFromViewModel(CaseTypesVM obj)
+        {
+            return new CaseType
+            {
+                Active = obj.Active,
+                Description = obj.Description,
+                TypeCode = obj.TypeCode,
+                TypeId = obj.TypeId
+            };
+        }
+
     }
 }

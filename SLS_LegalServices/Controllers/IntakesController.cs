@@ -49,6 +49,9 @@ namespace SLS_LegalServices.Controllers
             ViewBag.SectionList = views.OrderBy(v => v.Key).Select(v => v.Value).ToList();
 
             var intake = repository.GetIntakeById(id);
+            ViewData["TypeId"] = intake?.TypeId ?? 0;
+            ViewData["InternId"] = intake?.InternId ?? 0;
+
             return View(intake);
         }
 
@@ -66,8 +69,7 @@ namespace SLS_LegalServices.Controllers
 
         public JsonResult GetTypes(string text)
         {
-            //Circular Reference need to be fixed
-            var types = context.CaseTypes.ToList();
+            var types = repository.GetAllCaseTypes();
 
             if (!string.IsNullOrEmpty(text))
             {

@@ -17,7 +17,7 @@ namespace SLS_LegalServices.Repositories
         public List<CaseTypesVM> GetAllCaseTypes()
         {
             List<CaseTypesVM> list = context.CaseTypes
-                .Select(o => new CaseTypesVM { TypeId = o.TypeId, Active = o.Active, Description = o.Description, TypeCode = o.TypeCode })
+                .Select(ModelHelper.GetCaseTypeFromModel)
                 .OrderBy(o => o.TypeId)
                 .ToList();
             return list;
@@ -39,7 +39,7 @@ namespace SLS_LegalServices.Repositories
 
         public void CaseTypesInsert(CaseTypesVM vm)
         {
-            CaseType newRecord = new CaseType { Active = vm.Active, Description = vm.Description, TypeCode = vm.TypeCode };
+            CaseType newRecord = ModelHelper.GetCaseTypeFromViewModel(vm);
             context.CaseTypes.Add(newRecord);
             context.SaveChanges();
         }
@@ -254,7 +254,8 @@ namespace SLS_LegalServices.Repositories
             context.Entry(intern).State = EntityState.Modified;
             context.SaveChanges();
             //Intern-Attorney
-            context.Intern_Attorney.RemoveRange(intern.Intern_Attorney);
+            var interAttorneys = context.Intern_Attorney.Where(ia => ia.InternId == intern.InternId).ToList();
+            context.Intern_Attorney.RemoveRange(interAttorneys);
             context.SaveChanges();
 
             foreach (var attorney in vm.Attorneys)
@@ -377,10 +378,19 @@ namespace SLS_LegalServices.Repositories
 
         public IntakeVM GetIntakeById(int id)
         {
-            return context.Cases
+            IntakeVM vm =  context.Cases
                 .Where(c => c.CaseId == id)
                 .Select(ModelHelper.GetIntakeFromModelFunc)
                 .FirstOrDefault();
+            if (vm != null)
+            {
+                vm.InternId = context.CaseInterns
+                .Where(c => c.CaseId == vm.CaseId)
+                .OrderByDescending(c => c.CreationDate)
+                .Select(c => c.InternId)
+                .FirstOrDefault();
+            }
+            return vm;
         }
 
         public int IntakeInsert(IntakeVM vm)
@@ -388,18 +398,18 @@ namespace SLS_LegalServices.Repositories
             int insertedId = 0;
             int rowsAfected = 0;
             Case caseObj = ModelHelper.GetIntakeFromViewModel(vm);
-            caseObj.Status = "Pending";
+            caseObj.Status = "Open";
             caseObj.CreationDate = DateTime.Now;
 
             context.Cases.Add(caseObj);
             rowsAfected = context.SaveChanges();
             insertedId = caseObj.CaseId;
-            if (rowsAfected > 0 && vm.CaseInternId.HasValue)
+            if (rowsAfected > 0 && vm.InternId.HasValue)
             {
                 CaseIntern ci = new CaseIntern
                 {
                     CaseId = caseObj.CaseId,
-                    InternId = vm.CaseInternId.Value,
+                    InternId = vm.InternId.Value,
                     CreationDate = DateTime.Now
                 };
                 context.CaseInterns.Add(ci);
@@ -426,23 +436,30 @@ namespace SLS_LegalServices.Repositories
             context.Cases.Attach(obj);
             context.Entry(obj).State = EntityState.Modified;
             context.SaveChanges();
-            if (vm.CaseInternId.HasValue)
+            if (vm.InternId.HasValue)
             {
                 List<CaseIntern> caseInternList = context.CaseInterns
-                    .Where(c => c.InternId == vm.CaseInternId.Value).ToList();
-                context.CaseInterns.RemoveRange(caseInternList);
-                CaseIntern ci = new CaseIntern
+                    .Where(c => c.InternId == vm.InternId.Value)
+                    .Where(c => c.CaseId == vm.CaseId)
+                    .ToList();
+                if (caseInternList.Count == 0)
                 {
-                    CaseId = obj.CaseId,
-                    InternId = vm.CaseInternId.Value,
-                    CreationDate = DateTime.Now
-                };
-                context.CaseInterns.Add(ci);
-                context.SaveChanges();
+                    CaseIntern ci = new CaseIntern
+                    {
+                        CaseId = obj.CaseId,
+                        InternId = vm.InternId.Value,
+                        CreationDate = DateTime.Now
+                    };
+                    context.CaseInterns.Add(ci);
+                    context.SaveChanges();
+                }
             }
-
         }
 
+        #endregion
+
+
+        #region Cases
         public List<CaseVM> GetAllCases()
         {
             throw new NotImplementedException();
@@ -465,6 +482,166 @@ namespace SLS_LegalServices.Repositories
 
         #endregion
 
+
+        #region Telephone
+        public List<TelephoneVM> GetAllTelephones()
+        {
+            return context.Telephones
+                .Select(t => new TelephoneVM
+                {
+                    CaseId = t.CaseId,
+                    Number = t.Number,
+                    TelephoneId = t.TelephoneId,
+                    Type = t.Type
+                })
+                .ToList();
+        }
+
+        public void TelephoneInsert(TelephoneVM vm)
+        {
+            Telephone t = new Telephone
+            {
+                CaseId = vm.CaseId,
+                Number = vm.Number,
+                TelephoneId = vm.TelephoneId,
+                Type = vm.Type
+            };
+            context.Telephones.Add(t);
+            context.SaveChanges();
+        }
+
+        public void TelephoneDelete(TelephoneVM vm)
+        {
+            Telephone t = context.Telephones.Where(tt => tt.TelephoneId == vm.TelephoneId).FirstOrDefault();
+            context.Telephones.Remove(t);
+            context.SaveChanges();
+        }
+
+        public void TelephoneUpdate(TelephoneVM vm)
+        {
+            Telephone t = context.Telephones.Where(tt => tt.TelephoneId == vm.TelephoneId).FirstOrDefault();
+            t.Number = vm.Number;
+            t.Type = vm.Type;
+            t.CaseId = vm.CaseId;
+            context.Telephones.Attach(t);
+            context.Entry(t).State = EntityState.Modified;
+            context.SaveChanges();
+        }
+
+        #endregion
+
+
+        #region Email
+
+        public List<EmailVM> GetAllEmails()
+        {
+            return context.Emails
+                .Select(e => new EmailVM
+                {
+                    CaseId = e.CaseId,
+                    Email1 = e.Email1,
+                    EmailId = e.EmailId,
+                    Type = e.Type
+                })
+                .ToList();
+        }
+
+        public void EmailInsert(EmailVM vm)
+        {
+            Email e = new Email
+            {
+                CaseId = vm.CaseId,
+                Email1 = vm.Email1,
+                EmailId = vm.EmailId,
+                Type = vm.Type
+            };
+            context.Emails.Add(e);
+            context.SaveChanges();
+        }
+
+        public void EmailDelete(EmailVM vm)
+        {
+            Email e = context.Emails.Where(ee => ee.EmailId == vm.EmailId).FirstOrDefault();
+            context.Emails.Remove(e);
+            context.SaveChanges();
+        }
+
+        public void EmailUpdate(EmailVM vm)
+        {
+            Email e = context.Emails.Where(ee => ee.EmailId == vm.EmailId).FirstOrDefault();
+            e.CaseId = vm.CaseId;
+            e.Email1 = vm.Email1;
+            e.Type = vm.Type;
+            context.Emails.Attach(e);
+            context.Entry(e).State = EntityState.Modified;
+            context.SaveChanges();
+        }
+
+        #endregion
+
+
+        #region Address
+
+        public List<AddressVM> GetAllAddresses()
+        {
+            return context.Addresses
+                .Select(a => new AddressVM
+                {
+                    Address1 = a.Address1,
+                    Address2 = a.Address2,
+                    AddressId = a.AddressId,
+                    CaseId = a.CaseId,
+                    City = a.City,
+                    Country = a.Country,
+                    State = a.State,
+                    Type = a.Type,
+                    PostalCode = a.PostalCode
+                })
+                .ToList();
+        }
+
+        public void AddressInsert(AddressVM vm)
+        {
+            Address a = new Address
+            {
+                Address1 = vm.Address1,
+                Address2 = vm.Address2,
+                AddressId = vm.AddressId,
+                CaseId = vm.CaseId,
+                City = vm.City,
+                Country = vm.Country,
+                PostalCode = vm.PostalCode,
+                State = vm.State,
+                Type = vm.Type
+            };
+            context.Addresses.Add(a);
+            context.SaveChanges();
+        }
+
+        public void AddressDelete(AddressVM vm)
+        {
+            Address a = context.Addresses.Where(aa => aa.AddressId == vm.AddressId).FirstOrDefault();
+            context.Addresses.Remove(a);
+            context.SaveChanges();
+        }
+
+        public void AddressUpdate(AddressVM vm)
+        {
+            Address a = context.Addresses.Where(aa => aa.AddressId == vm.AddressId).FirstOrDefault();
+            a.Address1 = vm.Address1;
+            a.Address2 = vm.Address2;
+            a.CaseId = vm.CaseId;
+            a.City = vm.City;
+            a.Country = vm.Country;
+            a.PostalCode = vm.PostalCode;
+            a.State = vm.State;
+            a.Type = vm.Type;
+            context.Addresses.Attach(a);
+            context.Entry(a).State = EntityState.Modified;
+            context.SaveChanges();
+        }
+
+        #endregion
 
     }
 }

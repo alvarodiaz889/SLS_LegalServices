@@ -50,12 +50,12 @@
         <AssociationConnector Association="SLS_LegalServicesDataModel.FK_Cases_Users" />
         <AssociationConnector Association="SLS_LegalServicesDataModel.FK_Log_Cases" />
         <EntityTypeShape EntityType="SLS_LegalServicesDataModel.Address" Width="1.5" PointX="15.25" PointY="18.75" />
-        <EntityTypeShape EntityType="SLS_LegalServicesDataModel.Email" Width="1.5" PointX="15.25" PointY="25.25" />
-        <EntityTypeShape EntityType="SLS_LegalServicesDataModel.Telephone" Width="1.5" PointX="15.25" PointY="22.625" />
+        <EntityTypeShape EntityType="SLS_LegalServicesDataModel.Email" Width="1.5" PointX="15.25" PointY="22.25" />
         <AssociationConnector Association="SLS_LegalServicesDataModel.FK_Addresses_Cases" />
         <AssociationConnector Association="SLS_LegalServicesDataModel.FK_CaseParties_Addresses" />
         <AssociationConnector Association="SLS_LegalServicesDataModel.FK_CaseParties_Emails" />
         <AssociationConnector Association="SLS_LegalServicesDataModel.FK_Emails_Cases" />
+        <EntityTypeShape EntityType="SLS_LegalServicesDataModel.Telephone" Width="1.5" PointX="15.25" PointY="24.875" />
         <AssociationConnector Association="SLS_LegalServicesDataModel.FK_Telephones_Cases" />
         </Diagram>
     </edmx:Diagrams>

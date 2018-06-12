@@ -271,6 +271,9 @@
       <DependentUpon>SLS_DataModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\EmailController.cs" />
+    <Compile Include="Controllers\TelephoneController.cs" />
+    <Compile Include="Controllers\AddressController.cs" />
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\AttorneysController.cs" />
     <Compile Include="Controllers\CasesController.cs" />
@@ -340,7 +343,9 @@
     <Compile Include="User.cs">
       <DependentUpon>SLS_DataModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="ViewModels\AddressVM.cs" />
     <Compile Include="ViewModels\CaseVM.cs" />
+    <Compile Include="ViewModels\EmailVM.cs" />
     <Compile Include="ViewModels\IntakeVM.cs" />
     <Compile Include="ViewModels\InternScheduleVM.cs" />
     <Compile Include="ViewModels\InternVM.cs" />
@@ -348,6 +353,7 @@
     <Compile Include="ViewModels\CaseTypesVM.cs" />
     <Compile Include="ViewModels\RoleViewModel.cs" />
     <Compile Include="ViewModels\AttorneyVM.cs" />
+    <Compile Include="ViewModels\TelephoneVM.cs" />
     <Compile Include="ViewModels\UserViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -2905,8 +2911,6 @@
     <Content Include="Views\Admin\_Interns.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\InternAttorneyDDL.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\InternSchedule.cshtml" />
-    <Content Include="Views\Shared\EditorTemplates\StartTime.cshtml" />
-    <Content Include="Views\Shared\EditorTemplates\EndTime.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\DaysOfWeek.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\EditIntern.cshtml" />
     <Content Include="Views\Case\Index.cshtml" />
@@ -2922,6 +2926,8 @@
     <Content Include="Views\Intakes\_LogView.cshtml" />
     <Content Include="Views\Intakes\_NarrativeView.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\DDLookup.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\TimePicker.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\EditAddress.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

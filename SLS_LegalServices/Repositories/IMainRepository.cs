@@ -66,6 +66,31 @@ namespace SLS_LegalServices.Repositories
 
         #endregion
 
+        #region Telephone
+        List<TelephoneVM> GetAllTelephones();
+        void TelephoneInsert(TelephoneVM vm);
+        void TelephoneDelete(TelephoneVM vm);
+        void TelephoneUpdate(TelephoneVM vm);
+
+        #endregion
+
+
+        #region Email
+        List<EmailVM> GetAllEmails();
+        void EmailInsert(EmailVM vm);
+        void EmailDelete(EmailVM vm);
+        void EmailUpdate(EmailVM vm);
+
+        #endregion
+
+
+        #region Address
+        List<AddressVM> GetAllAddresses();
+        void AddressInsert(AddressVM vm);
+        void AddressDelete(AddressVM vm);
+        void AddressUpdate(AddressVM vm);
+
+        #endregion
 
 
         void Dispose();
