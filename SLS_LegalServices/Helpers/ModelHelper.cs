@@ -84,5 +84,49 @@ namespace SLS_LegalServices.Helpers
             };
         }
 
+        public static Func<Attorney, AttorneyVM> GetAttorneyFromModelFunc = GetAttorneyFromModel;
+        public static AttorneyVM GetAttorneyFromModel(Attorney obj)
+        {
+            return new AttorneyVM
+            {
+                AttorneyId = obj.AttorneyId,
+                UserName = obj.User.UserName,
+                DisplayName = obj.User.DisplayName,
+                FirstName = obj.User.FirstName,
+                LastName = obj.User.LastName,
+                Active = obj.User.Active,
+                UserId = obj.UserId
+            };
+        }
+
+        public static Func<Address, AddressVM> GetAddressFromModelFunc = GetAddressFromModel;
+        public static AddressVM GetAddressFromModel(Address obj)
+        {
+            return new AddressVM
+            {
+                Address1 = obj.Address1,
+                Address2 = obj.Address2,
+                AddressId = obj.AddressId,
+                CaseId = obj.CaseId,
+                City = obj.City,
+                Country = obj.Country,
+                State = obj.State,
+                Type = obj.Type,
+                PostalCode = obj.PostalCode
+            };
+        }
+
+        public static Func<Email, EmailVM> GetEmailFromModelFunc = GetEmailFromModel;
+        public static EmailVM GetEmailFromModel(Email obj)
+        {
+            return new EmailVM
+            {
+                CaseId = obj.CaseId,
+                Email1 = obj.Email1,
+                EmailId = obj.EmailId,
+                Type = obj.Type
+            };
+        }
+
     }
 }

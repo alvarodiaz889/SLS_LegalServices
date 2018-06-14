@@ -33,6 +33,7 @@
               .Create(create => create.Action("Create", "CaseTypes"))
               .Events(events => events.RequestEnd("onRequestEnd"))
           )
+          .Pageable()
           .ToolBar(toolbar => { toolbar.Create().Text("Add"); })
           .Editable(editable => editable.Mode(GridEditMode.InLine))
           .Events(e => e.Edit("onEdit"))

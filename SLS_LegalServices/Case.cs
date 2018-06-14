@@ -23,12 +23,12 @@ namespace SLS_LegalServices
             this.CaseInterns = new HashSet<CaseIntern>();
             this.CaseMoneys = new HashSet<CaseMoney>();
             this.CaseNotes = new HashSet<CaseNote>();
-            this.CaseParties = new HashSet<CaseParty>();
             this.CaseReferralSources = new HashSet<CaseReferralSource>();
             this.Logs = new HashSet<Log>();
+            this.Telephones = new HashSet<Telephone>();
             this.Addresses = new HashSet<Address>();
             this.Emails = new HashSet<Email>();
-            this.Telephones = new HashSet<Telephone>();
+            this.CaseParties = new HashSet<CaseParty>();
         }
     
         public int CaseId { get; set; }
@@ -63,18 +63,18 @@ namespace SLS_LegalServices
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CaseNote> CaseNotes { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<CaseParty> CaseParties { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CaseReferralSource> CaseReferralSources { get; set; }
         public virtual CaseType CaseType { get; set; }
         public virtual User User { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Log> Logs { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Telephone> Telephones { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Address> Addresses { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Email> Emails { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Telephone> Telephones { get; set; }
+        public virtual ICollection<CaseParty> CaseParties { get; set; }
     }
 }

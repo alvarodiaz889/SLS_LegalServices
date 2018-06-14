@@ -1,1 +1,51 @@
-﻿<h2>Parties</h2>
+﻿@model IntakeVM
+@{
+    int intakeId = Model != null ? Model.CaseId : 0;
+}
+
+<script>
+    function onRequestEnd(e) {
+        if (e.type == "update" || e.type == "create" || e.type == "remove") {
+            this.read();
+        }
+    }
+</script>
+
+<h2>Parties</h2>
+
+@(Html.Kendo().Grid<CasePartyVM>()
+            .Name("CasePartyGrid")
+            .Columns(columns =>
+            {
+                columns.Command(command => { command.Edit().Text(" ").CancelText("Cancel").UpdateText("Update"); command.Destroy().Text(" "); }).Width(100);
+                columns.Bound(c => c.CasePartyId).Visible(false);
+                columns.Bound(c => c.LastName);
+                columns.Bound(c => c.FirstName);
+                columns.Bound(c => c.Email).ClientTemplate("#=Email.Email1#");
+                columns.Bound(c => c.Address).ClientTemplate("#=Address.FullAddress#");
+                columns.Bound(c => c.IsIUStudent).ClientTemplate("#= IsIUStudent ? value='YES': 'NO' #");
+            })
+            .Scrollable()
+            .DataSource(dataSource => dataSource
+                .Ajax()
+                .Model(m =>
+                {
+                    m.Id(c => c.CasePartyId);
+                    m.Field(c => c.CaseId).DefaultValue(intakeId);
+                    m.Field(c => c.Email).DefaultValue(new EmailVM());
+                    m.Field(c => c.Address).DefaultValue(new AddressVM());
+                    m.Field(c => c.AddressId).DefaultValue(0);
+                    m.Field(c => c.EmailId).DefaultValue(0);
+                })
+                .Read(read => read.Action("Read", "CaseParty", new { intakeId = intakeId }))
+                .Destroy(destroy => destroy.Action("Destroy", "CaseParty"))
+                .Update(update => update.Action("Update", "CaseParty"))
+                .Create(create => create.Action("Create", "CaseParty"))
+                .Events(events => events.RequestEnd("onRequestEnd"))
+            )
+            .ToolBar(toolbar => { toolbar.Create().Text("Add"); })
+            .HtmlAttributes(new { @style = "height:auto;" })
+            .Editable(editable => editable.Mode(GridEditMode.PopUp)
+                .TemplateName("EditParty").Window(w => w.Title("Case Party").Name("editWindow").Width(800))
+                .AdditionalViewData(new { IsFromParty = true }))
+)

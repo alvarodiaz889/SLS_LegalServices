@@ -1,59 +1,67 @@
-﻿@model InternVM
+﻿@model AddressVM
+@{
+    var IsFromParty = (bool)ViewData["IsFromParty"];
+}
 
-<div style="width:100%">
+@Html.HiddenFor(s => s.AddressId)
 
-    @using (Html.BeginForm("ContactForm", "Scheduling", null, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+<div>
+    @if (!IsFromParty)
     {
-        @Html.ValidationSummary(true, "")
-
-
-        <div class="form-group">
-            @Html.LabelFor(s => s.UserName)
+        <div>
+            @Html.LabelFor(s => s.Type)
 
             <div>
-                @Html.EditorFor(s => s.UserName)
+                @Html.TextBoxFor(s => s.Type)
             </div>
         </div>
-
-        <div class="form-group">
-            @Html.LabelFor(s => s.LastName)
-
-            <div>
-                @Html.EditorFor(s => s.LastName)
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(s => s.FirstName)
-
-            <div>
-                @Html.EditorFor(s => s.FirstName)
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(s => s.Attorneys)
-
-            <div>
-                @Html.EditorFor(s => s.Attorneys)
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(s => s.CertifiedDate)
-
-            <div>
-                @Html.EditorFor(s => s.CertifiedDate)
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(s => s.Status)
-
-            <div>
-                @Html.EditorFor(s => s.Status)
-            </div>
-        </div>
-
     }
+    <div>
+        @Html.LabelFor(s => s.Address1)
+
+        <div>
+            @Html.TextBoxFor(s => s.Address1)
+        </div>
+    </div>
+
+    <div>
+        @Html.LabelFor(s => s.Address2)
+
+        <div>
+            @Html.EditorFor(s => s.Address2)
+        </div>
+    </div>
+
+    <div>
+        @Html.LabelFor(s => s.Country)
+
+        <div>
+            @Html.EditorFor(s => s.Country)
+        </div>
+    </div>
+
+    <div>
+        @Html.LabelFor(s => s.State)
+
+        <div>
+            @Html.EditorFor(s => s.State)
+        </div>
+    </div>
+
+    <div>
+        @Html.LabelFor(s => s.City)
+
+        <div>
+            @Html.EditorFor(s => s.City)
+        </div>
+    </div>
+
+    <div class="grid-item">
+        @Html.LabelFor(s => s.PostalCode)
+
+        <div>
+            @Html.EditorFor(s => s.PostalCode)
+        </div>
+    </div>
+
 </div>

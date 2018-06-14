@@ -1,0 +1,20 @@
+﻿@model CaseNotesVM
+
+<div>
+
+    @using (Html.BeginForm("", "", null, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+    {
+        @Html.ValidationSummary(true, "")
+
+
+        <div>
+            @Html.LabelFor(s => s.Detail)
+
+            <div>
+                @Html.TextAreaFor(s => s.Detail)
+            </div>
+        </div>
+
+
+    }
+</div>

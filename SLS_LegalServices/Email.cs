@@ -25,8 +25,8 @@ namespace SLS_LegalServices
         public Nullable<int> CaseId { get; set; }
         public string Email1 { get; set; }
     
+        public virtual Case Case { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CaseParty> CaseParties { get; set; }
-        public virtual Case Case { get; set; }
     }
 }

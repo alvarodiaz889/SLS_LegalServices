@@ -20,16 +20,12 @@ namespace SLS_LegalServices
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string OrganizationName { get; set; }
-        public string Gender { get; set; }
-        public string AcademicStatus { get; set; }
-        public string SocialStatus { get; set; }
-        public string CitizenshipStatus { get; set; }
-        public string IUStudentId { get; set; }
-        public Nullable<int> AddressId { get; set; }
-        public Nullable<int> EmailId { get; set; }
+        public int AddressId { get; set; }
+        public int EmailId { get; set; }
+        public bool IsIUStudent { get; set; }
     
-        public virtual Case Case { get; set; }
         public virtual Address Address { get; set; }
+        public virtual Case Case { get; set; }
         public virtual Email Email { get; set; }
     }
 }

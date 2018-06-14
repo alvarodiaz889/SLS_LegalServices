@@ -2,52 +2,54 @@
 using Kendo.Mvc.UI;
 using SLS_LegalServices.Repositories;
 using SLS_LegalServices.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web;
 using System.Web.Mvc;
 
 namespace SLS_LegalServices.Controllers
 {
-    public class CaseLogController : Controller
+    public class CasePartyController : Controller
     {
         IMainRepository repository;
 
-        public CaseLogController(IMainRepository repository)
+        public CasePartyController(IMainRepository repository)
         {
             this.repository = repository;
         }
-        public ActionResult Read([DataSourceRequest]DataSourceRequest request)
+        public ActionResult Read([DataSourceRequest]DataSourceRequest request, int intakeId)
         {
-            List<LogVM> casetypes = repository.GetAllCaseLogs();
-            DataSourceResult result = casetypes.AsQueryable().ToDataSourceResult(request);
+            var parties = repository.GetAllCaseParties().Where(e => e.CaseId == intakeId).ToList();
+            DataSourceResult result = parties.AsQueryable().ToDataSourceResult(request);
 
             return Json(result, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
-        public ActionResult Create([DataSourceRequest] DataSourceRequest request, LogVM obj)
+        public ActionResult Create([DataSourceRequest] DataSourceRequest request, CasePartyVM obj)
         {
             if (ModelState.IsValid)
             {
-                repository.CaseLogInsert(obj);
+                repository.CasePartyInsert(obj);
             }
 
             return Json(new[] { obj }.ToDataSourceResult(request, ModelState));
         }
 
         [HttpPost]
-        public ActionResult Destroy([DataSourceRequest] DataSourceRequest request, LogVM obj)
+        public ActionResult Destroy([DataSourceRequest] DataSourceRequest request, CasePartyVM obj)
         {
-            repository.CaseLogDelete(obj);
+            repository.CasePartyDelete(obj);
             return Json(new[] { obj }.ToDataSourceResult(request, ModelState));
         }
 
         [HttpPost]
-        public ActionResult Update([DataSourceRequest] DataSourceRequest request, LogVM obj)
+        public ActionResult Update([DataSourceRequest] DataSourceRequest request, CasePartyVM obj)
         {
             if (ModelState.IsValid)
             {
-                repository.CaseLogUpdate(obj);
+                repository.CasePartyUpdate(obj);
             }
             return Json(new[] { obj }.ToDataSourceResult(request, ModelState));
         }

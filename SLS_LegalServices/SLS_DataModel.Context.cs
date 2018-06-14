@@ -43,10 +43,10 @@ namespace SLS_LegalServices
         public virtual DbSet<CaseCertifiedIntern> CaseCertifiedInterns { get; set; }
         public virtual DbSet<CaseStatusLookup> CaseStatusLookups { get; set; }
         public virtual DbSet<GenericValuesLookup> GenericValuesLookups { get; set; }
-        public virtual DbSet<CaseParty> CaseParties { get; set; }
         public virtual DbSet<Case> Cases { get; set; }
+        public virtual DbSet<Telephone> Telephones { get; set; }
         public virtual DbSet<Address> Addresses { get; set; }
         public virtual DbSet<Email> Emails { get; set; }
-        public virtual DbSet<Telephone> Telephones { get; set; }
+        public virtual DbSet<CaseParty> CaseParties { get; set; }
     }
 }

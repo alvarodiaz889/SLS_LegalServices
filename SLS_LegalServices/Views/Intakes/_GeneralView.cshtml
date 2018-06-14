@@ -4,9 +4,9 @@
     var strCreationDate = Model != null ? Model.CreationDate.ToString() : string.Empty;
 }
 <script>
+    
     function whenChanging()
     {
-        //alert('whenChanging');
         let idValue = $("#modelId").val();
         let urlAction = '';
         if (idValue == 0)
@@ -24,6 +24,15 @@
         let IUStudentId = $("#IUStudentId").val();
         let CaseType = $("#CaseType").val();
         let CaseId = $("#modelId").val();
+        let AttorneysValues = $("#Attorneys").data("kendoMultiSelect").dataItems();
+        let Attorneys = [];
+        let Narrative = $("#NarrativeEditor").data("kendoEditor").value();
+        console.log(Narrative);
+
+        for (let i = 0; i < AttorneysValues.length; i++)
+        {
+            Attorneys.push(AttorneysValues[i].AttorneyId);
+        }
 
         $.post(url,
             {
@@ -33,9 +42,11 @@
                 InternId: CaseIntern,
                 IUStudentId: IUStudentId,
                 TypeId: CaseType,
+                AttorneyIds: Attorneys,
+                Narrative: Narrative
             },
             function (data) {
-                console.log(data);
+                //console.log(data);
                 if (data)
                 {
                     $("#modelId").val(data);
@@ -52,7 +63,7 @@
                 id: $("#modelId").val()
             },
             function (data) {
-                console.log(data);
+                //console.log(data);
                 let lastName = data.LastName ? data.LastName : '';
                 let firstName = data.FirstName ? data.FirstName : '';
                 let fullName = (lastName && firstName) ? lastName + ', ' + firstName : lastName + ' ' + firstName;
@@ -87,15 +98,16 @@
 
 </script>
 
-<div class="grid halves">
-    <div class="grid-item">
+<div class="padding-ten">
+    <div class="float-left one-half">
         <input type="submit" value="Enrollment Not Verified" class="button" />
     </div>
-    <div class="grid-item">
+    <div class="float-left one-half">
         <input type="submit" value="Student Activity Fee Not Verified" class="button" />
     </div>
-    <div class="grid-item"></div>
-    <div class="grid-item">
+</div>
+<div class="padding-ten">
+    <div class="float-right one-half">
         <h4 style="text-align:right" id="fullName">@strFullName</h4>
     </div>
 </div>
@@ -152,6 +164,15 @@
         </div>
         <div>
             <label id="lblCreationDate">@strCreationDate</label>
+        </div>
+    </div>
+
+    <div class="grid-item">
+        <div>
+            @Html.LabelFor(model => model.Attorneys)
+        </div>
+        <div>
+            @Html.EditorFor(model => model.Attorneys)
         </div>
     </div>
 

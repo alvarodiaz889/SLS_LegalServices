@@ -36,9 +36,9 @@ namespace SLS_LegalServices.ViewModels
         public string Interview { get; set; }
         public string FullName {
             get {
-                string lastName = LastName ?? string.Empty;
-                string firstName = FirstName ?? string.Empty;
-                var full = (lastName == "" || firstName == "" ) ? lastName + " " + firstName : lastName + ", " + firstName;
+                var full = string.Empty;
+                full += string.IsNullOrEmpty(LastName) ? string.Empty : LastName;
+                full += string.IsNullOrEmpty(LastName) ? string.Empty : ", " + FirstName;
                 return full;
             }
         }
@@ -64,6 +64,10 @@ namespace SLS_LegalServices.ViewModels
         [AdditionalMetadata("Action", "GetInterns")]
         [AdditionalMetadata("Change", "whenChanging")]
         public InternVM CaseIntern { get; set; }
+
+        [UIHint("AttorneysMultiSelect")]
+        public List<AttorneyVM> Attorneys { get; set; }
+        public int[] AttorneyIds { get; set; }
 
     }
 }

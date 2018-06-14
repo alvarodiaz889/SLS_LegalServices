@@ -109,7 +109,7 @@
           .ToolBar(toolbar => { toolbar.Create().Text("Add"); })
           .Editable(editable => editable.Mode(GridEditMode.PopUp)
             .TemplateName("EditIntern").Window(w => w.Title("Edit Intern").Name("editWindow").Width(800)))
-          .HtmlAttributes(new { @style = "height:450px"})
+          .HtmlAttributes(new { @style = "height:auto;"})
           .ClientDetailTemplateId("detailTemplate")
           .Events(e => e.DetailCollapse("OnDetailCollapse"))
 )

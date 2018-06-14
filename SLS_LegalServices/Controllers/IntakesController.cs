@@ -51,6 +51,7 @@ namespace SLS_LegalServices.Controllers
             var intake = repository.GetIntakeById(id);
             ViewData["TypeId"] = intake?.TypeId ?? 0;
             ViewData["InternId"] = intake?.InternId ?? 0;
+            ViewBag.Attorneys = repository.GetAllAttorneys();
 
             return View(intake);
         }

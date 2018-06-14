@@ -3,11 +3,11 @@
     var id = (Model != null)? Model.CaseId :0; 
 }
 <input id="modelId" type="hidden" value="@id" />
-<div class="grid halves custom">
+<div>
 @{
     foreach (var viewName in (List<string>)ViewBag.SectionList)
     {
-        <div class="grid-item">
+        <div class="float-left one-half item-border">
             @Html.Partial(viewName,Model)
         </div>
     }

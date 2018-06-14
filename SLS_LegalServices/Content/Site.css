@@ -15,7 +15,7 @@
 
 .mainFrame {
     margin: 50px auto;
-    width: 80%;
+    width: 90%;
     height: auto;
     min-height: 500px;
     box-sizing: border-box;
@@ -24,6 +24,8 @@
 .mainFrameItem {
     margin: 20px 0;
     overflow-y: auto;
+    box-sizing: border-box;
+    padding: 10px;
 }
 
 /** pop up intern view*/
@@ -46,4 +48,20 @@
     margin: 0;
     box-sizing:border-box;
     border-radius: 5px;
+}
+
+.k-grid-content {
+    height:inherit !important;
+    min-height: 50px;
+}
+
+.item-border {
+    box-sizing: border-box;
+    padding: 10px;
+    border: 1px solid #ccc;
+}
+
+.padding-ten {
+    box-sizing: border-box;
+    padding: 10px !important;
 }

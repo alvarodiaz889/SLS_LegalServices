@@ -1,1 +1,47 @@
-﻿<h2>Notes</h2>
+﻿@model IntakeVM
+@{
+    int intakeId = Model != null ? Model.CaseId : 0;
+}
+
+<script>
+    function onRequestEnd(e) {
+        if (e.type == "update" || e.type == "create" || e.type == "remove") {
+            this.read();
+        }
+    }
+</script>
+
+<h6>Notes</h6>
+
+@(Html.Kendo().Grid<CaseNotesVM>()
+        .Name("CaseNotesGrid")
+        .Columns(columns =>
+        {
+            columns.Command(command => { command.Edit().Text(" ").CancelText("Cancel").UpdateText("Update"); command.Destroy().Text(" "); }).Width(100);
+            columns.Bound(c => c.CaseNoteId).Visible(false);
+            columns.Bound(c => c.CreationDate).Format("{0:dd/MM/yyyy hh:mm tt}").Width(120);
+            columns.Bound(c => c.Detail);
+            columns.Bound(c => c.UserName).Width(120);
+        })
+        .Scrollable()
+        .DataSource(dataSource => dataSource
+            .Ajax()
+            .Model(m =>
+            {
+                m.Id(c => c.CaseNoteId);
+                m.Field(c => c.CaseId).DefaultValue(intakeId);
+                m.Field(c => c.CreatedById).DefaultValue(Guid.Parse(User.Identity.GetUserId()));
+                m.Field(c => c.CreationDate).Editable(false);
+                m.Field(c => c.UserName).Editable(false);
+            })
+            .Read(read => read.Action("Read", "CaseNote", new { intakeId = intakeId }))
+            .Destroy(destroy => destroy.Action("Destroy", "CaseNote"))
+            .Update(update => update.Action("Update", "CaseNote"))
+            .Create(create => create.Action("Create", "CaseNote"))
+            .Events(events => events.RequestEnd("onRequestEnd"))
+        )
+        .ToolBar(toolbar => { toolbar.Create().Text("Add"); })
+        .HtmlAttributes(new { @style = "height:auto;" })
+        .Editable(editable => editable.Mode(GridEditMode.PopUp)
+            .TemplateName("EditNotes").Window(w => w.Title("Case Notes").Name("editWindow").Width(800)))
+)

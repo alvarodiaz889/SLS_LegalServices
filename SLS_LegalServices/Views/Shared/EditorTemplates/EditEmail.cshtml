@@ -1,0 +1,27 @@
+﻿@model EmailVM
+@{
+    var IsFromParty = (bool)ViewData["IsFromParty"];
+}
+<div>
+
+    @Html.HiddenFor(s => s.EmailId)
+
+    @if (!IsFromParty)
+    {
+        <div>
+            @Html.LabelFor(s => s.Type)
+
+            <div>
+                @Html.TextBoxFor(s => s.Type)
+            </div>
+        </div>
+    }
+        <div>
+            @Html.LabelFor(s => s.Email1)
+
+            <div>
+                @Html.TextBoxFor(s => s.Email1)
+            </div>
+        </div>
+
+    </div>

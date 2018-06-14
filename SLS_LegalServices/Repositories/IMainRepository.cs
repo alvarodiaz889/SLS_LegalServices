@@ -77,7 +77,7 @@ namespace SLS_LegalServices.Repositories
 
         #region Email
         List<EmailVM> GetAllEmails();
-        void EmailInsert(EmailVM vm);
+        int EmailInsert(EmailVM vm);
         void EmailDelete(EmailVM vm);
         void EmailUpdate(EmailVM vm);
 
@@ -86,9 +86,27 @@ namespace SLS_LegalServices.Repositories
 
         #region Address
         List<AddressVM> GetAllAddresses();
-        void AddressInsert(AddressVM vm);
+        int AddressInsert(AddressVM vm);
         void AddressDelete(AddressVM vm);
         void AddressUpdate(AddressVM vm);
+
+        #endregion
+
+
+        #region CaseNotes
+        List<CaseNotesVM> GetAllCaseNotes();
+        void CaseNoteInsert(CaseNotesVM vm);
+        void CaseNoteDelete(CaseNotesVM vm);
+        void CaseNoteUpdate(CaseNotesVM vm);
+
+        #endregion
+
+
+        #region CaseNotes
+        List<CasePartyVM> GetAllCaseParties();
+        void CasePartyInsert(CasePartyVM vm);
+        void CasePartyDelete(CasePartyVM vm);
+        void CasePartyUpdate(CasePartyVM vm);
 
         #endregion
 

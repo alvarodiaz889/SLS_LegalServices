@@ -124,16 +124,12 @@
           <Property Name="CasePartyId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="CaseId" Type="int" Nullable="false" />
           <Property Name="PartyType" Type="varchar" MaxLength="50" Nullable="false" />
-          <Property Name="FirstName" Type="varchar" MaxLength="255" />
-          <Property Name="LastName" Type="varchar" MaxLength="255" />
+          <Property Name="FirstName" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="LastName" Type="varchar" MaxLength="255" Nullable="false" />
           <Property Name="OrganizationName" Type="varchar" MaxLength="255" />
-          <Property Name="Gender" Type="varchar" MaxLength="50" />
-          <Property Name="AcademicStatus" Type="varchar" MaxLength="50" />
-          <Property Name="SocialStatus" Type="varchar" MaxLength="50" />
-          <Property Name="CitizenshipStatus" Type="varchar" MaxLength="50" />
-          <Property Name="IUStudentId" Type="varchar" MaxLength="50" />
-          <Property Name="AddressId" Type="int" />
-          <Property Name="EmailId" Type="int" />
+          <Property Name="AddressId" Type="int" Nullable="false" />
+          <Property Name="EmailId" Type="int" Nullable="false" />
+          <Property Name="IsIUStudent" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="CaseReferralSources">
           <Key>
@@ -436,7 +432,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_CaseParties_Addresses">
-          <End Role="Addresses" Type="Self.Addresses" Multiplicity="0..1" />
+          <End Role="Addresses" Type="Self.Addresses" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="CaseParties" Type="Self.CaseParties" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Addresses">
@@ -460,7 +458,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_CaseParties_Emails">
-          <End Role="Emails" Type="Self.Emails" Multiplicity="0..1" />
+          <End Role="Emails" Type="Self.Emails" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="CaseParties" Type="Self.CaseParties" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Emails">
@@ -890,7 +890,6 @@
             <End Role="Intern" EntitySet="Interns" />
             <End Role="CaseCertifiedIntern" EntitySet="CaseCertifiedInterns" />
           </AssociationSet>
-          <EntitySet Name="CaseParties" EntityType="SLS_LegalServicesDataModel.CaseParty" />
           <EntitySet Name="Cases" EntityType="SLS_LegalServicesDataModel.Case" />
           <AssociationSet Name="FK_CaseAttorneys_Cases" Association="SLS_LegalServicesDataModel.FK_CaseAttorneys_Cases">
             <End Role="Case" EntitySet="Cases" />
@@ -916,10 +915,6 @@
             <End Role="Case" EntitySet="Cases" />
             <End Role="CaseNote" EntitySet="CaseNotes" />
           </AssociationSet>
-          <AssociationSet Name="FK_CaseParties_Cases" Association="SLS_LegalServicesDataModel.FK_CaseParties_Cases">
-            <End Role="Case" EntitySet="Cases" />
-            <End Role="CaseParty" EntitySet="CaseParties" />
-          </AssociationSet>
           <AssociationSet Name="FK_CaseReferralSources_Cases" Association="SLS_LegalServicesDataModel.FK_CaseReferralSources_Cases">
             <End Role="Case" EntitySet="Cases" />
             <End Role="CaseReferralSource" EntitySet="CaseReferralSources" />
@@ -936,28 +931,33 @@
             <End Role="Case" EntitySet="Cases" />
             <End Role="Log" EntitySet="Logs" />
           </AssociationSet>
+          <EntitySet Name="Telephones" EntityType="SLS_LegalServicesDataModel.Telephone" />
+          <AssociationSet Name="FK_Telephones_Cases" Association="SLS_LegalServicesDataModel.FK_Telephones_Cases">
+            <End Role="Case" EntitySet="Cases" />
+            <End Role="Telephone" EntitySet="Telephones" />
+          </AssociationSet>
           <EntitySet Name="Addresses" EntityType="SLS_LegalServicesDataModel.Address" />
           <EntitySet Name="Emails" EntityType="SLS_LegalServicesDataModel.Email" />
           <AssociationSet Name="FK_Addresses_Cases" Association="SLS_LegalServicesDataModel.FK_Addresses_Cases">
             <End Role="Case" EntitySet="Cases" />
             <End Role="Address" EntitySet="Addresses" />
           </AssociationSet>
+          <AssociationSet Name="FK_Emails_Cases" Association="SLS_LegalServicesDataModel.FK_Emails_Cases">
+            <End Role="Case" EntitySet="Cases" />
+            <End Role="Email" EntitySet="Emails" />
+          </AssociationSet>
+          <EntitySet Name="CaseParties" EntityType="SLS_LegalServicesDataModel.CaseParty" />
           <AssociationSet Name="FK_CaseParties_Addresses" Association="SLS_LegalServicesDataModel.FK_CaseParties_Addresses">
             <End Role="Address" EntitySet="Addresses" />
+            <End Role="CaseParty" EntitySet="CaseParties" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CaseParties_Cases" Association="SLS_LegalServicesDataModel.FK_CaseParties_Cases">
+            <End Role="Case" EntitySet="Cases" />
             <End Role="CaseParty" EntitySet="CaseParties" />
           </AssociationSet>
           <AssociationSet Name="FK_CaseParties_Emails" Association="SLS_LegalServicesDataModel.FK_CaseParties_Emails">
             <End Role="Email" EntitySet="Emails" />
             <End Role="CaseParty" EntitySet="CaseParties" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Emails_Cases" Association="SLS_LegalServicesDataModel.FK_Emails_Cases">
-            <End Role="Case" EntitySet="Cases" />
-            <End Role="Email" EntitySet="Emails" />
-          </AssociationSet>
-          <EntitySet Name="Telephones" EntityType="SLS_LegalServicesDataModel.Telephone" />
-          <AssociationSet Name="FK_Telephones_Cases" Association="SLS_LegalServicesDataModel.FK_Telephones_Cases">
-            <End Role="Case" EntitySet="Cases" />
-            <End Role="Telephone" EntitySet="Telephones" />
           </AssociationSet>
           </EntityContainer>
         <EntityType Name="Attorney">
@@ -1291,27 +1291,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="CaseParty">
-          <Key>
-            <PropertyRef Name="CasePartyId" />
-          </Key>
-          <Property Name="CasePartyId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="CaseId" Type="Int32" Nullable="false" />
-          <Property Name="PartyType" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="FirstName" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="LastName" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="OrganizationName" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="Gender" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="AcademicStatus" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="SocialStatus" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="CitizenshipStatus" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="IUStudentId" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="AddressId" Type="Int32" />
-          <Property Name="EmailId" Type="Int32" />
-          <NavigationProperty Name="Case" Relationship="SLS_LegalServicesDataModel.FK_CaseParties_Cases" FromRole="CaseParty" ToRole="Case" />
-          <NavigationProperty Name="Address" Relationship="SLS_LegalServicesDataModel.FK_CaseParties_Addresses" FromRole="CaseParty" ToRole="Address" />
-          <NavigationProperty Name="Email" Relationship="SLS_LegalServicesDataModel.FK_CaseParties_Emails" FromRole="CaseParty" ToRole="Email" />
-        </EntityType>
         <EntityType Name="Case">
           <Key>
             <PropertyRef Name="CaseId" />
@@ -1340,14 +1319,14 @@
           <NavigationProperty Name="CaseInterns" Relationship="SLS_LegalServicesDataModel.FK_CaseInterns_Cases" FromRole="Case" ToRole="CaseIntern" />
           <NavigationProperty Name="CaseMoneys" Relationship="SLS_LegalServicesDataModel.FK_CaseMoneys_Cases" FromRole="Case" ToRole="CaseMoney" />
           <NavigationProperty Name="CaseNotes" Relationship="SLS_LegalServicesDataModel.FK_CaseNotes_Cases" FromRole="Case" ToRole="CaseNote" />
-          <NavigationProperty Name="CaseParties" Relationship="SLS_LegalServicesDataModel.FK_CaseParties_Cases" FromRole="Case" ToRole="CaseParty" />
           <NavigationProperty Name="CaseReferralSources" Relationship="SLS_LegalServicesDataModel.FK_CaseReferralSources_Cases" FromRole="Case" ToRole="CaseReferralSource" />
           <NavigationProperty Name="CaseType" Relationship="SLS_LegalServicesDataModel.FK_Cases_CaseType" FromRole="Case" ToRole="CaseType" />
           <NavigationProperty Name="User" Relationship="SLS_LegalServicesDataModel.FK_Cases_Users" FromRole="Case" ToRole="User" />
           <NavigationProperty Name="Logs" Relationship="SLS_LegalServicesDataModel.FK_Log_Cases" FromRole="Case" ToRole="Log" />
+          <NavigationProperty Name="Telephones" Relationship="SLS_LegalServicesDataModel.FK_Telephones_Cases" FromRole="Case" ToRole="Telephone" />
           <NavigationProperty Name="Addresses" Relationship="SLS_LegalServicesDataModel.FK_Addresses_Cases" FromRole="Case" ToRole="Address" />
           <NavigationProperty Name="Emails" Relationship="SLS_LegalServicesDataModel.FK_Emails_Cases" FromRole="Case" ToRole="Email" />
-          <NavigationProperty Name="Telephones" Relationship="SLS_LegalServicesDataModel.FK_Telephones_Cases" FromRole="Case" ToRole="Telephone" />
+          <NavigationProperty Name="CaseParties" Relationship="SLS_LegalServicesDataModel.FK_CaseParties_Cases" FromRole="Case" ToRole="CaseParty" />
         </EntityType>
         <Association Name="FK_CaseAttorneys_Cases">
           <End Type="SLS_LegalServicesDataModel.Case" Role="Case" Multiplicity="1" />
@@ -1423,18 +1402,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_CaseParties_Cases">
-          <End Type="SLS_LegalServicesDataModel.Case" Role="Case" Multiplicity="1" />
-          <End Type="SLS_LegalServicesDataModel.CaseParty" Role="CaseParty" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Case">
-              <PropertyRef Name="CaseId" />
-            </Principal>
-            <Dependent Role="CaseParty">
-              <PropertyRef Name="CaseId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_CaseReferralSources_Cases">
           <End Type="SLS_LegalServicesDataModel.Case" Role="Case" Multiplicity="1" />
           <End Type="SLS_LegalServicesDataModel.CaseReferralSource" Role="CaseReferralSource" Multiplicity="*" />
@@ -1483,6 +1450,28 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="Telephone">
+          <Key>
+            <PropertyRef Name="TelephoneId" />
+          </Key>
+          <Property Name="TelephoneId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Type" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CaseId" Type="Int32" />
+          <Property Name="Number" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Case" Relationship="SLS_LegalServicesDataModel.FK_Telephones_Cases" FromRole="Telephone" ToRole="Case" />
+        </EntityType>
+        <Association Name="FK_Telephones_Cases">
+          <End Type="SLS_LegalServicesDataModel.Case" Role="Case" Multiplicity="0..1" />
+          <End Type="SLS_LegalServicesDataModel.Telephone" Role="Telephone" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Case">
+              <PropertyRef Name="CaseId" />
+            </Principal>
+            <Dependent Role="Telephone">
+              <PropertyRef Name="CaseId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityType Name="Address">
           <Key>
             <PropertyRef Name="AddressId" />
@@ -1507,8 +1496,8 @@
           <Property Name="Type" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="CaseId" Type="Int32" />
           <Property Name="Email1" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="CaseParties" Relationship="SLS_LegalServicesDataModel.FK_CaseParties_Emails" FromRole="Email" ToRole="CaseParty" />
           <NavigationProperty Name="Case" Relationship="SLS_LegalServicesDataModel.FK_Emails_Cases" FromRole="Email" ToRole="Case" />
+          <NavigationProperty Name="CaseParties" Relationship="SLS_LegalServicesDataModel.FK_CaseParties_Emails" FromRole="Email" ToRole="CaseParty" />
         </EntityType>
         <Association Name="FK_Addresses_Cases">
           <End Type="SLS_LegalServicesDataModel.Case" Role="Case" Multiplicity="0..1" />
@@ -1519,30 +1508,6 @@
             </Principal>
             <Dependent Role="Address">
               <PropertyRef Name="CaseId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_CaseParties_Addresses">
-          <End Type="SLS_LegalServicesDataModel.Address" Role="Address" Multiplicity="0..1" />
-          <End Type="SLS_LegalServicesDataModel.CaseParty" Role="CaseParty" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Address">
-              <PropertyRef Name="AddressId" />
-            </Principal>
-            <Dependent Role="CaseParty">
-              <PropertyRef Name="AddressId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_CaseParties_Emails">
-          <End Type="SLS_LegalServicesDataModel.Email" Role="Email" Multiplicity="0..1" />
-          <End Type="SLS_LegalServicesDataModel.CaseParty" Role="CaseParty" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Email">
-              <PropertyRef Name="EmailId" />
-            </Principal>
-            <Dependent Role="CaseParty">
-              <PropertyRef Name="EmailId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1558,25 +1523,60 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="Telephone">
+        <EntityType Name="CaseParty">
           <Key>
-            <PropertyRef Name="TelephoneId" />
+            <PropertyRef Name="CasePartyId" />
           </Key>
-          <Property Name="TelephoneId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Type" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="CaseId" Type="Int32" />
-          <Property Name="Number" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="Case" Relationship="SLS_LegalServicesDataModel.FK_Telephones_Cases" FromRole="Telephone" ToRole="Case" />
+          <Property Name="CasePartyId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CaseId" Type="Int32" Nullable="false" />
+          <Property Name="PartyType" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="FirstName" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="LastName" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="OrganizationName" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="AddressId" Type="Int32" Nullable="false" />
+          <Property Name="EmailId" Type="Int32" Nullable="false" />
+          <Property Name="IsIUStudent" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Address" Relationship="SLS_LegalServicesDataModel.FK_CaseParties_Addresses" FromRole="CaseParty" ToRole="Address" />
+          <NavigationProperty Name="Case" Relationship="SLS_LegalServicesDataModel.FK_CaseParties_Cases" FromRole="CaseParty" ToRole="Case" />
+          <NavigationProperty Name="Email" Relationship="SLS_LegalServicesDataModel.FK_CaseParties_Emails" FromRole="CaseParty" ToRole="Email" />
         </EntityType>
-        <Association Name="FK_Telephones_Cases">
-          <End Type="SLS_LegalServicesDataModel.Case" Role="Case" Multiplicity="0..1" />
-          <End Type="SLS_LegalServicesDataModel.Telephone" Role="Telephone" Multiplicity="*" />
+        <Association Name="FK_CaseParties_Addresses">
+          <End Type="SLS_LegalServicesDataModel.Address" Role="Address" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="SLS_LegalServicesDataModel.CaseParty" Role="CaseParty" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Address">
+              <PropertyRef Name="AddressId" />
+            </Principal>
+            <Dependent Role="CaseParty">
+              <PropertyRef Name="AddressId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CaseParties_Cases">
+          <End Type="SLS_LegalServicesDataModel.Case" Role="Case" Multiplicity="1" />
+          <End Type="SLS_LegalServicesDataModel.CaseParty" Role="CaseParty" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Case">
               <PropertyRef Name="CaseId" />
             </Principal>
-            <Dependent Role="Telephone">
+            <Dependent Role="CaseParty">
               <PropertyRef Name="CaseId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CaseParties_Emails">
+          <End Type="SLS_LegalServicesDataModel.Email" Role="Email" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="SLS_LegalServicesDataModel.CaseParty" Role="CaseParty" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Email">
+              <PropertyRef Name="EmailId" />
+            </Principal>
+            <Dependent Role="CaseParty">
+              <PropertyRef Name="EmailId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1785,25 +1785,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="CaseParties">
-            <EntityTypeMapping TypeName="SLS_LegalServicesDataModel.CaseParty">
-              <MappingFragment StoreEntitySet="CaseParties">
-                <ScalarProperty Name="EmailId" ColumnName="EmailId" />
-                <ScalarProperty Name="AddressId" ColumnName="AddressId" />
-                <ScalarProperty Name="IUStudentId" ColumnName="IUStudentId" />
-                <ScalarProperty Name="CitizenshipStatus" ColumnName="CitizenshipStatus" />
-                <ScalarProperty Name="SocialStatus" ColumnName="SocialStatus" />
-                <ScalarProperty Name="AcademicStatus" ColumnName="AcademicStatus" />
-                <ScalarProperty Name="Gender" ColumnName="Gender" />
-                <ScalarProperty Name="OrganizationName" ColumnName="OrganizationName" />
-                <ScalarProperty Name="LastName" ColumnName="LastName" />
-                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
-                <ScalarProperty Name="PartyType" ColumnName="PartyType" />
-                <ScalarProperty Name="CaseId" ColumnName="CaseId" />
-                <ScalarProperty Name="CasePartyId" ColumnName="CasePartyId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Cases">
             <EntityTypeMapping TypeName="SLS_LegalServicesDataModel.Case">
               <MappingFragment StoreEntitySet="Cases">
@@ -1825,6 +1806,16 @@
                 <ScalarProperty Name="TypeId" ColumnName="TypeId" />
                 <ScalarProperty Name="CaseNo" ColumnName="CaseNo" />
                 <ScalarProperty Name="CaseId" ColumnName="CaseId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Telephones">
+            <EntityTypeMapping TypeName="SLS_LegalServicesDataModel.Telephone">
+              <MappingFragment StoreEntitySet="Telephones">
+                <ScalarProperty Name="Number" ColumnName="Number" />
+                <ScalarProperty Name="CaseId" ColumnName="CaseId" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="TelephoneId" ColumnName="TelephoneId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1853,13 +1844,18 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Telephones">
-            <EntityTypeMapping TypeName="SLS_LegalServicesDataModel.Telephone">
-              <MappingFragment StoreEntitySet="Telephones">
-                <ScalarProperty Name="Number" ColumnName="Number" />
+          <EntitySetMapping Name="CaseParties">
+            <EntityTypeMapping TypeName="SLS_LegalServicesDataModel.CaseParty">
+              <MappingFragment StoreEntitySet="CaseParties">
+                <ScalarProperty Name="IsIUStudent" ColumnName="IsIUStudent" />
+                <ScalarProperty Name="EmailId" ColumnName="EmailId" />
+                <ScalarProperty Name="AddressId" ColumnName="AddressId" />
+                <ScalarProperty Name="OrganizationName" ColumnName="OrganizationName" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="PartyType" ColumnName="PartyType" />
                 <ScalarProperty Name="CaseId" ColumnName="CaseId" />
-                <ScalarProperty Name="Type" ColumnName="Type" />
-                <ScalarProperty Name="TelephoneId" ColumnName="TelephoneId" />
+                <ScalarProperty Name="CasePartyId" ColumnName="CasePartyId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

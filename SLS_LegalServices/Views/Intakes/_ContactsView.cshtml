@@ -2,24 +2,12 @@
 @{
     int intakeId = Model != null ? Model.CaseId : 0 ;
 }
-<style>
-    .k-grid-content {
-        height: auto;
-    }
-</style>
-<h6>Contact Information</h6>
+
 <script>
     function onRequestEnd(e) {
-        console.log(e);
         if (e.type == "update" || e.type == "create" || e.type == "remove") {
-            //$("#TelephoneGrid").data("kendoGrid").dataSource.read();
-            //$("#EmailGrid").data("kendoGrid").dataSource.read();
-            //$("#AddressGrid").data("kendoGrid").dataSource.read();
             this.read();
         }
-    }
-
-    function onEdit(e) {
     }
 </script>
 <h6>Telephone Number(s)</h6>
@@ -48,8 +36,9 @@
     )
     .ToolBar(toolbar => { toolbar.Create().Text("Add"); })
     .Editable(editable => editable.Mode(GridEditMode.InLine))
+    .HtmlAttributes(new { @style = "height:auto;" })
 )
-
+<br/>
 <h6>Email Address(es)</h6>
 @(Html.Kendo().Grid<EmailVM>()
     .Name("EmailGrid")
@@ -78,17 +67,16 @@
     .ToolBar(toolbar => { toolbar.Create().Text("Add"); })
     .Editable(editable => editable.Mode(GridEditMode.InLine))
 )
-
+<br />
 <h6>Address(es)</h6>
 @(Html.Kendo().Grid<AddressVM>()
     .Name("AddressGrid")
     .Columns(columns =>
     {
-        columns.Command(command => { command.Edit().Text(" ").CancelText(" ").UpdateText(" "); command.Destroy().Text(" "); }).Width(100);
+        columns.Command(command => { command.Edit().Text(" ").CancelText("Cancel").UpdateText("Update"); command.Destroy().Text(" "); }).Width(100);
         columns.Bound(c => c.AddressId).Visible(false);
-        columns.Bound(c => c.Type);
+        columns.Bound(c => c.Type).Width(100);
         columns.Bound(c => c.FullAddress);
-        columns.Template(@<text> </text>).Title("");
     })
     .Scrollable()
     .DataSource(dataSource => dataSource
@@ -105,5 +93,7 @@
         .Events(events => events.RequestEnd("onRequestEnd"))
     )
     .ToolBar(toolbar => { toolbar.Create().Text("Add"); })
-    .Editable(editable => editable.Mode(GridEditMode.InLine))
+    .Editable(editable => editable.Mode(GridEditMode.PopUp)
+            .TemplateName("EditAddress").Window(w => w.Title("Edit Address").Name("editWindow").Width(800))
+            .AdditionalViewData(new { IsFromParty = false }))
 )

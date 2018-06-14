@@ -1,0 +1,14 @@
+﻿@model Nullable<Boolean>
+@{
+    var values = ViewData.ModelMetadata.AdditionalValues;
+}
+@Html.Kendo().DropDownListFor(m =>m).Name((string)values["Name"]).DataTextField("Text").DataValueField("Value").BindTo(new List<SelectListItem>() {
+        new SelectListItem() {
+        Text = "YES",
+        Value = "true"
+        },
+        new SelectListItem() {
+        Text = "NO",
+        Value = "false"
+        }
+    })

@@ -1,0 +1,53 @@
+﻿@model CasePartyVM
+
+<div>
+
+    <div>
+        @Html.LabelFor(s => s.PartyType)
+
+        <div>
+            @Html.TextBoxFor(s => s.PartyType)
+        </div>
+    </div>
+
+    <div>
+        @Html.LabelFor(s => s.LastName)
+
+        <div>
+            @Html.TextBoxFor(s => s.LastName)
+        </div>
+    </div>
+
+    <div>
+        @Html.LabelFor(s => s.FirstName)
+
+        <div>
+            @Html.EditorFor(s => s.FirstName)
+        </div>
+    </div>
+
+    <div>
+        @Html.LabelFor(s => s.IsIUStudent)
+
+        <div>
+            @Html.EditorFor(s => s.IsIUStudent)
+        </div>
+    </div>
+
+    <div>
+        @Html.LabelFor(s => s.Email)
+
+        <div>
+            @Html.EditorFor(s => s.Email)
+        </div>
+    </div>
+
+    <div>
+        @Html.LabelFor(s => s.Address)
+
+        <div>
+            @Html.EditorFor(s => s.Address)
+        </div>
+    </div>
+
+</div>

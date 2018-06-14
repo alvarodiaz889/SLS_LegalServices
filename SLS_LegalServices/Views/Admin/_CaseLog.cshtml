@@ -32,24 +32,6 @@
     }
 
 </script>
-@*<div>
-    <h6>From:</h6>
-    @(Html.Kendo().DatePicker()
-              .Name("start")
-              .Value("10/10/2011")
-              .Events(e => e.Change("startChange"))
-              .HtmlAttributes(new { style = "width: 100%" })
-    )
-
-    <h6>To:</h6>
-    @(Html.Kendo().DatePicker()
-              .Name("end")
-              .Value("10/10/2012")
-              .Events(e => e.Change("endChange"))
-              .HtmlAttributes(new { style = "width: 100%" })
-    )
-</div>*@
-
 
 @(Html.Kendo().Grid<LogVM>()
             .Name("CaseLogGrid")

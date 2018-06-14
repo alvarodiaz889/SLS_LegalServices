@@ -271,6 +271,8 @@
       <DependentUpon>SLS_DataModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\CaseNoteController.cs" />
+    <Compile Include="Controllers\CasePartyController.cs" />
     <Compile Include="Controllers\EmailController.cs" />
     <Compile Include="Controllers\TelephoneController.cs" />
     <Compile Include="Controllers\AddressController.cs" />
@@ -344,6 +346,7 @@
       <DependentUpon>SLS_DataModel.tt</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\AddressVM.cs" />
+    <Compile Include="ViewModels\CasePartyVM.cs" />
     <Compile Include="ViewModels\CaseVM.cs" />
     <Compile Include="ViewModels\EmailVM.cs" />
     <Compile Include="ViewModels\IntakeVM.cs" />
@@ -351,6 +354,7 @@
     <Compile Include="ViewModels\InternVM.cs" />
     <Compile Include="ViewModels\LogVM.cs" />
     <Compile Include="ViewModels\CaseTypesVM.cs" />
+    <Compile Include="ViewModels\CaseNotesVM.cs" />
     <Compile Include="ViewModels\RoleViewModel.cs" />
     <Compile Include="ViewModels\AttorneyVM.cs" />
     <Compile Include="ViewModels\TelephoneVM.cs" />
@@ -2928,6 +2932,11 @@
     <Content Include="Views\Shared\EditorTemplates\DDLookup.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\TimePicker.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\EditAddress.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\AttorneysMultiSelect.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\EditNotes.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\EditEmail.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\EditParty.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\YesNoDropDown.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
