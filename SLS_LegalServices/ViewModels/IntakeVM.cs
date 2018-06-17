@@ -69,5 +69,7 @@ namespace SLS_LegalServices.ViewModels
         public List<AttorneyVM> Attorneys { get; set; }
         public int[] AttorneyIds { get; set; }
 
+        public List<ReferralSourceVM> ReferralSources { get; set; }
+
     }
 }

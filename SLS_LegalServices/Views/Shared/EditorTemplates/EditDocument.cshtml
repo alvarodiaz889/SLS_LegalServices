@@ -1,0 +1,26 @@
+﻿@model CaseDocumentVM
+
+    @Html.HiddenFor(s => s.CaseDocumentId)
+
+    <div>
+
+        <div>
+            @Html.LabelFor(s => s.IsWorldox)
+
+            <div>
+                @Html.EditorFor(s => s.IsWorldox)
+            </div>
+        </div>
+
+        <div>
+            @Html.LabelFor(s => s.ResumeFileUrl)
+
+            <div>
+                @Html.EditorFor(s => s.ResumeFileUrl)
+            </div>
+        </div>
+
+
+    </div>
+
+    

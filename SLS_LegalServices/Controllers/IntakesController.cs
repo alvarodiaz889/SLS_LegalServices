@@ -49,9 +49,11 @@ namespace SLS_LegalServices.Controllers
             ViewBag.SectionList = views.OrderBy(v => v.Key).Select(v => v.Value).ToList();
 
             var intake = repository.GetIntakeById(id);
+
             ViewData["TypeId"] = intake?.TypeId ?? 0;
             ViewData["InternId"] = intake?.InternId ?? 0;
             ViewBag.Attorneys = repository.GetAllAttorneys();
+            ViewBag.ReferralSources = repository.GetAllReferralSources();
 
             return View(intake);
         }
@@ -95,6 +97,17 @@ namespace SLS_LegalServices.Controllers
                 obj.CreatedById = Guid.Parse(User.Identity.GetUserId());
                 id = repository.IntakeInsert(obj);
             }
+            LogVM log = new LogVM
+            {
+                Action = "Created",
+                Active = 1,
+                CaseId = id,
+                CreatedById = Guid.Parse(User.Identity.GetUserId()),
+                LogDate = DateTime.Now,
+                LogType = "intakes",
+                Detail = ""
+            };
+            repository.CaseLogInsert(log);
             return Json(id);
         }
 
@@ -104,8 +117,33 @@ namespace SLS_LegalServices.Controllers
             if (ModelState.IsValid)
             {
                 repository.IntakeUpdate(obj);
+                LogVM log = new LogVM
+                {
+                    Action = "Updated",
+                    Active = 1,
+                    CaseId = obj.CaseId,
+                    CreatedById = Guid.Parse(User.Identity.GetUserId()),
+                    LogDate = DateTime.Now,
+                    LogType = "intakes",
+                    Detail = "Basic Info Updated"
+                };
+                repository.CaseLogInsert(log);
             }
+            
             return Json(obj.CaseId);
+        }
+
+        [HttpPost]
+        public ActionResult EditReferralSources(int caseId, int referralId)
+        {
+            if (ModelState.IsValid)
+            {
+                repository.ReferralSourcesUpdate(caseId, referralId);
+            }
+
+            var referrals = context.ReferralSources.Where(r => r.Cases.Any(c => c.CaseId == caseId))
+                .Select(r => r.ReferralSourceId).ToArray();
+            return Json(referrals);
         }
 
         protected override void Dispose(bool disposing)

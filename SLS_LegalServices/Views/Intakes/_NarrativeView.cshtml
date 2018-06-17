@@ -5,10 +5,10 @@
 <h6>Narrative</h6>
 
 <script>
-    function OnExecute(e)
+    function OnEditorChange(e)
     {
         let idValue = $("#modelId").val();
-        if (idValue != 0 && e.name == 'insertparagraph')
+        if (idValue != 0)
         {
             whenChanging();
         }
@@ -21,6 +21,6 @@
     .HtmlAttributes(new { style = "height:440px", aria_label = "editor" })
     .Resizable(resizable => resizable.Content(true).Toolbar(false))
     .Tools(t => t.Clear())
-    .Events(e => e.Execute("OnExecute"))
+    .Events(e => e.Change("OnEditorChange"))
     .Value(@<text>@narrative</text>)
 )

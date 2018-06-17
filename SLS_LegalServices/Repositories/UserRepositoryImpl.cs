@@ -28,10 +28,9 @@ namespace SLS_LegalServices.Repositories
         public List<UserViewModel> GetAllUsers()
         {
             var query = from u in context.Users
-                        where !(from a in context.Attorneys
-                                select a.UserId)
-                        .Contains(u.UserId)
-                        select new UserViewModel {
+                        join systemUser in context.AspNetUsers on u.UserId.ToString() equals systemUser.Id
+                        select new UserViewModel
+                        {
                             UserId = u.UserId,
                             UserName = u.UserName,
                             FirstName = u.FirstName,
@@ -39,7 +38,9 @@ namespace SLS_LegalServices.Repositories
                             DisplayName = u.DisplayName,
                             LastName = u.LastName
                         };
-            List<UserViewModel> users = query.ToList();
+
+
+            List <UserViewModel> users = query.ToList();
             users.ForEach(u => {
                 u.Roles = roleRepository.GetRolesByUserId(u.UserId.ToString()).ToList();
                 u.UserRoles = string.Join(",",u.Roles.Select(c => c.Role));

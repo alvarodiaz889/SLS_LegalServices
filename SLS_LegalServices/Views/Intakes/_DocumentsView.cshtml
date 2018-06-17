@@ -1,1 +1,49 @@
-﻿<h2>Documents</h2>
+﻿@model IntakeVM
+@{
+    int intakeId = Model != null ? Model.CaseId : 0;
+}
+
+<script>
+
+    function onRequestEnd(e) {
+        if (e.type == "update" || e.type == "create" || e.type == "remove") {
+            this.read();
+        }
+    }
+    
+</script>
+
+<h6>Documents</h6>
+
+@(Html.Kendo().Grid<CaseDocumentVM>()
+    .Name("CaseDocumentsGrid")
+    .Columns(columns =>
+    {
+        columns.Command(command => {  command.Destroy().Text(" "); }).Width(80);
+        columns.Bound(c => c.CaseDocumentId).Visible(false);
+        columns.Bound(c => c.Filename).Title("File").ClientTemplate("<a href='/CaseDocument/GetFile/?name=#=Filename#&intakeId=" + @intakeId + "'>#=Filename#</a>");
+        columns.Bound(c => c.CreationDate).Title("Date").Format("{0:dd/MM/yyyy hh:mm tt}");
+        columns.Bound(c => c.CreatedBy).Title("Added By");
+        columns.Bound(c => c.IsWorldox).Title("Worldox?").ClientTemplate("#= IsWorldox ? 'YES' : 'NO' #");
+    })
+    .Scrollable()
+    .DataSource(dataSource => dataSource
+        .Ajax()
+        .Model(m =>
+        {
+            m.Id(c => c.CaseDocumentId);
+            m.Field(c => c.CaseId).DefaultValue(intakeId);
+            m.Field(c => c.CreatedById).DefaultValue(Guid.Parse(User.Identity.GetUserId()));
+            m.Field(c => c.CreationDate).Editable(false);
+        })
+        .Read(read => read.Action("Read", "CaseDocument", new { intakeId = intakeId }))
+        .Destroy(destroy => destroy.Action("Destroy", "CaseDocument"))
+        .Update(update => update.Action("Update", "CaseDocument"))
+        .Create(create => create.Action("Create", "CaseDocument"))
+        .Events(events => { events.RequestEnd("onRequestEnd"); })
+    )
+    .ToolBar(toolbar => { toolbar.Create().Text("Add"); })
+    .HtmlAttributes(new { @style = "height:auto;" })
+    .Editable(editable => editable.Mode(GridEditMode.PopUp)
+        .TemplateName("EditDocument").Window(w => w.Title("Case Documents").Name("editWindow").Width(800)))
+)

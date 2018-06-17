@@ -12,12 +12,18 @@ namespace SLS_LegalServices
     using System;
     using System.Collections.Generic;
     
-    public partial class CaseReferralSource
+    public partial class ReferralSource
     {
-        public int ReferralSourceId { get; set; }
-        public int CaseId { get; set; }
-        public string ReferralSource { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public ReferralSource()
+        {
+            this.Cases = new HashSet<Case>();
+        }
     
-        public virtual Case Case { get; set; }
+        public int ReferralSourceId { get; set; }
+        public string ReferralSource1 { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Case> Cases { get; set; }
     }
 }

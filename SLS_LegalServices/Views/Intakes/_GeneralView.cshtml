@@ -74,6 +74,8 @@
                 displayValue += formatAMPM(creationDate)
                 $("#fullName").text(fullName);
                 $("#lblCreationDate").text(displayValue);
+                //update the log
+                $("#LogGrid").data("kendoGrid").dataSource.read();
         });
     }
 

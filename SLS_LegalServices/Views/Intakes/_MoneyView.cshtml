@@ -1,1 +1,137 @@
-﻿<h2>Money</h2>
+﻿@model IntakeVM
+@{
+    int intakeId = Model != null ? Model.CaseId : 0;
+}
+
+<script>
+
+    updateTotalValues();
+
+    function onRequestEnd(e) {
+        if (e.type == "update" || e.type == "create" || e.type == "remove") {
+            updateTotalValues();
+            this.read();
+        }
+    }
+
+    function updateTotalValues()
+    {
+        $.post('@Url.Action("ReadTotal", "CaseMoney")',
+            {
+                intakeId: $("#modelId").val()
+            }, function (data)
+            {
+                $('#totalSaved').text('Saved: ' + data.totalSaved);
+                $('#totalCollectedRecovered').text('Collected/Recovered: ' + data.totalCollectedRecovered);
+                $('#totalAttorneyFees').text('Attorney Fees: ' + data.totalAttorneyFees);
+            }
+        )
+    }
+</script>
+
+<h6 id="totalSaved">Saved</h6>
+
+@(Html.Kendo().Grid<CaseMoneyVM>()
+            .Name("CaseMoneys_Saved_Grid")
+            .Columns(columns =>
+            {
+                columns.Command(command => { command.Edit().Text(" ").CancelText("Cancel").UpdateText("Update"); command.Destroy().Text(" "); }).Width(100);
+                columns.Bound(c => c.CaseMoneyId).Visible(false);
+                columns.Bound(c => c.CreationDate).Format("{0:dd/MM/yyyy hh:mm tt}").Width(120);
+                columns.Bound(c => c.CreatedById).ClientTemplate("#=CreatedBy#").Width(120);
+                columns.Bound(c => c.Amount).Format("{0:C}").Width(120);
+            })
+            .Scrollable()
+            .DataSource(dataSource => dataSource
+                .Ajax()
+                .Model(m =>
+                {
+                    m.Id(c => c.CaseMoneyId);
+                    m.Field(c => c.CaseId).DefaultValue(intakeId);
+                    m.Field(c => c.CreatedById).DefaultValue(Guid.Parse(User.Identity.GetUserId()));
+                    m.Field(c => c.Type).DefaultValue("Saved");
+                    m.Field(c => c.CreationDate).Editable(false);
+                    m.Field(c => c.CreatedById).Editable(false);
+                })
+                .Read(read => read.Action("Read", "CaseMoney", new { intakeId = intakeId, type = "Saved" }))
+                .Destroy(destroy => destroy.Action("Destroy", "CaseMoney"))
+                .Update(update => update.Action("Update", "CaseMoney"))
+                .Create(create => create.Action("Create", "CaseMoney"))
+                .Events(events => events.RequestEnd("onRequestEnd"))
+            )
+            .ToolBar(toolbar => { toolbar.Create().Text("Add"); })
+            .HtmlAttributes(new { @style = "height:auto;" })
+            .Editable(editable => editable.Mode(GridEditMode.InLine))
+)
+
+<br />
+<h6 id="totalCollectedRecovered">Collected/Recovered</h6>
+
+@(Html.Kendo().Grid<CaseMoneyVM>()
+            .Name("CaseMoneys_CollectedRecovered_Grid")
+            .Columns(columns =>
+            {
+                columns.Command(command => { command.Edit().Text(" ").CancelText("Cancel").UpdateText("Update"); command.Destroy().Text(" "); }).Width(100);
+                columns.Bound(c => c.CaseMoneyId).Visible(false);
+                columns.Bound(c => c.CreationDate).Format("{0:dd/MM/yyyy hh:mm tt}").Width(120);
+                columns.Bound(c => c.CreatedById).ClientTemplate("#=CreatedBy#").Width(120);
+                columns.Bound(c => c.Amount).Format("{0:C}").Width(120);
+            })
+            .Scrollable()
+            .DataSource(dataSource => dataSource
+                .Ajax()
+                .Model(m =>
+                {
+                    m.Id(c => c.CaseMoneyId);
+                    m.Field(c => c.CaseId).DefaultValue(intakeId);
+                    m.Field(c => c.CreatedById).DefaultValue(Guid.Parse(User.Identity.GetUserId()));
+                    m.Field(c => c.Type).DefaultValue("Collected/Recovered");
+                    m.Field(c => c.CreationDate).Editable(false);
+                    m.Field(c => c.CreatedById).Editable(false);
+                })
+                .Read(read => read.Action("Read", "CaseMoney", new { intakeId = intakeId, type = "Collected/Recovered" }))
+                .Destroy(destroy => destroy.Action("Destroy", "CaseMoney"))
+                .Update(update => update.Action("Update", "CaseMoney"))
+                .Create(create => create.Action("Create", "CaseMoney"))
+                .Events(events => events.RequestEnd("onRequestEnd"))
+            )
+            .ToolBar(toolbar => { toolbar.Create().Text("Add"); })
+            .HtmlAttributes(new { @style = "height:auto;" })
+            .Editable(editable => editable.Mode(GridEditMode.InLine))
+)
+<br />
+<h6 id="totalAttorneyFees">Attorney Fees</h6>
+
+@(Html.Kendo().Grid<CaseMoneyVM>()
+        .Name("CaseMoneys_AttorneyFees_Grid")
+        .Columns(columns =>
+        {
+            columns.Command(command => { command.Edit().Text(" ").CancelText("Cancel").UpdateText("Update"); command.Destroy().Text(" "); }).Width(100);
+            columns.Bound(c => c.CaseMoneyId).Visible(false);
+            columns.Bound(c => c.CreationDate).Format("{0:dd/MM/yyyy hh:mm tt}").Width(120);
+            columns.Bound(c => c.CreatedById).ClientTemplate("#=CreatedBy#").Width(120);
+            columns.Bound(c => c.Amount).Format("{0:C}").Width(120);
+        })
+        .Scrollable()
+        .DataSource(dataSource => dataSource
+            .Ajax()
+            .Model(m =>
+            {
+                m.Id(c => c.CaseMoneyId);
+                m.Field(c => c.CaseId).DefaultValue(intakeId);
+                m.Field(c => c.CreatedById).DefaultValue(Guid.Parse(User.Identity.GetUserId()));
+                m.Field(c => c.Type).DefaultValue("Attorney Fees");
+                m.Field(c => c.CreationDate).Editable(false);
+                m.Field(c => c.CreatedById).Editable(false);
+            })
+            .Read(read => read.Action("Read", "CaseMoney", new { intakeId = intakeId, type = "Attorney Fees" }))
+            .Destroy(destroy => destroy.Action("Destroy", "CaseMoney"))
+            .Update(update => update.Action("Update", "CaseMoney"))
+            .Create(create => create.Action("Create", "CaseMoney"))
+            .Events(events => events.RequestEnd("onRequestEnd"))
+        )
+        .ToolBar(toolbar => { toolbar.Create().Text("Add"); })
+        .HtmlAttributes(new { @style = "height:auto;" })
+        .Editable(editable => editable.Mode(GridEditMode.InLine))
+)
+

@@ -24,7 +24,7 @@
 
     function onRequestEnd(e) {
         if (e.type == "update" || e.type == "create" || e.type == "remove") {
-            $("#CaseLogGrid").data("kendoGrid").dataSource.read();
+            this.read();
         }
     }
 
@@ -38,11 +38,11 @@
             .Columns(columns =>
             {
                 columns.Bound(c => c.LogId).Visible(false);
-                columns.Bound(c => c.LogDate).Format("{0:dd/MM/yyyy}").Width(120);
-                columns.Bound(c => c.UserName).Width(140);
+                columns.Bound(c => c.LogDate).Format("{0:dd/MM/yyyy hh:mm tt}");
+                columns.Bound(c => c.UserName);
                 columns.Bound(c => c.Action);
                 columns.Bound(c => c.Detail);
-                columns.Bound(c => c.CaseId);
+                columns.Bound(c => c.CaseCode);
                 columns.Template(@<text> </text>).Title("");
             })
             .Scrollable()

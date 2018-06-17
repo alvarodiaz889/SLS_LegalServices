@@ -53,6 +53,7 @@
 .k-grid-content {
     height:inherit !important;
     min-height: 50px;
+    max-height: 300px;
 }
 
 .item-border {

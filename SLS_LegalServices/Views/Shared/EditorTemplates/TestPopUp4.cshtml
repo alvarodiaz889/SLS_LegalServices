@@ -1,0 +1,15 @@
+﻿@model TestVM
+
+<form method="post" action='@Url.Action("Basic_Usage_Submit")'>
+    <div class="demo-section k-content">
+        @(Html.Kendo().Upload()
+                    .Name("Files")
+                    .HtmlAttributes(new { aria_label = "files" })
+        )
+
+        <input type="number" name="TestId" />
+        <p style="padding-top: 1em; text-align: right">
+            <button type="submit" class="k-button k-primary">Submit</button>
+        </p>
+    </div>
+</form>

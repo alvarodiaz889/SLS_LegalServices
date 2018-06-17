@@ -25,6 +25,7 @@ namespace SLS_LegalServices.Repositories
 
         #region CaseLog
         List<LogVM> GetAllCaseLogs();
+        List<LogVM> GetAllCaseLogsByCaseId(int caseId);
         void CaseLogInsert(LogVM vm);
         void CaseLogDelete(LogVM vm);
         void CaseLogUpdate(LogVM vm);
@@ -48,22 +49,18 @@ namespace SLS_LegalServices.Repositories
         #endregion
 
         #region Intakes
-
         List<IntakeVM> GetAllIntakes();
         IntakeVM GetIntakeById(int id);
         int IntakeInsert(IntakeVM vm);
         void IntakeDelete(IntakeVM vm);
         void IntakeUpdate(IntakeVM vm);
-
         #endregion
 
         #region Cases
-
         List<CaseVM> GetAllCases();
         void CaseInsert(CaseVM vm);
         void CaseDelete(CaseVM vm);
         void CaseUpdate(CaseVM vm);
-
         #endregion
 
         #region Telephone
@@ -71,7 +68,6 @@ namespace SLS_LegalServices.Repositories
         void TelephoneInsert(TelephoneVM vm);
         void TelephoneDelete(TelephoneVM vm);
         void TelephoneUpdate(TelephoneVM vm);
-
         #endregion
 
 
@@ -80,7 +76,6 @@ namespace SLS_LegalServices.Repositories
         int EmailInsert(EmailVM vm);
         void EmailDelete(EmailVM vm);
         void EmailUpdate(EmailVM vm);
-
         #endregion
 
 
@@ -89,7 +84,6 @@ namespace SLS_LegalServices.Repositories
         int AddressInsert(AddressVM vm);
         void AddressDelete(AddressVM vm);
         void AddressUpdate(AddressVM vm);
-
         #endregion
 
 
@@ -98,7 +92,6 @@ namespace SLS_LegalServices.Repositories
         void CaseNoteInsert(CaseNotesVM vm);
         void CaseNoteDelete(CaseNotesVM vm);
         void CaseNoteUpdate(CaseNotesVM vm);
-
         #endregion
 
 
@@ -107,7 +100,26 @@ namespace SLS_LegalServices.Repositories
         void CasePartyInsert(CasePartyVM vm);
         void CasePartyDelete(CasePartyVM vm);
         void CasePartyUpdate(CasePartyVM vm);
+        #endregion
 
+        #region CaseDocuments
+        List<CaseDocumentVM> GetAllCaseDocuments();
+        void CaseDocumentInsert(CaseDocumentVM vm);
+        void CaseDocumentDelete(CaseDocumentVM vm);
+        void CaseDocumentUpdate(CaseDocumentVM vm);
+        #endregion
+
+        #region CaseMoney
+        List<CaseMoneyVM> GetAllCaseMoneys();
+        void CaseMoneyInsert(CaseMoneyVM vm);
+        void CaseMoneyDelete(CaseMoneyVM vm);
+        void CaseMoneyUpdate(CaseMoneyVM vm);
+        #endregion
+
+        #region ReferralSources
+        List<ReferralSourceVM> GetAllReferralSources();
+        ReferralSourceVM GetReferralSourcesById(int id);
+        void ReferralSourcesUpdate(int caseId, int referralId);
         #endregion
 
 

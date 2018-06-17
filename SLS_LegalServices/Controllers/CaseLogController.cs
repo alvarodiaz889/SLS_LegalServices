@@ -24,6 +24,14 @@ namespace SLS_LegalServices.Controllers
             return Json(result, JsonRequestBehavior.AllowGet);
         }
 
+        public ActionResult ReadById([DataSourceRequest]DataSourceRequest request, int caseId)
+        {
+            List<LogVM> casetypes = repository.GetAllCaseLogsByCaseId(caseId);
+            DataSourceResult result = casetypes.AsQueryable().ToDataSourceResult(request);
+
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+
         [HttpPost]
         public ActionResult Create([DataSourceRequest] DataSourceRequest request, LogVM obj)
         {

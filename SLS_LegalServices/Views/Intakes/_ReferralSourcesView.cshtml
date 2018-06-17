@@ -1,1 +1,33 @@
-﻿<h2>Referral Sourdes</h2>
+﻿@model IntakeVM
+@{
+    int intakeId = Model != null ? Model.CaseId : 0;
+}
+<h6>Referral Sources</h6>
+<script>
+    function OnReferralChange(e)
+    {
+        let idValue = $("#modelId").val();
+
+        if (idValue != 0) {
+            $.post("@Url.Action("EditReferralSources", "Intakes")",
+                {
+                    caseId: idValue,
+                    referralId: e.id
+                },
+                function (data) {
+                    console.log(data);
+            });
+        }
+    }
+</script>
+@foreach(var referral in (List<ReferralSourceVM>)ViewBag.ReferralSources)
+{
+    <div>
+        @(Html.Kendo().CheckBox()
+            .Name(referral.ReferralSourceId.ToString())
+            .Label(referral.ReferralSource1)
+            .Checked(CommonHelper.IsCaseReferralChecked(Model,referral.ReferralSourceId))
+            .HtmlAttributes(new { onchange = "OnReferralChange(this);" })
+        )
+    </div>
+}

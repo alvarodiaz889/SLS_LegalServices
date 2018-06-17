@@ -1,0 +1,10 @@
+﻿
+@(Html.Kendo().Upload()
+    .Name("ResumeFileUrl")
+    .Async(a => a
+        .Save("SaveResumeFile", "CaseDocument")
+        .Remove("DeleteResumeFile", "CaseDocument")
+        .AutoUpload(false)
+    )
+)
+

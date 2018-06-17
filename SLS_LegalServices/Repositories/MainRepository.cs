@@ -11,8 +11,8 @@ namespace SLS_LegalServices.Repositories
     public class MainRepository: IMainRepository
     {
         SLS_LegalServicesEntities context = new SLS_LegalServicesEntities();
-        private IUserRepository UserRepository = new UserRepositoryImpl();
-        
+        private readonly IUserRepository UserRepository = new UserRepositoryImpl();
+
         #region CaseTypes
         public List<CaseTypesVM> GetAllCaseTypes()
         {
@@ -114,9 +114,29 @@ namespace SLS_LegalServices.Repositories
                 LogId = o.LogId,
                 CaseId = o.CaseId,
                 LogType = o.LogType,
-                UserName = o.User.UserName
+                UserName = o.User.UserName,
+                CaseCode = o.Case.CaseNo
             }).ToList();
         }
+
+        public List<LogVM> GetAllCaseLogsByCaseId(int caseId)
+        {
+            return context.Logs
+                .Where(o => o.CaseId == caseId)
+                .Select(o => new LogVM()
+                {
+                    Action = o.Action,
+                    Active = o.Active,
+                    Detail = o.Detail,
+                    LogDate = o.LogDate,
+                    LogId = o.LogId,
+                    CaseId = o.CaseId,
+                    LogType = o.LogType,
+                    UserName = o.User.UserName,
+                    CaseCode = o.Case.CaseNo
+                }).ToList();
+        }
+        
 
         public void CaseLogInsert(LogVM vm)
         {
@@ -182,6 +202,7 @@ namespace SLS_LegalServices.Repositories
 
         public void InternInsert(InternVM vm)
         {
+
             User user = new User
             {
                 UserId = Guid.NewGuid(),
@@ -278,11 +299,7 @@ namespace SLS_LegalServices.Repositories
                 }).ToList();
         }
         #endregion
-        public void Dispose()
-        {
-            context.Dispose();
-        }
-
+        
         #region InternSchedule
         public List<InternScheduleVM> GetAllInternSchedules()
         {
@@ -359,7 +376,6 @@ namespace SLS_LegalServices.Repositories
         #endregion
 
         #region Intakes
-
         public List<IntakeVM> GetAllIntakes()
         {
             return context.Cases
@@ -386,6 +402,13 @@ namespace SLS_LegalServices.Repositories
                     .Where(a => a.CaseAttorneys.Any(ca => ca.CaseId == vm.CaseId))
                     .Select(ModelHelper.GetAttorneyFromModel)
                     .ToList();
+
+                vm.ReferralSources = context.ReferralSources.Where(r => r.Cases.Any(c => c.CaseId == vm.CaseId))
+                        .Select(r => new ReferralSourceVM
+                        {
+                            ReferralSource1 = r.ReferralSource1,
+                            ReferralSourceId = r.ReferralSourceId
+                        }).ToList();
             }
             return vm;
         }
@@ -473,7 +496,6 @@ namespace SLS_LegalServices.Repositories
 
         #endregion
 
-
         #region Cases
         public List<CaseVM> GetAllCases()
         {
@@ -496,7 +518,6 @@ namespace SLS_LegalServices.Repositories
         }
 
         #endregion
-
 
         #region Telephone
         public List<TelephoneVM> GetAllTelephones()
@@ -545,9 +566,7 @@ namespace SLS_LegalServices.Repositories
 
         #endregion
 
-
         #region Email
-
         public List<EmailVM> GetAllEmails()
         {
             return context.Emails
@@ -595,9 +614,7 @@ namespace SLS_LegalServices.Repositories
 
         #endregion
 
-
         #region Address
-
         public List<AddressVM> GetAllAddresses()
         {
             return context.Addresses
@@ -660,9 +677,7 @@ namespace SLS_LegalServices.Repositories
 
         #endregion
 
-
         #region CaseNotes
-
         public List<CaseNotesVM> GetAllCaseNotes()
         {
             return context.CaseNotes
@@ -714,9 +729,7 @@ namespace SLS_LegalServices.Repositories
 
         #endregion
 
-        
         #region CaseParty
-
         public List<CasePartyVM> GetAllCaseParties()
         {
             var list = context.CaseParties.ToList();
@@ -784,7 +797,158 @@ namespace SLS_LegalServices.Repositories
             AddressUpdate(vm.Address);
 
         }
-
         #endregion
+
+        #region CaseDocument
+        public List<CaseDocumentVM> GetAllCaseDocuments()
+        {
+            return context.CaseDocuments
+                .Select(d => new CaseDocumentVM {
+                    CaseDocumentId = d.CaseDocumentId,
+                    CaseId = d.CaseId,
+                    CreatedById = d.CreatedById,
+                    CreationDate = d.CreationDate,
+                    Filename = d.Filename,
+                    IsWorldox = d.IsWorldox,
+                    CreatedBy = d.User.UserName,
+                    FileType = d.FileType
+                })
+                .ToList();
+        }
+
+        public void CaseDocumentInsert(CaseDocumentVM vm)
+        {
+            CaseDocument doc = new CaseDocument {
+                CaseId = vm.CaseId,
+                CreatedById = vm.CreatedById,
+                CreationDate = DateTime.Now,
+                Filename = vm.Filename,
+                IsWorldox = vm.IsWorldox,
+                FileType = vm.FileType
+            };
+            context.CaseDocuments.Add(doc);
+            context.SaveChanges();
+        }
+
+        public void CaseDocumentDelete(CaseDocumentVM vm)
+        {
+            CaseDocument doc = context.CaseDocuments.Where(d => d.CaseDocumentId == vm.CaseDocumentId).FirstOrDefault();
+            context.CaseDocuments.Remove(doc);
+            context.SaveChanges();
+        }
+
+        public void CaseDocumentUpdate(CaseDocumentVM vm)
+        {
+            CaseDocument doc = context.CaseDocuments.Where(d => d.CaseDocumentId == vm.CaseDocumentId).FirstOrDefault();
+            doc.CaseId = vm.CaseId;
+            doc.CreatedById = vm.CreatedById;
+            doc.CreationDate = vm.CreationDate;
+            doc.Filename = vm.Filename;
+            doc.IsWorldox = vm.IsWorldox;
+            doc.FileType = vm.FileType;
+            context.CaseDocuments.Attach(doc);
+            context.Entry(doc).State = EntityState.Modified;
+            context.SaveChanges();
+        }
+        #endregion
+        
+        #region CaseMoney
+        public List<CaseMoneyVM> GetAllCaseMoneys()
+        {
+            return context.CaseMoneys
+                .Select(m => new CaseMoneyVM
+                {
+                    Amount = m.Amount,
+                    CaseId = m.CaseId,
+                    CaseMoneyId = m.CaseMoneyId,
+                    CreatedById = m.CreatedById,
+                    CreationDate = m.CreationDate,
+                    Type = m.Type,
+                    CreatedBy = context.Users
+                        .Where(u => u.UserId == m.CreatedById)
+                        .Select(u => (u.FirstName ?? string.Empty) + " " + (u.LastName ?? string.Empty))
+                        .FirstOrDefault()
+                })
+                .ToList();
+        }
+
+        public void CaseMoneyInsert(CaseMoneyVM vm)
+        {
+            CaseMoney money = new CaseMoney {
+                Amount = vm.Amount,
+                CaseId = vm.CaseId,
+                CreatedById = vm.CreatedById,
+                CreationDate = DateTime.Now,
+                Type = vm.Type
+            };
+            context.CaseMoneys.Add(money);
+            context.SaveChanges();
+        }
+
+        public void CaseMoneyDelete(CaseMoneyVM vm)
+        {
+            CaseMoney money = context.CaseMoneys.Where(m => m.CaseMoneyId == vm.CaseMoneyId).FirstOrDefault();
+            context.CaseMoneys.Remove(money);
+            context.SaveChanges();
+        }
+
+        public void CaseMoneyUpdate(CaseMoneyVM vm)
+        {
+            CaseMoney money = context.CaseMoneys.Where(m => m.CaseMoneyId == vm.CaseMoneyId).FirstOrDefault();
+            money.Amount = vm.Amount;
+            money.CaseId = vm.CaseId;
+            money.CreatedById = vm.CreatedById;
+            money.CreationDate = vm.CreationDate;
+            money.Type = vm.Type;
+            context.CaseMoneys.Attach(money);
+            context.Entry(money).State = EntityState.Modified;
+            context.SaveChanges();
+        }
+        #endregion
+
+        #region ReferralSources
+        public List<ReferralSourceVM> GetAllReferralSources()
+        {
+            return context.ReferralSources
+                .Select(r => new ReferralSourceVM
+                {
+                    ReferralSource1 = r.ReferralSource1,
+                    ReferralSourceId = r.ReferralSourceId
+                })
+                .ToList();
+        }
+
+        public ReferralSourceVM GetReferralSourcesById(int id)
+        {
+            return context.ReferralSources
+                .Select(r => new ReferralSourceVM
+                {
+                    ReferralSource1 = r.ReferralSource1,
+                    ReferralSourceId = r.ReferralSourceId
+                }).FirstOrDefault();
+        }
+
+        public void ReferralSourcesUpdate(int caseId, int referralId)
+        {
+            Case @case = context.Cases.Where(c => c.CaseId == caseId).FirstOrDefault();
+            ReferralSource referral = context.ReferralSources.Where(r => r.ReferralSourceId == referralId).FirstOrDefault();
+            bool contain = @case.ReferralSources.Any(r => r.ReferralSourceId == referralId);
+            if (contain)
+                @case.ReferralSources.Remove(referral);
+            else
+                @case.ReferralSources.Add(referral);
+
+            context.Cases.Attach(@case);
+            context.Entry(@case).State = EntityState.Modified;
+            context.SaveChanges();
+        }
+        #endregion
+
+        public void Dispose()
+        {
+            context.Dispose();
+        }
+
+        
     }
 }

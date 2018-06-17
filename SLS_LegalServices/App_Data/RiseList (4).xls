@@ -1,0 +1,7 @@
+<style> .text { mso-number-format:\@; } </style> <table rules="all" border="1">
+	<tr>
+		<th scope="col">RISE</th><th scope="col">EnrollmentTerm</th><th scope="col">AdmissionType</th><th scope="col">Scholarship</th><th scope="col">AcademicPlan</th><th scope="col">AcademicProgram</th><th scope="col">AcademicGroup</th><th scope="col">HonorsStatus</th><th scope="col">HonorsStatusTerm</th><th scope="col">Course</th><th scope="col">IsActiveStudent</th><th scope="col">UID</th><th scope="col">LastName</th><th scope="col">FirstName</th><th scope="col">Middle</th><th scope="col">CampusEmail</th><th scope="col">OtherEmail</th>
+	</tr><tr>
+		<td class="text">Experiential Learning</td><td class="text">Fall 2015</td><td class="text">Chancellor&#39;s Scholar</td><td class="text">n/a</td><td class="text">FINBSB</td><td class="text">BUS1</td><td class="text">BUS</td><td class="text">In Good Standing</td><td class="text">Spring 2018</td><td class="text">HON MARKETING: INTEGRATED EXP, HON FINANCE: INTEGRATED EXPER, HON OPS &amp; SUP CHAIN MGMT EXP, HON TEAM DYN &amp; LSHP: INTEG EXP</td><td class="text">True</td><td class="text">0003421652</td><td class="text">Enlow</td><td class="text">Nolan</td><td class="text">Stephen</td><td class="text">nsenlow@iupui.edu</td><td class="text">nolanenlow97@yahoo.com</td>
+	</tr>
+</table>

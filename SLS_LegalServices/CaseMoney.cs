@@ -17,11 +17,11 @@ namespace SLS_LegalServices
         public int CaseMoneyId { get; set; }
         public int CaseId { get; set; }
         public System.DateTime CreationDate { get; set; }
-        public int CreatedByAttorneyId { get; set; }
+        public System.Guid CreatedById { get; set; }
         public string Type { get; set; }
         public decimal Amount { get; set; }
     
-        public virtual Attorney Attorney { get; set; }
         public virtual Case Case { get; set; }
+        public virtual User User { get; set; }
     }
 }

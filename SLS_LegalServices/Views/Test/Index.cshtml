@@ -1,0 +1,56 @@
+﻿@(Html.Kendo().Upload()
+    .Name("files")
+    .Async(a => a
+        .Save("Events_Save", "Upload")
+        .Remove("Events_Remove", "Upload")
+        .AutoUpload(false)
+    )
+    .Events(events => events
+        .Remove("onRemove")
+        .Success("onSuccess")
+        .Upload("onUpload")
+    )
+)
+
+<script>
+
+    function onUpload(e) {
+        alert("onUpload");
+    }
+
+    function onSuccess(e) {
+        alert("onSuccess");
+    }
+
+    function onRemove(e) {
+        alert("onRemove");
+    }
+
+    
+
+</script>
+
+@*@(Html.Kendo().Grid<TestVM>()
+            .Name("TestGrid")
+            .Columns(columns =>
+            {
+                columns.Command(command => { command.Edit().Text(" ").CancelText("Cancel").UpdateText("Update"); command.Destroy().Text(" "); }).Width(100);
+                columns.Bound(c => c.TestId);
+            })
+            .Scrollable()
+            .DataSource(dataSource => dataSource
+                .Ajax()
+                .Model(m =>
+                {
+                    m.Id(c => c.TestId);
+                })
+                .Read(read => read.Action("Read", "CaseDocument"))
+                .Destroy(destroy => destroy.Action("Destroy", "CaseDocument"))
+                .Update(update => update.Action("Update", "CaseDocument"))
+                .Create(create => create.Action("Basic_Usage_Submit", "Test"))
+            )
+            .ToolBar(toolbar => { toolbar.Create().Text("Add"); })
+            .HtmlAttributes(new { @style = "height:auto;" })
+            .Editable(editable => editable.Mode(GridEditMode.PopUp)
+                .TemplateName("TestPopUp4").Window(w => w.Title("Test Documents").Name("editWindow").Width(800)))
+)*@

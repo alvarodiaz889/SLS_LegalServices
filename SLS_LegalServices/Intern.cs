@@ -17,10 +17,10 @@ namespace SLS_LegalServices
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Intern()
         {
+            this.CaseCertifiedInterns = new HashSet<CaseCertifiedIntern>();
+            this.CaseInterns = new HashSet<CaseIntern>();
             this.Intern_Attorney = new HashSet<Intern_Attorney>();
             this.InternSchedules = new HashSet<InternSchedule>();
-            this.CaseInterns = new HashSet<CaseIntern>();
-            this.CaseCertifiedInterns = new HashSet<CaseCertifiedIntern>();
         }
     
         public int InternId { get; set; }
@@ -29,13 +29,13 @@ namespace SLS_LegalServices
         public string Status { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<CaseCertifiedIntern> CaseCertifiedInterns { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<CaseIntern> CaseInterns { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Intern_Attorney> Intern_Attorney { get; set; }
         public virtual User User { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<InternSchedule> InternSchedules { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<CaseIntern> CaseInterns { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<CaseCertifiedIntern> CaseCertifiedInterns { get; set; }
     }
 }

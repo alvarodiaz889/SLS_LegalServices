@@ -20,7 +20,7 @@ namespace SLS_LegalServices
         public string Detail { get; set; }
         public System.Guid CreatedById { get; set; }
     
-        public virtual User User { get; set; }
         public virtual Case Case { get; set; }
+        public virtual User User { get; set; }
     }
 }

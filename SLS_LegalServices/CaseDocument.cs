@@ -16,12 +16,13 @@ namespace SLS_LegalServices
     {
         public int CaseDocumentId { get; set; }
         public int CaseId { get; set; }
-        public string filename { get; set; }
+        public string Filename { get; set; }
         public System.DateTime CreationDate { get; set; }
         public System.Guid CreatedById { get; set; }
         public bool IsWorldox { get; set; }
+        public string FileType { get; set; }
     
-        public virtual User User { get; set; }
         public virtual Case Case { get; set; }
+        public virtual User User { get; set; }
     }
 }

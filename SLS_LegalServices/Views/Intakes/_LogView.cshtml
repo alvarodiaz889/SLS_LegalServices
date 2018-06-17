@@ -1,1 +1,43 @@
-﻿<h2>Log</h2>
+﻿@model IntakeVM
+@{
+    int intakeId = Model != null ? Model.CaseId : 0;
+}
+<h6>Log</h6>
+<script>
+
+    function onRequestEnd(e) {
+        if (e.type == "update" || e.type == "create" || e.type == "remove") {
+            this.read();
+        }
+    }
+
+</script>
+
+@(Html.Kendo().Grid<LogVM>()
+            .Name("LogGrid")
+            .Columns(columns =>
+            {
+                columns.Bound(c => c.LogId).Visible(false);
+                columns.Bound(c => c.LogDate).Format("{0:dd/MM/yyyy hh:mm tt}").Title("Date");
+                columns.Bound(c => c.UserName).Title("User ID");
+                columns.Bound(c => c.Action).Title("Action");
+                columns.Bound(c => c.Detail).Title("Detail");
+            })
+            .Scrollable()
+            .DataSource(dataSource => dataSource
+                .Ajax()
+                .Model(m =>
+                {
+                    m.Id(c => c.LogId);
+                    m.Field(c => c.CaseId).DefaultValue(intakeId);
+                })
+                .Read(read => read.Action("ReadById", "CaseLog", new { caseId = intakeId }))
+                .Destroy(destroy => destroy.Action("Destroy", "CaseLog"))
+                .Update(update => update.Action("Update", "CaseLog"))
+                .Create(create => create.Action("Create", "CaseLog"))
+                .Events(events => events.RequestEnd("onRequestEnd"))
+                .PageSize(5)
+            )
+            .Filterable()
+            .Pageable()
+)

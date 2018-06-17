@@ -17,13 +17,13 @@ namespace SLS_LegalServices
         public int LogId { get; set; }
         public string LogType { get; set; }
         public Nullable<int> CaseId { get; set; }
-        public Nullable<System.DateTime> LogDate { get; set; }
-        public Nullable<System.Guid> CreatedById { get; set; }
+        public System.DateTime LogDate { get; set; }
+        public System.Guid CreatedById { get; set; }
         public string Action { get; set; }
         public string Detail { get; set; }
-        public Nullable<int> Active { get; set; }
+        public int Active { get; set; }
     
-        public virtual User User { get; set; }
         public virtual Case Case { get; set; }
+        public virtual User User { get; set; }
     }
 }

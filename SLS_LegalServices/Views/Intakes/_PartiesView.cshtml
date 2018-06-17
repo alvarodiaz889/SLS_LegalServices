@@ -11,7 +11,7 @@
     }
 </script>
 
-<h2>Parties</h2>
+<h6>Parties</h6>
 
 @(Html.Kendo().Grid<CasePartyVM>()
             .Name("CasePartyGrid")
@@ -19,10 +19,11 @@
             {
                 columns.Command(command => { command.Edit().Text(" ").CancelText("Cancel").UpdateText("Update"); command.Destroy().Text(" "); }).Width(100);
                 columns.Bound(c => c.CasePartyId).Visible(false);
+                columns.Bound(c => c.PartyType);
                 columns.Bound(c => c.LastName);
                 columns.Bound(c => c.FirstName);
-                columns.Bound(c => c.Email).ClientTemplate("#=Email.Email1#");
-                columns.Bound(c => c.Address).ClientTemplate("#=Address.FullAddress#");
+                columns.Bound(c => c.Email).ClientTemplate("#=Email.Email1#").Title("Email Address");
+                columns.Bound(c => c.Address).ClientTemplate("#=Address.FullAddress#").Title("Address");
                 columns.Bound(c => c.IsIUStudent).ClientTemplate("#= IsIUStudent ? value='YES': 'NO' #");
             })
             .Scrollable()
