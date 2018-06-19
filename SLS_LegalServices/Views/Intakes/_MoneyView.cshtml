@@ -7,9 +7,10 @@
 
     updateTotalValues();
 
-    function onRequestEnd(e) {
+    function CaseMoneysRequestEnd(e) {
         if (e.type == "update" || e.type == "create" || e.type == "remove") {
             updateTotalValues();
+            $("#LogGrid").data("kendoGrid").dataSource.read();
             this.read();
         }
     }
@@ -57,7 +58,7 @@
                 .Destroy(destroy => destroy.Action("Destroy", "CaseMoney"))
                 .Update(update => update.Action("Update", "CaseMoney"))
                 .Create(create => create.Action("Create", "CaseMoney"))
-                .Events(events => events.RequestEnd("onRequestEnd"))
+                .Events(events => events.RequestEnd("CaseMoneysRequestEnd"))
             )
             .ToolBar(toolbar => { toolbar.Create().Text("Add"); })
             .HtmlAttributes(new { @style = "height:auto;" })
@@ -93,7 +94,7 @@
                 .Destroy(destroy => destroy.Action("Destroy", "CaseMoney"))
                 .Update(update => update.Action("Update", "CaseMoney"))
                 .Create(create => create.Action("Create", "CaseMoney"))
-                .Events(events => events.RequestEnd("onRequestEnd"))
+                .Events(events => events.RequestEnd("CaseMoneysRequestEnd"))
             )
             .ToolBar(toolbar => { toolbar.Create().Text("Add"); })
             .HtmlAttributes(new { @style = "height:auto;" })
@@ -128,7 +129,7 @@
             .Destroy(destroy => destroy.Action("Destroy", "CaseMoney"))
             .Update(update => update.Action("Update", "CaseMoney"))
             .Create(create => create.Action("Create", "CaseMoney"))
-            .Events(events => events.RequestEnd("onRequestEnd"))
+            .Events(events => events.RequestEnd("CaseMoneysRequestEnd"))
         )
         .ToolBar(toolbar => { toolbar.Create().Text("Add"); })
         .HtmlAttributes(new { @style = "height:auto;" })

@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="c0ac8adcb0ce46a5bde539df3fa35bb1" Name="Diagram1" ZoomLevel="49">
+      <Diagram DiagramId="c0ac8adcb0ce46a5bde539df3fa35bb1" Name="Diagram1" ZoomLevel="80">
         <EntityTypeShape EntityType="SLS_LegalServicesDataModel.Address" Width="1.5" PointX="9" PointY="25.625" />
         <EntityTypeShape EntityType="SLS_LegalServicesDataModel.AspNetRole" Width="1.5" PointX="0.5" PointY="11.375" />
         <EntityTypeShape EntityType="SLS_LegalServicesDataModel.AspNetUser" Width="1.5" PointX="2.75" PointY="10.375" />
@@ -49,14 +49,26 @@
         <AssociationConnector Association="SLS_LegalServicesDataModel.FK_Intern_Users" />
         <AssociationConnector Association="SLS_LegalServicesDataModel.FK_InternSchedule_Intern" />
         <AssociationConnector Association="SLS_LegalServicesDataModel.AspNetUserRoles" />
-        <EntityTypeShape EntityType="SLS_LegalServicesDataModel.Log" Width="1.5" PointX="11.25" PointY="22.125" />
-        <AssociationConnector Association="SLS_LegalServicesDataModel.FK_Log_Cases" />
-        <AssociationConnector Association="SLS_LegalServicesDataModel.FK_Log_Users" />
-        <EntityTypeShape EntityType="SLS_LegalServicesDataModel.ReferralSource" Width="1.5" PointX="8.25" PointY="9.625" />
-        <AssociationConnector Association="SLS_LegalServicesDataModel.CaseReferralSources" />
         <EntityTypeShape EntityType="SLS_LegalServicesDataModel.CaseDocument" Width="1.5" PointX="8.25" PointY="18.25" />
         <AssociationConnector Association="SLS_LegalServicesDataModel.FK_CaseDocuments_Cases" />
         <AssociationConnector Association="SLS_LegalServicesDataModel.FK_CaseDocuments_Users" />
+        <EntityTypeShape EntityType="SLS_LegalServicesDataModel.Log" Width="1.5" PointX="11.25" PointY="22.125" />
+        <AssociationConnector Association="SLS_LegalServicesDataModel.FK_Log_Cases" />
+        <AssociationConnector Association="SLS_LegalServicesDataModel.FK_Log_Users" ManuallyRouted="true" >
+          <ConnectorPoint PointX="1.1874974999999992" PointY="24.268697916666671" />
+          <ConnectorPoint PointX="1.1874974999999992" PointY="24.676045587357606" />
+          <ConnectorPoint PointX="1.6041666666666667" PointY="24.676045587357606" />
+          <ConnectorPoint PointX="1.7708333333333333" PointY="24.676045587357606" />
+          <ConnectorPoint PointX="6.822916666666667" PointY="24.676045587357603" />
+          <ConnectorPoint PointX="7.359700520833333" PointY="24.676045587357606" />
+          <ConnectorPoint PointX="7.9293741749999995" PointY="24.676045587357606" />
+          <ConnectorPoint PointX="7.9293741749999995" PointY="24.961037539261191" />
+          <ConnectorPoint PointX="10.072916666666666" PointY="24.961037539261191" />
+          <ConnectorPoint PointX="10.239583333333334" PointY="24.961037539261191" />
+          <ConnectorPoint PointX="11.25" PointY="24.961037539261191" />
+        </AssociationConnector>
+        <EntityTypeShape EntityType="SLS_LegalServicesDataModel.ReferralSource" Width="1.5" PointX="8.25" PointY="9.625" />
+        <AssociationConnector Association="SLS_LegalServicesDataModel.CaseReferralSources" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

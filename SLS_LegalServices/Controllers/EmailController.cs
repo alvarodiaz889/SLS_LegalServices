@@ -1,5 +1,6 @@
 ﻿using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
+using Microsoft.AspNet.Identity;
 using SLS_LegalServices.Repositories;
 using SLS_LegalServices.ViewModels;
 using System;
@@ -31,6 +32,7 @@ namespace SLS_LegalServices.Controllers
         {
             if (ModelState.IsValid)
             {
+                repository.SetLoggedUserId(Guid.Parse(User.Identity.GetUserId()));
                 repository.EmailInsert(obj);
             }
 
@@ -40,6 +42,7 @@ namespace SLS_LegalServices.Controllers
         [HttpPost]
         public ActionResult Destroy([DataSourceRequest] DataSourceRequest request, EmailVM obj)
         {
+            repository.SetLoggedUserId(Guid.Parse(User.Identity.GetUserId()));
             repository.EmailDelete(obj);
             return Json(new[] { obj }.ToDataSourceResult(request, ModelState));
         }
@@ -49,6 +52,7 @@ namespace SLS_LegalServices.Controllers
         {
             if (ModelState.IsValid)
             {
+                repository.SetLoggedUserId(Guid.Parse(User.Identity.GetUserId()));
                 repository.EmailUpdate(obj);
             }
             return Json(new[] { obj }.ToDataSourceResult(request, ModelState));

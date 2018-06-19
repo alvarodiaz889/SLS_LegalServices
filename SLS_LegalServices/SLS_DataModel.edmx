@@ -488,7 +488,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_CaseReferralSources_Cases1">
-          <End Role="Cases" Type="Self.Cases" Multiplicity="1" />
+          <End Role="Cases" Type="Self.Cases" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="CaseReferralSources" Type="Self.CaseReferralSources" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Cases">
@@ -634,7 +636,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Log_Cases">
-          <End Role="Cases" Type="Self.Cases" Multiplicity="0..1" />
+          <End Role="Cases" Type="Self.Cases" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="Log" Type="Self.Log" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Cases">
@@ -941,6 +945,15 @@
             <End Role="AspNetRole" EntitySet="AspNetRoles" />
             <End Role="AspNetUser" EntitySet="AspNetUsers" />
           </AssociationSet>
+          <EntitySet Name="CaseDocuments" EntityType="SLS_LegalServicesDataModel.CaseDocument" />
+          <AssociationSet Name="FK_CaseDocuments_Cases" Association="SLS_LegalServicesDataModel.FK_CaseDocuments_Cases">
+            <End Role="Case" EntitySet="Cases" />
+            <End Role="CaseDocument" EntitySet="CaseDocuments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CaseDocuments_Users" Association="SLS_LegalServicesDataModel.FK_CaseDocuments_Users">
+            <End Role="User" EntitySet="Users" />
+            <End Role="CaseDocument" EntitySet="CaseDocuments" />
+          </AssociationSet>
           <EntitySet Name="Logs" EntityType="SLS_LegalServicesDataModel.Log" />
           <AssociationSet Name="FK_Log_Cases" Association="SLS_LegalServicesDataModel.FK_Log_Cases">
             <End Role="Case" EntitySet="Cases" />
@@ -954,15 +967,6 @@
           <AssociationSet Name="CaseReferralSources" Association="SLS_LegalServicesDataModel.CaseReferralSources">
             <End Role="Case" EntitySet="Cases" />
             <End Role="ReferralSource" EntitySet="ReferralSources" />
-          </AssociationSet>
-          <EntitySet Name="CaseDocuments" EntityType="SLS_LegalServicesDataModel.CaseDocument" />
-          <AssociationSet Name="FK_CaseDocuments_Cases" Association="SLS_LegalServicesDataModel.FK_CaseDocuments_Cases">
-            <End Role="Case" EntitySet="Cases" />
-            <End Role="CaseDocument" EntitySet="CaseDocuments" />
-          </AssociationSet>
-          <AssociationSet Name="FK_CaseDocuments_Users" Association="SLS_LegalServicesDataModel.FK_CaseDocuments_Users">
-            <End Role="User" EntitySet="Users" />
-            <End Role="CaseDocument" EntitySet="CaseDocuments" />
           </AssociationSet>
           </EntityContainer>
         <EntityType Name="Address">
@@ -1125,9 +1129,9 @@
           <NavigationProperty Name="User" Relationship="SLS_LegalServicesDataModel.FK_Cases_Users" FromRole="Case" ToRole="User" />
           <NavigationProperty Name="Emails" Relationship="SLS_LegalServicesDataModel.FK_Emails_Cases" FromRole="Case" ToRole="Email" />
           <NavigationProperty Name="Telephones" Relationship="SLS_LegalServicesDataModel.FK_Telephones_Cases" FromRole="Case" ToRole="Telephone" />
+          <NavigationProperty Name="CaseDocuments" Relationship="SLS_LegalServicesDataModel.FK_CaseDocuments_Cases" FromRole="Case" ToRole="CaseDocument" />
           <NavigationProperty Name="Logs" Relationship="SLS_LegalServicesDataModel.FK_Log_Cases" FromRole="Case" ToRole="Log" />
           <NavigationProperty Name="ReferralSources" Relationship="SLS_LegalServicesDataModel.CaseReferralSources" FromRole="Case" ToRole="ReferralSource" />
-          <NavigationProperty Name="CaseDocuments" Relationship="SLS_LegalServicesDataModel.FK_CaseDocuments_Cases" FromRole="Case" ToRole="CaseDocument" />
         </EntityType>
         <EntityType Name="CaseStatusLookup">
           <Key>
@@ -1229,8 +1233,8 @@
           <NavigationProperty Name="CaseNotes" Relationship="SLS_LegalServicesDataModel.FK_CaseNotes_Users" FromRole="User" ToRole="CaseNote" />
           <NavigationProperty Name="Cases" Relationship="SLS_LegalServicesDataModel.FK_Cases_Users" FromRole="User" ToRole="Case" />
           <NavigationProperty Name="Interns" Relationship="SLS_LegalServicesDataModel.FK_Intern_Users" FromRole="User" ToRole="Intern" />
-          <NavigationProperty Name="Logs" Relationship="SLS_LegalServicesDataModel.FK_Log_Users" FromRole="User" ToRole="Log" />
           <NavigationProperty Name="CaseDocuments" Relationship="SLS_LegalServicesDataModel.FK_CaseDocuments_Users" FromRole="User" ToRole="CaseDocument" />
+          <NavigationProperty Name="Logs" Relationship="SLS_LegalServicesDataModel.FK_Log_Users" FromRole="User" ToRole="Log" />
         </EntityType>
         <Association Name="FK_Addresses_Cases">
           <End Type="SLS_LegalServicesDataModel.Case" Role="Case" Multiplicity="0..1" />
@@ -1536,57 +1540,6 @@
           <End Type="SLS_LegalServicesDataModel.AspNetRole" Role="AspNetRole" Multiplicity="*" />
           <End Type="SLS_LegalServicesDataModel.AspNetUser" Role="AspNetUser" Multiplicity="*" />
         </Association>
-        <EntityType Name="Log">
-          <Key>
-            <PropertyRef Name="LogId" />
-          </Key>
-          <Property Name="LogId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="LogType" Type="String" Nullable="false" MaxLength="50" FixedLength="true" Unicode="true" />
-          <Property Name="CaseId" Type="Int32" />
-          <Property Name="LogDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="CreatedById" Type="Guid" Nullable="false" />
-          <Property Name="Action" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Detail" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="Active" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="Case" Relationship="SLS_LegalServicesDataModel.FK_Log_Cases" FromRole="Log" ToRole="Case" />
-          <NavigationProperty Name="User" Relationship="SLS_LegalServicesDataModel.FK_Log_Users" FromRole="Log" ToRole="User" />
-        </EntityType>
-        <Association Name="FK_Log_Cases">
-          <End Type="SLS_LegalServicesDataModel.Case" Role="Case" Multiplicity="0..1" />
-          <End Type="SLS_LegalServicesDataModel.Log" Role="Log" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Case">
-              <PropertyRef Name="CaseId" />
-            </Principal>
-            <Dependent Role="Log">
-              <PropertyRef Name="CaseId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Log_Users">
-          <End Type="SLS_LegalServicesDataModel.User" Role="User" Multiplicity="1" />
-          <End Type="SLS_LegalServicesDataModel.Log" Role="Log" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="User">
-              <PropertyRef Name="UserId" />
-            </Principal>
-            <Dependent Role="Log">
-              <PropertyRef Name="CreatedById" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <EntityType Name="ReferralSource">
-          <Key>
-            <PropertyRef Name="ReferralSourceId" />
-          </Key>
-          <Property Name="ReferralSourceId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ReferralSource1" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="Cases" Relationship="SLS_LegalServicesDataModel.CaseReferralSources" FromRole="ReferralSource" ToRole="Case" />
-        </EntityType>
-        <Association Name="CaseReferralSources">
-          <End Type="SLS_LegalServicesDataModel.Case" Role="Case" Multiplicity="*" />
-          <End Type="SLS_LegalServicesDataModel.ReferralSource" Role="ReferralSource" Multiplicity="*" />
-        </Association>
         <EntityType Name="CaseDocument">
           <Key>
             <PropertyRef Name="CaseDocumentId" />
@@ -1624,6 +1577,59 @@
               <PropertyRef Name="CreatedById" />
             </Dependent>
           </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Log">
+          <Key>
+            <PropertyRef Name="LogId" />
+          </Key>
+          <Property Name="LogId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="LogType" Type="String" Nullable="false" MaxLength="50" FixedLength="true" Unicode="true" />
+          <Property Name="CaseId" Type="Int32" />
+          <Property Name="LogDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreatedById" Type="Guid" Nullable="false" />
+          <Property Name="Action" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Detail" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Active" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Case" Relationship="SLS_LegalServicesDataModel.FK_Log_Cases" FromRole="Log" ToRole="Case" />
+          <NavigationProperty Name="User" Relationship="SLS_LegalServicesDataModel.FK_Log_Users" FromRole="Log" ToRole="User" />
+        </EntityType>
+        <Association Name="FK_Log_Cases">
+          <End Type="SLS_LegalServicesDataModel.Case" Role="Case" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="SLS_LegalServicesDataModel.Log" Role="Log" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Case">
+              <PropertyRef Name="CaseId" />
+            </Principal>
+            <Dependent Role="Log">
+              <PropertyRef Name="CaseId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Log_Users">
+          <End Type="SLS_LegalServicesDataModel.User" Role="User" Multiplicity="1" />
+          <End Type="SLS_LegalServicesDataModel.Log" Role="Log" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="Log">
+              <PropertyRef Name="CreatedById" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="ReferralSource">
+          <Key>
+            <PropertyRef Name="ReferralSourceId" />
+          </Key>
+          <Property Name="ReferralSourceId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ReferralSource1" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Cases" Relationship="SLS_LegalServicesDataModel.CaseReferralSources" FromRole="ReferralSource" ToRole="Case" />
+        </EntityType>
+        <Association Name="CaseReferralSources">
+          <End Type="SLS_LegalServicesDataModel.Case" Role="Case" Multiplicity="*" />
+          <End Type="SLS_LegalServicesDataModel.ReferralSource" Role="ReferralSource" Multiplicity="*" />
         </Association>
         </Schema>
     </edmx:ConceptualModels>
@@ -1869,6 +1875,19 @@
               <ScalarProperty Name="Id" ColumnName="RoleId" />
             </EndProperty>
           </AssociationSetMapping>
+          <EntitySetMapping Name="CaseDocuments">
+            <EntityTypeMapping TypeName="SLS_LegalServicesDataModel.CaseDocument">
+              <MappingFragment StoreEntitySet="CaseDocuments">
+                <ScalarProperty Name="FileType" ColumnName="FileType" />
+                <ScalarProperty Name="IsWorldox" ColumnName="IsWorldox" />
+                <ScalarProperty Name="CreatedById" ColumnName="CreatedById" />
+                <ScalarProperty Name="CreationDate" ColumnName="CreationDate" />
+                <ScalarProperty Name="Filename" ColumnName="Filename" />
+                <ScalarProperty Name="CaseId" ColumnName="CaseId" />
+                <ScalarProperty Name="CaseDocumentId" ColumnName="CaseDocumentId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Logs">
             <EntityTypeMapping TypeName="SLS_LegalServicesDataModel.Log">
               <MappingFragment StoreEntitySet="Log">
@@ -1899,19 +1918,6 @@
               <ScalarProperty Name="CaseId" ColumnName="CaseId" />
             </EndProperty>
           </AssociationSetMapping>
-          <EntitySetMapping Name="CaseDocuments">
-            <EntityTypeMapping TypeName="SLS_LegalServicesDataModel.CaseDocument">
-              <MappingFragment StoreEntitySet="CaseDocuments">
-                <ScalarProperty Name="FileType" ColumnName="FileType" />
-                <ScalarProperty Name="IsWorldox" ColumnName="IsWorldox" />
-                <ScalarProperty Name="CreatedById" ColumnName="CreatedById" />
-                <ScalarProperty Name="CreationDate" ColumnName="CreationDate" />
-                <ScalarProperty Name="Filename" ColumnName="Filename" />
-                <ScalarProperty Name="CaseId" ColumnName="CaseId" />
-                <ScalarProperty Name="CaseDocumentId" ColumnName="CaseDocumentId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

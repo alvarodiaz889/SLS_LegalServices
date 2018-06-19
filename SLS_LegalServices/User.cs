@@ -22,8 +22,8 @@ namespace SLS_LegalServices
             this.CaseNotes = new HashSet<CaseNote>();
             this.Cases = new HashSet<Case>();
             this.Interns = new HashSet<Intern>();
-            this.Logs = new HashSet<Log>();
             this.CaseDocuments = new HashSet<CaseDocument>();
+            this.Logs = new HashSet<Log>();
         }
     
         public System.Guid UserId { get; set; }
@@ -44,8 +44,8 @@ namespace SLS_LegalServices
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Intern> Interns { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Log> Logs { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CaseDocument> CaseDocuments { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Log> Logs { get; set; }
     }
 }

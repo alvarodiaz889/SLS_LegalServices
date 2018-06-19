@@ -15,7 +15,8 @@
                     referralId: e.id
                 },
                 function (data) {
-                    console.log(data);
+                    //console.log(data);
+                    $("#LogGrid").data("kendoGrid").dataSource.read();
             });
         }
     }

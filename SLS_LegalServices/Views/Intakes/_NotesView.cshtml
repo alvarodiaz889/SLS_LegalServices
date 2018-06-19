@@ -4,9 +4,10 @@
 }
 
 <script>
-    function onRequestEnd(e) {
+    function CaseNotesRequestEnd(e) {
         if (e.type == "update" || e.type == "create" || e.type == "remove") {
             this.read();
+            $("#LogGrid").data("kendoGrid").dataSource.read();
         }
     }
 </script>
@@ -38,7 +39,7 @@
             .Destroy(destroy => destroy.Action("Destroy", "CaseNote"))
             .Update(update => update.Action("Update", "CaseNote"))
             .Create(create => create.Action("Create", "CaseNote"))
-            .Events(events => events.RequestEnd("onRequestEnd"))
+            .Events(events => events.RequestEnd("CaseNotesRequestEnd"))
         )
         .ToolBar(toolbar => { toolbar.Create().Text("Add"); })
         .HtmlAttributes(new { @style = "height:auto;" })

@@ -9,6 +9,8 @@ namespace SLS_LegalServices.Repositories
 {
     public interface IMainRepository
     {
+        void SetLoggedUserId(Guid id);
+
         #region CaseTypes
         List<CaseTypesVM> GetAllCaseTypes();
         void CaseTypesInsert(CaseTypesVM vm);
@@ -29,6 +31,8 @@ namespace SLS_LegalServices.Repositories
         void CaseLogInsert(LogVM vm);
         void CaseLogDelete(LogVM vm);
         void CaseLogUpdate(LogVM vm);
+
+        void LogIntake_MainInfo(string action, IntakeVM old, IntakeVM recent);
         #endregion
 
         #region Interns

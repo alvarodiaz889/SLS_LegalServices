@@ -45,8 +45,8 @@ namespace SLS_LegalServices
         public virtual DbSet<InternSchedule> InternSchedules { get; set; }
         public virtual DbSet<Telephone> Telephones { get; set; }
         public virtual DbSet<User> Users { get; set; }
+        public virtual DbSet<CaseDocument> CaseDocuments { get; set; }
         public virtual DbSet<Log> Logs { get; set; }
         public virtual DbSet<ReferralSource> ReferralSources { get; set; }
-        public virtual DbSet<CaseDocument> CaseDocuments { get; set; }
     }
 }

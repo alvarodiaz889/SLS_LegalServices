@@ -55,6 +55,9 @@ namespace SLS_LegalServices.Controllers
             ViewBag.Attorneys = repository.GetAllAttorneys();
             ViewBag.ReferralSources = repository.GetAllReferralSources();
 
+            if(intake != null)
+                repository.LogIntake_MainInfo("Viewed", intake, null);
+
             return View(intake);
         }
 
@@ -92,22 +95,13 @@ namespace SLS_LegalServices.Controllers
         public ActionResult Create(IntakeVM obj)
         {
             int id = 0;
+
             if (ModelState.IsValid)
             {
                 obj.CreatedById = Guid.Parse(User.Identity.GetUserId());
                 id = repository.IntakeInsert(obj);
             }
-            LogVM log = new LogVM
-            {
-                Action = "Created",
-                Active = 1,
-                CaseId = id,
-                CreatedById = Guid.Parse(User.Identity.GetUserId()),
-                LogDate = DateTime.Now,
-                LogType = "intakes",
-                Detail = ""
-            };
-            repository.CaseLogInsert(log);
+            
             return Json(id);
         }
 
@@ -117,19 +111,19 @@ namespace SLS_LegalServices.Controllers
             if (ModelState.IsValid)
             {
                 repository.IntakeUpdate(obj);
-                LogVM log = new LogVM
-                {
-                    Action = "Updated",
-                    Active = 1,
-                    CaseId = obj.CaseId,
-                    CreatedById = Guid.Parse(User.Identity.GetUserId()),
-                    LogDate = DateTime.Now,
-                    LogType = "intakes",
-                    Detail = "Basic Info Updated"
-                };
-                repository.CaseLogInsert(log);
             }
             
+            return Json(obj.CaseId);
+        }
+
+        [HttpPost]
+        public ActionResult Destroy(IntakeVM obj)
+        {
+            if (ModelState.IsValid)
+            {
+                repository.IntakeDelete(obj);
+            }
+
             return Json(obj.CaseId);
         }
 
@@ -138,6 +132,7 @@ namespace SLS_LegalServices.Controllers
         {
             if (ModelState.IsValid)
             {
+                repository.SetLoggedUserId(Guid.Parse(User.Identity.GetUserId()));
                 repository.ReferralSourcesUpdate(caseId, referralId);
             }
 

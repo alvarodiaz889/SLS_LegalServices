@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Text;
 using System.Web;
 
 namespace SLS_LegalServices.Repositories
@@ -12,6 +13,12 @@ namespace SLS_LegalServices.Repositories
     {
         SLS_LegalServicesEntities context = new SLS_LegalServicesEntities();
         private readonly IUserRepository UserRepository = new UserRepositoryImpl();
+        private Guid _user;
+
+        public void SetLoggedUserId(Guid id)
+        {
+            _user = id;
+        }
 
         #region CaseTypes
         public List<CaseTypesVM> GetAllCaseTypes()
@@ -134,7 +141,9 @@ namespace SLS_LegalServices.Repositories
                     LogType = o.LogType,
                     UserName = o.User.UserName,
                     CaseCode = o.Case.CaseNo
-                }).ToList();
+                })
+                .OrderByDescending(o => o.LogDate)
+                .ToList();
         }
         
 
@@ -179,6 +188,106 @@ namespace SLS_LegalServices.Repositories
             context.Entry(log).State = EntityState.Modified;
             context.SaveChanges();
         }
+
+        public void LogIntake_MainInfo(string action, IntakeVM old, IntakeVM recent)
+        {
+            LogVM log;
+            switch (action)
+            {
+                case "Viewed": 
+                    log = new LogVM
+                    {
+                        Action = "Viewed",
+                        Active = 1,
+                        CaseId = old.CaseId,
+                        CreatedById = old.CreatedById,
+                        LogDate = DateTime.Now,
+                        LogType = "intakes",
+                        Detail = ""
+                    };
+                    CaseLogInsert(log);
+                    break;
+
+                case "Created":
+                    log = new LogVM
+                    {
+                        Action = "Created",
+                        Active = 1,
+                        CaseId = recent.CaseId,
+                        CreatedById = recent.CreatedById,
+                        LogDate = DateTime.Now,
+                        LogType = "intakes",
+                        Detail = ""
+                    };
+                    CaseLogInsert(log);
+                    break;
+
+                case "Updated":
+
+                    StringBuilder detail = new StringBuilder("");
+
+                    if (old.FirstName != recent.FirstName) detail.AppendLine("First Name Changed.");
+                    if (old.LastName != recent.LastName) detail.AppendLine("Last Name Changed.");
+                    if (old.IUStudentId != recent.IUStudentId) detail.AppendLine("IU Student Id Changed.");
+                    if (old.TypeId != recent.TypeId) detail.AppendLine("Type Changed.");
+                    if (old.Narrative != recent.Narrative) detail.AppendLine("Narrative Changed.");
+
+                    if (old.InternId != recent.InternId)
+                    {
+                        //in case the record one record has 0 and the other null. Doesn't have to log it
+                        var InternIdOne = old.InternId.HasValue && old.InternId != 0;
+                        var InternIdTwo = recent.InternId.HasValue && recent.InternId != 0;
+                        if (InternIdOne || InternIdTwo) detail.AppendLine("Intern Changed.");
+                    }
+
+                    var AttorneysOne = old.Attorneys != null && old.Attorneys.Count > 0;
+                    var AttorneysTwo = recent.AttorneyIds != null && recent.AttorneyIds.Length > 0;
+                    if (AttorneysOne && AttorneysTwo)
+                    {
+                        HashSet<int> ids = new HashSet<int>();
+                        foreach (var att in old.Attorneys)
+                            ids.Add(att.AttorneyId);
+                        foreach (var att in recent.AttorneyIds)
+                            ids.Add(att);
+                        if (ids.Count() != old.Attorneys.Count)
+                            detail.AppendLine("Attorney Changed.");
+                        
+                    }
+                    else if (AttorneysOne || AttorneysTwo)
+                    {
+                        detail.AppendLine("Attorney Changed.");
+                    }
+
+                    log = new LogVM
+                    {
+                        Action = "Updated",
+                        Active = 1,
+                        CaseId = recent.CaseId,
+                        CreatedById = old.CreatedById,
+                        LogDate = DateTime.Now,
+                        LogType = "intakes",
+                        Detail = detail.ToString()
+                    };
+                    CaseLogInsert(log);
+                    break;
+            }
+        }
+
+        private void LogIntake_OtherInfo(string detail, int? caseId, Guid createdById)
+        {
+            LogVM log = new LogVM
+            {
+                Action = "Updated",
+                Active = 1,
+                CaseId = caseId,
+                CreatedById = createdById,
+                LogDate = DateTime.Now,
+                LogType = "intakes",
+                Detail = detail
+            };
+            CaseLogInsert(log);
+        }
+
         #endregion
 
         #region Interns
@@ -426,30 +535,30 @@ namespace SLS_LegalServices.Repositories
             rowsAfected = context.SaveChanges();
             insertedId = caseObj.CaseId;
 
+
             if (rowsAfected > 0)
             {
                 vm.CaseId = insertedId;
-                IntakeUpdate(vm);
+                IntakeInsertUpdate(true, vm);
             }
 
             return insertedId;
         }
 
-        public void IntakeDelete(IntakeVM vm)
+        private void IntakeInsertUpdate(bool insert, IntakeVM vm)
         {
-            Case obj = context.Cases.Where(c => c.CaseId == vm.CaseId).FirstOrDefault();
-            context.Cases.Remove(obj);
-            context.SaveChanges();
-        }
+            if(insert)
+                LogIntake_MainInfo("Created", null, vm);
+            else
+                LogIntake_MainInfo("Updated", GetIntakeById(vm.CaseId), vm);
 
-        public void IntakeUpdate(IntakeVM vm)
-        {
             Case obj = context.Cases.Where(c => c.CaseId == vm.CaseId).FirstOrDefault();
             obj.FirstName = vm.FirstName;
             obj.LastName = vm.LastName;
             obj.IUStudentId = vm.IUStudentId;
             obj.TypeId = vm.TypeId;
             obj.Narrative = vm.Narrative;
+            //obj.Status = vm.Status;
 
             context.Cases.Attach(obj);
             context.Entry(obj).State = EntityState.Modified;
@@ -492,6 +601,21 @@ namespace SLS_LegalServices.Repositories
                 }
                 context.SaveChanges();
             }
+        }
+
+
+
+
+        public void IntakeUpdate(IntakeVM vm)
+        {
+            IntakeInsertUpdate(false, vm);
+        }
+
+        public void IntakeDelete(IntakeVM vm)
+        {
+            Case obj = context.Cases.Where(c => c.CaseId == vm.CaseId).FirstOrDefault();
+            context.Cases.Remove(obj);
+            context.SaveChanges();
         }
 
         #endregion
@@ -544,6 +668,8 @@ namespace SLS_LegalServices.Repositories
             };
             context.Telephones.Add(t);
             context.SaveChanges();
+
+            LogIntake_OtherInfo("Telephone Created", vm.CaseId, _user);
         }
 
         public void TelephoneDelete(TelephoneVM vm)
@@ -551,6 +677,8 @@ namespace SLS_LegalServices.Repositories
             Telephone t = context.Telephones.Where(tt => tt.TelephoneId == vm.TelephoneId).FirstOrDefault();
             context.Telephones.Remove(t);
             context.SaveChanges();
+
+            LogIntake_OtherInfo("Telephone Removed", vm.CaseId, _user);
         }
 
         public void TelephoneUpdate(TelephoneVM vm)
@@ -562,6 +690,8 @@ namespace SLS_LegalServices.Repositories
             context.Telephones.Attach(t);
             context.Entry(t).State = EntityState.Modified;
             context.SaveChanges();
+
+            LogIntake_OtherInfo("Telephone Updated", vm.CaseId, _user);
         }
 
         #endregion
@@ -591,6 +721,11 @@ namespace SLS_LegalServices.Repositories
             };
             context.Emails.Add(e);
             context.SaveChanges();
+
+            //just for intakes' cases' emails
+            if(vm.CaseId != null)
+                LogIntake_OtherInfo("Email Created", vm.CaseId, _user);
+
             return e.EmailId;
         }
 
@@ -599,6 +734,10 @@ namespace SLS_LegalServices.Repositories
             Email e = context.Emails.Where(ee => ee.EmailId == vm.EmailId).FirstOrDefault();
             context.Emails.Remove(e);
             context.SaveChanges();
+
+            //just for intakes' cases' emails
+            if (vm.CaseId != null)
+                LogIntake_OtherInfo("Email Removed", vm.CaseId, _user);
         }
 
         public void EmailUpdate(EmailVM vm)
@@ -610,6 +749,10 @@ namespace SLS_LegalServices.Repositories
             context.Emails.Attach(e);
             context.Entry(e).State = EntityState.Modified;
             context.SaveChanges();
+
+            //just for intakes' cases' emails
+            if (vm.CaseId != null)
+                LogIntake_OtherInfo("Email Updated", vm.CaseId, _user);
         }
 
         #endregion
@@ -649,6 +792,11 @@ namespace SLS_LegalServices.Repositories
             };
             context.Addresses.Add(a);
             context.SaveChanges();
+
+            //just for intakes' cases' addresses
+            if (vm.CaseId != null)
+                LogIntake_OtherInfo("Address Created", vm.CaseId, _user);
+
             return a.AddressId;
         }
 
@@ -657,6 +805,10 @@ namespace SLS_LegalServices.Repositories
             Address a = context.Addresses.Where(aa => aa.AddressId == vm.AddressId).FirstOrDefault();
             context.Addresses.Remove(a);
             context.SaveChanges();
+
+            //just for intakes' cases' addresses
+            if (vm.CaseId != null)
+                LogIntake_OtherInfo("Address Removed", vm.CaseId, _user);
         }
 
         public void AddressUpdate(AddressVM vm)
@@ -673,6 +825,10 @@ namespace SLS_LegalServices.Repositories
             context.Addresses.Attach(a);
             context.Entry(a).State = EntityState.Modified;
             context.SaveChanges();
+
+            //just for intakes' cases' addresses
+            if (vm.CaseId != null)
+                LogIntake_OtherInfo("Address Updated", vm.CaseId, _user);
         }
 
         #endregion
@@ -706,6 +862,8 @@ namespace SLS_LegalServices.Repositories
             };
             context.CaseNotes.Add(note);
             context.SaveChanges();
+
+            LogIntake_OtherInfo("Case Note Created", vm.CaseId, vm.CreatedById);
         }
 
         public void CaseNoteDelete(CaseNotesVM vm)
@@ -713,6 +871,8 @@ namespace SLS_LegalServices.Repositories
             CaseNote note = context.CaseNotes.Where(n => n.CaseNoteId == vm.CaseNoteId).FirstOrDefault();
             context.CaseNotes.Remove(note);
             context.SaveChanges();
+
+            LogIntake_OtherInfo("Case Note Removed", vm.CaseId, vm.CreatedById);
         }
 
         public void CaseNoteUpdate(CaseNotesVM vm)
@@ -725,6 +885,8 @@ namespace SLS_LegalServices.Repositories
             context.CaseNotes.Attach(note);
             context.Entry(note).State = EntityState.Modified;
             context.SaveChanges();
+
+            LogIntake_OtherInfo("Case Note Updated", vm.CaseId, vm.CreatedById);
         }
 
         #endregion
@@ -771,6 +933,8 @@ namespace SLS_LegalServices.Repositories
             };
             context.CaseParties.Add(party);
             context.SaveChanges();
+
+            LogIntake_OtherInfo("Case Party Created", vm.CaseId, _user);
         }
 
         public void CasePartyDelete(CasePartyVM vm)
@@ -781,6 +945,8 @@ namespace SLS_LegalServices.Repositories
 
             EmailDelete(vm.Email);
             AddressDelete(vm.Address);
+
+            LogIntake_OtherInfo("Case Party Removed", vm.CaseId, _user);
         }
 
         public void CasePartyUpdate(CasePartyVM vm)
@@ -795,6 +961,7 @@ namespace SLS_LegalServices.Repositories
 
             EmailUpdate(vm.Email);
             AddressUpdate(vm.Address);
+            LogIntake_OtherInfo("Case Party Updated", vm.CaseId, _user);
 
         }
         #endregion
@@ -828,6 +995,8 @@ namespace SLS_LegalServices.Repositories
             };
             context.CaseDocuments.Add(doc);
             context.SaveChanges();
+
+            LogIntake_OtherInfo("Case Document Created", vm.CaseId, vm.CreatedById);
         }
 
         public void CaseDocumentDelete(CaseDocumentVM vm)
@@ -835,6 +1004,8 @@ namespace SLS_LegalServices.Repositories
             CaseDocument doc = context.CaseDocuments.Where(d => d.CaseDocumentId == vm.CaseDocumentId).FirstOrDefault();
             context.CaseDocuments.Remove(doc);
             context.SaveChanges();
+
+            LogIntake_OtherInfo("Case Document Removed", vm.CaseId, vm.CreatedById);
         }
 
         public void CaseDocumentUpdate(CaseDocumentVM vm)
@@ -849,6 +1020,8 @@ namespace SLS_LegalServices.Repositories
             context.CaseDocuments.Attach(doc);
             context.Entry(doc).State = EntityState.Modified;
             context.SaveChanges();
+
+            LogIntake_OtherInfo("Case Document Updated", vm.CaseId, vm.CreatedById);
         }
         #endregion
         
@@ -883,6 +1056,8 @@ namespace SLS_LegalServices.Repositories
             };
             context.CaseMoneys.Add(money);
             context.SaveChanges();
+
+            LogIntake_OtherInfo("Case Money '" + (vm.Type ?? string.Empty) + "' Created", vm.CaseId, vm.CreatedById);
         }
 
         public void CaseMoneyDelete(CaseMoneyVM vm)
@@ -890,6 +1065,8 @@ namespace SLS_LegalServices.Repositories
             CaseMoney money = context.CaseMoneys.Where(m => m.CaseMoneyId == vm.CaseMoneyId).FirstOrDefault();
             context.CaseMoneys.Remove(money);
             context.SaveChanges();
+
+            LogIntake_OtherInfo("Case Money '" + (vm.Type ?? string.Empty) + "' Removed", vm.CaseId, vm.CreatedById);
         }
 
         public void CaseMoneyUpdate(CaseMoneyVM vm)
@@ -903,6 +1080,8 @@ namespace SLS_LegalServices.Repositories
             context.CaseMoneys.Attach(money);
             context.Entry(money).State = EntityState.Modified;
             context.SaveChanges();
+
+            LogIntake_OtherInfo("Case Money '" + (vm.Type ?? string.Empty) + "' Updated", vm.CaseId, vm.CreatedById);
         }
         #endregion
 
@@ -941,6 +1120,11 @@ namespace SLS_LegalServices.Repositories
             context.Cases.Attach(@case);
             context.Entry(@case).State = EntityState.Modified;
             context.SaveChanges();
+
+            if(contain)
+                LogIntake_OtherInfo("Referral Source '" + (referral.ReferralSource1 ?? string.Empty)+ "' Un-checked", caseId, _user);
+            else
+                LogIntake_OtherInfo("Referral Source '" + (referral.ReferralSource1 ?? string.Empty) + "' Checked", caseId, _user);
         }
         #endregion
 

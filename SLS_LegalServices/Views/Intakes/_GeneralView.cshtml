@@ -47,11 +47,16 @@
             },
             function (data) {
                 //console.log(data);
-                if (data)
+                if (url.includes('Create'))
+                    window.location.href = "/Intakes/Details/?id=" + data;
+                else
                 {
-                    $("#modelId").val(data);
-                    updateValues();
+                    if (data) {
+                        $("#modelId").val(data);
+                        updateValues();
+                    }
                 }
+                
             });
         
     }
