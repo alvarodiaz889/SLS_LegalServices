@@ -7,7 +7,7 @@
 @{
     foreach (var viewName in (List<string>)ViewBag.SectionList)
     {
-        <div class="float-left one-half item-border">
+        <div class="item-border">
             @Html.Partial(viewName,Model)
         </div>
     }

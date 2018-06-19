@@ -31,7 +31,7 @@ namespace SLS_LegalServices.Controllers
         {
             var intakes = repository.GetAllIntakes();
             DataSourceResult result = intakes.AsQueryable().ToDataSourceResult(request);
-            return Json(result, JsonRequestBehavior.AllowGet);
+            return Json(result, JsonRequestBehavior.AllowGet); 
         }
         public ActionResult Details(int id)
         {
