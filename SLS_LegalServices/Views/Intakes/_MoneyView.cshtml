@@ -8,7 +8,7 @@
     updateTotalValues();
 
     function CaseMoneysRequestEnd(e) {
-        if (e.type == "update" || e.type == "create" || e.type == "remove") {
+        if (e.type == "update" || e.type == "create" || e.type == "destroy") {
             updateTotalValues();
             $("#LogGrid").data("kendoGrid").dataSource.read();
             this.read();

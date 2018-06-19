@@ -6,7 +6,7 @@
 <script>
 
     function CaseDocumentsRequestEnd(e) {
-        if (e.type == "update" || e.type == "create" || e.type == "remove") {
+        if (e.type == "update" || e.type == "create" || e.type == "destroy") {
             this.read();
             $("#LogGrid").data("kendoGrid").dataSource.read();
         }

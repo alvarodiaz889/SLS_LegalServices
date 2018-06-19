@@ -18,7 +18,7 @@
 
 @(Html.Kendo().Editor()
     .Name("NarrativeEditor")
-    .HtmlAttributes(new { style = "height:440px", aria_label = "editor" })
+    .HtmlAttributes(new { style = "height:240px", aria_label = "editor" })
     .Resizable(resizable => resizable.Content(true).Toolbar(false))
     .Tools(t => t.Clear())
     .Events(e => e.Change("OnEditorChange"))
