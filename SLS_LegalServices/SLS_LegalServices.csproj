@@ -354,6 +354,7 @@
     <Compile Include="ViewModels\CasePartyVM.cs" />
     <Compile Include="ViewModels\CaseVM.cs" />
     <Compile Include="ViewModels\EmailVM.cs" />
+    <Compile Include="ViewModels\GenericValuesLookupVM.cs" />
     <Compile Include="ViewModels\IntakeVM.cs" />
     <Compile Include="ViewModels\InternScheduleVM.cs" />
     <Compile Include="ViewModels\InternVM.cs" />
@@ -2946,6 +2947,7 @@
     <Content Include="Views\Shared\EditorTemplates\EditDocument.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\FileUpload.cshtml" />
     <Content Include="Views\Test\Index.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\DDLForGrid.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

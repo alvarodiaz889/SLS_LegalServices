@@ -1,0 +1,12 @@
+﻿@{
+    var values = ViewData.ModelMetadata.AdditionalValues;
+    var PropertyName = (string)values["PropertyName"];
+    dynamic PropertyName_List = ((Dictionary<string, object>)ViewBag.PropertyName_List)[PropertyName];
+
+}
+
+@(Html.Kendo().DropDownListFor(m => m)
+            .BindTo(PropertyName_List)
+            .DataValueField((string)values["DataValueField"])
+            .DataTextField((string)values["DataTextField"])
+)

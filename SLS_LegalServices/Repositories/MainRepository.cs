@@ -972,6 +972,7 @@ namespace SLS_LegalServices.Repositories
             party.FirstName = vm.FirstName;
             party.LastName = vm.LastName;
             party.IsIUStudent = vm.IsIUStudent;
+            party.PartyType = vm.PartyType;
             context.CaseParties.Attach(party);
             context.Entry(party).State = EntityState.Modified;
             context.SaveChanges();
@@ -1148,6 +1149,22 @@ namespace SLS_LegalServices.Repositories
         }
         #endregion
 
+        #region GenericValues
+        public List<GenericValuesLookupVM> GetAllGenericValuesByType(string type)
+        {
+            return context.GenericValuesLookups
+                .Where(g => g.Type == type)
+                .Select(g => new GenericValuesLookupVM
+                {
+                    Id = g.Id,
+                    Display = g.Display,
+                    Type = g.Type,
+                    Value = g.Value
+                })
+                .ToList();
+        }
+
+        #endregion
         public void Dispose()
         {
             context.Dispose();

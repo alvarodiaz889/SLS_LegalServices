@@ -21,11 +21,6 @@ namespace SLS_LegalServices.Controllers
             this.userRepository = userRepository;
             this.roleRepository = roleRepository;
         }
-        public ActionResult Index()
-        {
-            ViewBag.Roles = roleRepository.GetAllRoles();
-            return View();
-        }
 
         public JsonResult Read([DataSourceRequest]DataSourceRequest request)
         {

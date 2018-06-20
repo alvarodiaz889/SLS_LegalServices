@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 
 namespace SLS_LegalServices.ViewModels
 {
@@ -26,8 +27,11 @@ namespace SLS_LegalServices.ViewModels
 
         public bool? Active { get; set; }
 
-        [UIHint("Roles")]
-        [Display(Name = "Roles")]
+        [UIHint("DDLForGrid")]
+        [AdditionalMetadata("DataValueField","Id")]
+        [AdditionalMetadata("DataTextField", "Role")]
+        [AdditionalMetadata("PropertyName", "Role")]
+        [Display(Name = "Role")]
         [Required]
         public string Role { get; set; }
 

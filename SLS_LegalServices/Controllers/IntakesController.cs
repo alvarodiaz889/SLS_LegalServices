@@ -47,14 +47,24 @@ namespace SLS_LegalServices.Controllers
                 new KeyValuePair<int,string>(9,"_LogView")
             };
             ViewBag.SectionList = views.OrderBy(v => v.Key).Select(v => v.Value).ToList();
-
             var intake = repository.GetIntakeById(id);
 
+            // data for the DDLookup editor template for attorneys and casetype in _GeneralView view
             ViewData["TypeId"] = intake?.TypeId ?? 0;
             ViewData["InternId"] = intake?.InternId ?? 0;
             ViewBag.Attorneys = repository.GetAllAttorneys();
+
+            // data for the _ReferralSourcesView view
             ViewBag.ReferralSources = repository.GetAllReferralSources();
 
+            //data for the DDForGrid editor template - more can be added dynamically in order to reuse the control
+            //first parameter is the property name and the other is the collection
+            var PropertyName_List = new Dictionary<string, object>();
+            PropertyName_List.Add("PartyType", repository.GetAllGenericValuesByType("PartyType"));
+            ViewBag.PropertyName_List = PropertyName_List;
+
+
+            // log the info as viewed
             if(intake != null)
                 repository.LogIntake_MainInfo("Viewed", intake, null);
 

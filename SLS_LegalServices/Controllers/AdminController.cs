@@ -44,7 +44,11 @@ namespace SLS_LegalServices.Controllers
 
         public ActionResult SystemUsers()
         {
-            ViewBag.Roles = roleRepository.GetAllRoles().Where(r => r.Role == "ADMIN" || r.Role == "SUPERUSER" || r.Role == "STAFF");
+            //Data for the DDLForGrid Edit Template
+            var PropertyName_List = new Dictionary<string, object>();
+            PropertyName_List.Add("Role", roleRepository.GetAllRoles().Where(r => r.Role == "ADMIN" || r.Role == "SUPERUSER" || r.Role == "STAFF"));
+            ViewBag.PropertyName_List = PropertyName_List;
+
             return PartialView("_SystemUsers");
         }
 

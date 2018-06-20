@@ -9,12 +9,16 @@ namespace SLS_LegalServices.ViewModels
     public class EmailVM
     {
         public int EmailId { get; set; }
+
+        [Required]
         public string Type { get; set; }
+
         public int? CaseId { get; set; }
 
         [Display(Name ="Email Address")]
         [Required]
         public string Email1 { get; set; }
+
         public CaseVM Case { get; set; }
     }
 }

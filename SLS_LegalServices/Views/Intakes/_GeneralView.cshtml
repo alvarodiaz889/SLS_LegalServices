@@ -4,7 +4,7 @@
     var strCreationDate = Model != null ? Model.CreationDate.ToString() : string.Empty;
 }
 <script>
-    
+
     function whenChanging()
     {
         let idValue = $("#modelId").val();
@@ -56,9 +56,9 @@
                         updateValues();
                     }
                 }
-                
+
             });
-        
+
     }
 
     function updateValues()
@@ -103,26 +103,64 @@
         return strTime;
     }
 
+    function showDialog() {
+        $('#dialog').data("kendoDialog").open();
+    }
+
+    function closeDialog() {
+        $('#dialog').data("kendoDialog").close();
+    }
+
+    function promoteToCase(e)
+    {
+        var caseNo = $('#caseNo').val();
+        if (caseNo.trim() == '')
+        {
+            alert('The case number must have a value');
+            e.preventDefault();
+        }
+        else {
+            alert('Updated')
+            $('#caseNo').val("");
+        }
+    }
+
+
 </script>
 
-<div class="padding-ten margin-ten">
-    <div class="float-right one-half">
-        <input type="submit" value="Promote to Case" class="button" />
-    </div>
-</div>
 
-<div class="padding-ten">
-    <div class="float-left one-half">
-        <input type="submit" value="Enrollment Not Verified" class="button" />
+@(Html.Kendo().Dialog()
+    .Name("dialog")
+    .Title("Promote to Case")
+    .Content("<p>Would you like to promote this intake into a <strong>CASE</strong> ?<p>" +
+        "<input id='caseNo' required type='text' style='width:90%'  />")
+    .Width(400)
+    .Modal(true)
+    .Closable(false)
+    .Visible(false)
+    .Actions(actions =>
+    {
+        actions.Add().Text("Cancel").Action("closeDialog");
+        actions.Add().Text("Promote").Action("promoteToCase").Primary(true);
+    })
+)
+
+
+<div style="padding:0; margin:0; height:100px">
+    <div class="float-left padding-ten" style="width:33%;">
+        <button type="submit" class="button">Enrollment Not Verified</button>
     </div>
-    <div class="float-left one-half">
-        <input type="submit" value="Student Activity Fee Not Verified" class="button" />
+    <div class="float-left padding-ten" style="width:33%;">
+        <button type="submit" class="button">Student Activity Fee Not Verified</button>
+    </div>
+    <div class="float-left padding-ten" style="width:33%;">
+        <div class="float-right">
+            <button class="button" role="button" tabindex="0" onclick="showDialog()">Promote to case</button>
+        </div>
     </div>
 </div>
 <div class="padding-ten">
-    <div class="float-right one-half">
-        <h4 style="text-align:right" id="fullName">@strFullName</h4>
-    </div>
+    <h4 style="text-align:right" id="fullName">@strFullName</h4>
 </div>
 <div class="grid thirds">
 

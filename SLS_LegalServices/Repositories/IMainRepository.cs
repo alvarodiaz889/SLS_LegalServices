@@ -74,14 +74,12 @@ namespace SLS_LegalServices.Repositories
         void TelephoneUpdate(TelephoneVM vm);
         #endregion
 
-
         #region Email
         List<EmailVM> GetAllEmails();
         int EmailInsert(EmailVM vm);
         void EmailDelete(EmailVM vm);
         void EmailUpdate(EmailVM vm);
         #endregion
-
 
         #region Address
         List<AddressVM> GetAllAddresses();
@@ -90,14 +88,12 @@ namespace SLS_LegalServices.Repositories
         void AddressUpdate(AddressVM vm);
         #endregion
 
-
         #region CaseNotes
         List<CaseNotesVM> GetAllCaseNotes();
         void CaseNoteInsert(CaseNotesVM vm);
         void CaseNoteDelete(CaseNotesVM vm);
         void CaseNoteUpdate(CaseNotesVM vm);
         #endregion
-
 
         #region CaseNotes
         List<CasePartyVM> GetAllCaseParties();
@@ -126,6 +122,10 @@ namespace SLS_LegalServices.Repositories
         void ReferralSourcesUpdate(int caseId, int referralId);
         #endregion
 
+        #region GenericValuesLookup
+        List<GenericValuesLookupVM> GetAllGenericValuesByType(string type);
+        
+        #endregion
 
         void Dispose();
     }

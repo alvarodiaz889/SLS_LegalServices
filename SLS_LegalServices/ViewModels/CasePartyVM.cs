@@ -11,16 +11,23 @@ namespace SLS_LegalServices.ViewModels
     {
         public int CasePartyId { get; set; }
         public int CaseId { get; set; }
+
+        [UIHint("DDLForGrid")]
+        [AdditionalMetadata("DataTextField", "Display")]
+        [AdditionalMetadata("DataValueField", "Value")]
+        [AdditionalMetadata("PropertyName", "PartyType")]
+        [Display(Name = "Type")]
         public string PartyType { get; set; }
+
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string OrganizationName { get; set; }
         public int AddressId { get; set; }
         public int EmailId { get; set; }
 
-        [Display(Name ="IU Student")]
         [UIHint("YesNoDropDown")]
         [AdditionalMetadata("Name", "IsIUStudent")]
+        [Display(Name = "IU Student")]
         public bool IsIUStudent { get; set; }
 
         [UIHint("EditEmail")]

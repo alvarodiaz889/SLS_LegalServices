@@ -1,6 +1,5 @@
-﻿@model IEnumerable<RoleViewModel>
-@(Html.Kendo().DropDownListFor(m => m)
-    .BindTo((IEnumerable<RoleViewModel>)ViewBag.Roles)
+﻿@(Html.Kendo().DropDownListFor(m => m)
+    .BindTo(ViewBag.Roles)
     .DataValueField("Id")
     .DataTextField("Role")
 )

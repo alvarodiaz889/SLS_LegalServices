@@ -58,6 +58,18 @@ namespace SLS_LegalServices.Controllers
             return Json(new[] { obj }.ToDataSourceResult(request, ModelState));
         }
 
+        public JsonResult GetPartyTypes(string text)
+        {
+            var partyTypes = repository.GetAllGenericValuesByType("PartyType");
+
+            if (!string.IsNullOrEmpty(text))
+            {
+                partyTypes = partyTypes.Where(pt => pt.Display.Contains(text)).ToList();
+            }
+
+            return Json(partyTypes, JsonRequestBehavior.AllowGet);
+        }
+
         protected override void Dispose(bool disposing)
         {
             repository.Dispose();
