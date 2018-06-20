@@ -29,9 +29,7 @@ namespace SLS_LegalServices.ViewModels
         [UIHint("Roles")]
         [Display(Name = "Roles")]
         [Required]
-        public List<RoleViewModel> Roles { get; set; }
+        public string Role { get; set; }
 
-        [Display(Name = "Roles")]
-        public string UserRoles { get; set; }
     }
 }

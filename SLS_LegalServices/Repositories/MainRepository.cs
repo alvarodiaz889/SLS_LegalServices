@@ -12,7 +12,8 @@ namespace SLS_LegalServices.Repositories
     public class MainRepository: IMainRepository
     {
         SLS_LegalServicesEntities context = new SLS_LegalServicesEntities();
-        private readonly IUserRepository UserRepository = new UserRepositoryImpl();
+        private readonly IUserRepository userRepository = new UserRepositoryImpl();
+        private readonly IRoleRepository roleRepository = new RoleRepositoryImpl();
         private Guid _user;
 
         public void SetLoggedUserId(Guid id)
@@ -80,6 +81,9 @@ namespace SLS_LegalServices.Repositories
             Attorney attorney = new Attorney() { User = user };
             context.Attorneys.Add(attorney);
             context.SaveChanges();
+
+            userRepository.InsertApplicationUser(user.UserId.ToString(), user.UserName);
+            roleRepository.Insert(user.UserId, "ATTORNEY");
         }
 
         public void AttorneyDelete(AttorneyVM vm)
@@ -91,6 +95,9 @@ namespace SLS_LegalServices.Repositories
             context.Users.Remove(attorney.User);
             context.Attorneys.Remove(attorney);
             context.SaveChanges();
+
+            userRepository.DeleteApplicationUser(attorney.UserId.ToString());
+            roleRepository.DeleteRoleByUserName(attorney.UserId.ToString());
         }
 
         public void AttorneyUpdate(AttorneyVM vm)
@@ -106,6 +113,8 @@ namespace SLS_LegalServices.Repositories
             context.Users.Attach(user);
             context.Entry(user).State = EntityState.Modified;
             context.SaveChanges();
+
+            userRepository.UpdateApplicationUser(vm.UserId.ToString(),vm.UserName);
         }
         #endregion
 
@@ -226,9 +235,9 @@ namespace SLS_LegalServices.Repositories
 
                     StringBuilder detail = new StringBuilder("");
 
-                    if (old.FirstName != recent.FirstName) detail.AppendLine("First Name Changed.");
-                    if (old.LastName != recent.LastName) detail.AppendLine("Last Name Changed.");
-                    if (old.IUStudentId != recent.IUStudentId) detail.AppendLine("IU Student Id Changed.");
+                    if (old.FirstName != recent.FirstName) detail.AppendLine("First Name Changed. - " + (recent.FirstName ?? string.Empty));
+                    if (old.LastName != recent.LastName) detail.AppendLine("Last Name Changed. - " + (recent.LastName ?? string.Empty));
+                    if (old.IUStudentId != recent.IUStudentId) detail.AppendLine("IU Student Id Changed. - " + (recent.IUStudentId ?? string.Empty));
                     if (old.TypeId != recent.TypeId) detail.AppendLine("Type Changed.");
                     if (old.Narrative != recent.Narrative) detail.AppendLine("Narrative Changed.");
 
@@ -340,6 +349,9 @@ namespace SLS_LegalServices.Repositories
             }
             
             context.SaveChanges();
+
+            userRepository.InsertApplicationUser(user.UserId.ToString(), user.UserName);
+            roleRepository.Insert(user.UserId, "INTERN");
         }
 
         public void InternDelete(InternVM vm)
@@ -350,6 +362,9 @@ namespace SLS_LegalServices.Repositories
             context.Users.Remove(intern.User);
             context.Interns.Remove(intern);
             context.SaveChanges();
+
+            userRepository.DeleteApplicationUser(intern.UserId.ToString());
+            roleRepository.DeleteRoleByUserName(intern.UserId.ToString());
         }
 
         public void InternUpdate(InternVM vm)
@@ -392,6 +407,8 @@ namespace SLS_LegalServices.Repositories
             }
 
             context.SaveChanges();
+
+            userRepository.UpdateApplicationUser(vm.UserId.ToString(), vm.UserName);
         }
 
         public List<AttorneyVM> GetAllAttorneysByIntern(InternVM intern)
@@ -1057,7 +1074,8 @@ namespace SLS_LegalServices.Repositories
             context.CaseMoneys.Add(money);
             context.SaveChanges();
 
-            LogIntake_OtherInfo("Case Money '" + (vm.Type ?? string.Empty) + "' Created", vm.CaseId, vm.CreatedById);
+            string text = "Case Money '" + (vm.Type ?? string.Empty) + "' Created - " + (vm.Amount.ToString("C"));
+            LogIntake_OtherInfo(text , vm.CaseId, vm.CreatedById);
         }
 
         public void CaseMoneyDelete(CaseMoneyVM vm)
@@ -1066,7 +1084,8 @@ namespace SLS_LegalServices.Repositories
             context.CaseMoneys.Remove(money);
             context.SaveChanges();
 
-            LogIntake_OtherInfo("Case Money '" + (vm.Type ?? string.Empty) + "' Removed", vm.CaseId, vm.CreatedById);
+            string text = "Case Money '" + (vm.Type ?? string.Empty) + "' Removed - " + (vm.Amount.ToString("C"));
+            LogIntake_OtherInfo(text, vm.CaseId, vm.CreatedById);
         }
 
         public void CaseMoneyUpdate(CaseMoneyVM vm)
@@ -1081,7 +1100,8 @@ namespace SLS_LegalServices.Repositories
             context.Entry(money).State = EntityState.Modified;
             context.SaveChanges();
 
-            LogIntake_OtherInfo("Case Money '" + (vm.Type ?? string.Empty) + "' Updated", vm.CaseId, vm.CreatedById);
+            string text = "Case Money '" + (vm.Type ?? string.Empty) + "' Updated - " + (vm.Amount.ToString("C"));
+            LogIntake_OtherInfo(text, vm.CaseId, vm.CreatedById);
         }
         #endregion
 

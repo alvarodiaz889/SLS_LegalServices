@@ -15,20 +15,20 @@ namespace SLS_LegalServices.Repositories
     {
         private SLS_LegalServicesEntities context;
         private UserManager<ApplicationUser> userManager;
-        private IRoleRepository roleRepository;
+        private readonly IRoleRepository roleRepository;
 
-        public UserRepositoryImpl() : this(new RoleRepositoryImpl()){ }
-        public UserRepositoryImpl(IRoleRepository roleRepository)
+        public UserRepositoryImpl()
         {
-            this.roleRepository = roleRepository;
             context = new SLS_LegalServicesEntities();
             userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(new ApplicationDbContext()));
+            roleRepository = new RoleRepositoryImpl();
         }
 
         public List<UserViewModel> GetAllUsers()
         {
             var query = from u in context.Users
                         join systemUser in context.AspNetUsers on u.UserId.ToString() equals systemUser.Id
+                        where systemUser.AspNetRoles.Any(r => r.Name == "ADMIN" || r.Name == "SUPERUSER" || r.Name == "STAFF")
                         select new UserViewModel
                         {
                             UserId = u.UserId,
@@ -36,17 +36,11 @@ namespace SLS_LegalServices.Repositories
                             FirstName = u.FirstName,
                             Active = u.Active,
                             DisplayName = u.DisplayName,
-                            LastName = u.LastName
+                            LastName = u.LastName,
+                            Role = systemUser.AspNetRoles.FirstOrDefault().Name
                         };
 
-
-            List <UserViewModel> users = query.ToList();
-            users.ForEach(u => {
-                u.Roles = roleRepository.GetRolesByUserId(u.UserId.ToString()).ToList();
-                u.UserRoles = string.Join(",",u.Roles.Select(c => c.Role));
-            });
-            
-            return users;
+            return query.ToList();
         }
 
         #region Delete
@@ -87,8 +81,10 @@ namespace SLS_LegalServices.Repositories
                 InsertRolesForUser(userViewModel);
             else
                 DeleteApplicationUser(userViewModel);
-
         }
+
+        
+
         private string InsertApplicationUser(UserViewModel userViewModel)
         {
             ApplicationUser user = new ApplicationUser { UserName = userViewModel.UserName};
@@ -112,7 +108,7 @@ namespace SLS_LegalServices.Repositories
         private void InsertRolesForUser(UserViewModel userViewModel)
         {
             User user = context.Users.Where(u => u.UserName == userViewModel.UserName).FirstOrDefault();
-            roleRepository.InsertMany(user.UserId, userViewModel.Roles);
+            roleRepository.Insert(user.UserId, userViewModel.Role);
         }
         #endregion
 
@@ -145,23 +141,41 @@ namespace SLS_LegalServices.Repositories
 
         public UserViewModel GetUserByUserName(string userName)
         {
-            UserViewModel user = context.Users.Where(u => u.UserName == userName)
-                .Select(u => new UserViewModel()
-                {
-                    UserId = u.UserId,
-                    UserName = u.UserName,
-                    FirstName = u.FirstName,
-                    Active = u.Active,
-                    DisplayName = u.DisplayName,
-                    LastName = u.LastName
-                }).FirstOrDefault();
-            if (user != null)
-            {
-                user.Roles = roleRepository.GetRolesByUserId(user.UserId.ToString()).ToList();
-                user.UserRoles = string.Join(",", user.Roles.Select(c => c.Role));
-            }
+
+            var query = from u in context.Users
+                        join systemUser in context.AspNetUsers on u.UserId.ToString() equals systemUser.Id
+                        where u.UserName == userName
+                        select new UserViewModel
+                        {
+                            UserId = u.UserId,
+                            UserName = u.UserName,
+                            FirstName = u.FirstName,
+                            Active = u.Active,
+                            DisplayName = u.DisplayName,
+                            LastName = u.LastName,
+                            Role = systemUser.AspNetRoles.FirstOrDefault().Name
+                        };
             
-            return user;
+            return query.ToList().FirstOrDefault();
+        }
+
+        public void InsertApplicationUser(string id, string username)
+        {
+            ApplicationUser user = new ApplicationUser { Id = id, UserName = username };
+            userManager.Create(user);
+        }
+
+        public void UpdateApplicationUser(string id, string username)
+        {
+            var user = userManager.FindById(id);
+            user.UserName = username;
+            userManager.Update(user);
+        }
+
+        public void DeleteApplicationUser(string id)
+        {
+            var user = userManager.FindById(id);
+            userManager.Delete(user);
         }
         public void Dispose()
         {

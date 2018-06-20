@@ -46,7 +46,7 @@
             columns.Bound(o => o.UserName).HtmlAttributes(new { @style = "vertical-align: top;" });
             columns.Bound(o => o.LastName).HtmlAttributes(new { @style = "vertical-align: top;" });
             columns.Bound(o => o.FirstName).HtmlAttributes(new { @style = "vertical-align: top;" });
-            columns.Bound(o => o.Roles).ClientTemplate("#=UserRoles#").HtmlAttributes(new { @style = "vertical-align: top;" }).Filterable(false);
+            columns.Bound(o => o.Role).HtmlAttributes(new { @style = "vertical-align: top;" });
             columns.Template(@<text> </text>).Title("");
             })
             .Scrollable()
@@ -56,7 +56,6 @@
                 .Model(model =>
                     {
                         model.Id(c => c.UserName);
-                        model.Field(e => e.Roles).DefaultValue(new List<RoleViewModel>());
                         model.Field(e => e.UserId).DefaultValue(new Guid());
                     })
                 .Read(read => read.Action("Read", "User"))

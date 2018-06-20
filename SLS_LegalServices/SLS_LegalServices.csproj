@@ -284,7 +284,6 @@
     <Compile Include="Controllers\IntakesController.cs" />
     <Compile Include="Controllers\InternController.cs" />
     <Compile Include="Controllers\InternScheduleController.cs" />
-    <Compile Include="Controllers\TestController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Email.cs">
       <DependentUpon>SLS_DataModel.tt</DependentUpon>
@@ -354,7 +353,6 @@
     <Compile Include="ViewModels\CaseMoneyVM.cs" />
     <Compile Include="ViewModels\CasePartyVM.cs" />
     <Compile Include="ViewModels\CaseVM.cs" />
-    <Compile Include="ViewModels\TestVM.cs" />
     <Compile Include="ViewModels\EmailVM.cs" />
     <Compile Include="ViewModels\IntakeVM.cs" />
     <Compile Include="ViewModels\InternScheduleVM.cs" />
@@ -2948,7 +2946,6 @@
     <Content Include="Views\Shared\EditorTemplates\EditDocument.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\FileUpload.cshtml" />
     <Content Include="Views\Test\Index.cshtml" />
-    <Content Include="Views\Shared\EditorTemplates\TestPopUp4.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

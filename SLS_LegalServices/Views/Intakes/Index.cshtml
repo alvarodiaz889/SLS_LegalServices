@@ -21,8 +21,8 @@
         columns.Command(command => { command.Edit().Text("edit");}).Width(100);
         columns.Bound(c => c.CaseId).Visible(false);
         columns.Bound(c => c.FirstName).Width(120);
+        columns.Bound(c => c.CreationDate).Format("{0:dd/MM/yyyy hh:mm tt}").Title("Date").Width(200);
         columns.Template(@<text> </text>).Title("");
-        columns.Command(command => { command.Destroy().Text("remove"); }).Width(100);
     })
     .Scrollable()
     .DataSource(dataSource => dataSource

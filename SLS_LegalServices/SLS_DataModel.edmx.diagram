@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="c0ac8adcb0ce46a5bde539df3fa35bb1" Name="Diagram1" ZoomLevel="80">
+      <Diagram DiagramId="c0ac8adcb0ce46a5bde539df3fa35bb1" Name="Diagram1" ZoomLevel="105">
         <EntityTypeShape EntityType="SLS_LegalServicesDataModel.Address" Width="1.5" PointX="9" PointY="25.625" />
         <EntityTypeShape EntityType="SLS_LegalServicesDataModel.AspNetRole" Width="1.5" PointX="0.5" PointY="11.375" />
         <EntityTypeShape EntityType="SLS_LegalServicesDataModel.AspNetUser" Width="1.5" PointX="2.75" PointY="10.375" />

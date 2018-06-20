@@ -44,7 +44,7 @@ namespace SLS_LegalServices.Controllers
 
         public ActionResult SystemUsers()
         {
-            ViewBag.Roles = roleRepository.GetAllRoles();
+            ViewBag.Roles = roleRepository.GetAllRoles().Where(r => r.Role == "ADMIN" || r.Role == "SUPERUSER" || r.Role == "STAFF");
             return PartialView("_SystemUsers");
         }
 
