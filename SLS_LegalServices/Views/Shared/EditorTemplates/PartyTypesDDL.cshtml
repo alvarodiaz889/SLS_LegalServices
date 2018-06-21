@@ -1,0 +1,8 @@
+﻿@model IEnumerable<GenericValuesLookupVM>
+
+@(Html.Kendo().DropDownListFor(m => m)
+    .BindTo((IEnumerable<GenericValuesLookupVM>)ViewBag.PartyTypes)
+    .DataValueField("Value")
+    .DataTextField("Display")
+    .HtmlAttributes(new { @style = "width:100%" })
+)

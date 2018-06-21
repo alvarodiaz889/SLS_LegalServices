@@ -27,10 +27,7 @@ namespace SLS_LegalServices.ViewModels
 
         public bool? Active { get; set; }
 
-        [UIHint("DDLForGrid")]
-        [AdditionalMetadata("DataValueField","Id")]
-        [AdditionalMetadata("DataTextField", "Role")]
-        [AdditionalMetadata("PropertyName", "Role")]
+        [UIHint("RolesDDL")]
         [Display(Name = "Role")]
         [Required]
         public string Role { get; set; }

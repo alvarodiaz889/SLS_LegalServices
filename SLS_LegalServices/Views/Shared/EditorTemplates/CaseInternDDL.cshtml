@@ -1,0 +1,19 @@
+﻿@model Nullable<int>
+
+@(Html.Kendo().DropDownListFor(m => m)
+    .Name("InternId")
+    .DataTextField("LastName")
+    .DataValueField("InternId")
+    .HtmlAttributes(new { style = "width:100%" })
+    .Filter("contains")
+    .OptionLabel("-- Select --")
+    .DataSource(source =>
+    {
+        source.Read(read =>
+        {
+            read.Action("GetInterns", "Intakes");
+        })
+        .ServerFiltering(true);
+    })
+    .Events(e => e.Change("whenChanging"))
+)

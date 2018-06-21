@@ -46,26 +46,14 @@ namespace SLS_LegalServices.Controllers
                 new KeyValuePair<int,string>(8,"_MoneyView"),
                 new KeyValuePair<int,string>(9,"_LogView")
             };
-            ViewBag.SectionList = views.OrderBy(v => v.Key).Select(v => v.Value).ToList();
             var intake = repository.GetIntakeById(id);
 
-            // data for the DDLookup editor template for attorneys and casetype in _GeneralView view
-            ViewData["TypeId"] = intake?.TypeId ?? 0;
-            ViewData["InternId"] = intake?.InternId ?? 0;
+            ViewBag.SectionList = views.OrderBy(v => v.Key).Select(v => v.Value).ToList();
             ViewBag.Attorneys = repository.GetAllAttorneys();
-
-            // data for the _ReferralSourcesView view
             ViewBag.ReferralSources = repository.GetAllReferralSources();
+            ViewBag.PartyTypes = repository.GetAllGenericValuesByType("PartyType");
 
-            //data for the DDForGrid editor template - more can be added dynamically in order to reuse the control
-            //first parameter is the property name and the other is the collection
-            var PropertyName_List = new Dictionary<string, object>();
-            PropertyName_List.Add("PartyType", repository.GetAllGenericValuesByType("PartyType"));
-            ViewBag.PropertyName_List = PropertyName_List;
-
-
-            // log the info as viewed
-            if(intake != null)
+            if (intake != null)
                 repository.LogIntake_MainInfo("Viewed", intake, null);
 
             return View(intake);
@@ -77,7 +65,7 @@ namespace SLS_LegalServices.Controllers
 
             if (!string.IsNullOrEmpty(text))
             {
-                interns = interns.Where(s => s.LastName.Contains(text)).ToList();
+                interns = interns.Where(s => s.FullName.ToUpper().Contains(text.ToUpper())).ToList();
             }
 
             return Json(interns, JsonRequestBehavior.AllowGet);
@@ -89,7 +77,7 @@ namespace SLS_LegalServices.Controllers
 
             if (!string.IsNullOrEmpty(text))
             {
-                types = types.Where(s => s.Description.ToUpper().Contains(text.ToUpper())).ToList();
+                types = types.Where(s => s.FullDescription.ToUpper().Contains(text.ToUpper())).ToList();
             }
 
             return Json(types, JsonRequestBehavior.AllowGet);
@@ -149,6 +137,18 @@ namespace SLS_LegalServices.Controllers
             var referrals = context.ReferralSources.Where(r => r.Cases.Any(c => c.CaseId == caseId))
                 .Select(r => r.ReferralSourceId).ToArray();
             return Json(referrals);
+        }
+
+        [HttpPost]
+        public ActionResult PromoteToCase(int caseId, string caseNo)
+        {
+            {
+                var @case = repository.GetIntakeById(caseId);
+                @case.CaseNo = caseNo;
+                repository.IntakeUpdate(@case);
+            }
+
+            return Json(caseId);
         }
 
         protected override void Dispose(bool disposing)

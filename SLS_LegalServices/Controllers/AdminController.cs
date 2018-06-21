@@ -44,11 +44,7 @@ namespace SLS_LegalServices.Controllers
 
         public ActionResult SystemUsers()
         {
-            //Data for the DDLForGrid Edit Template
-            var PropertyName_List = new Dictionary<string, object>();
-            PropertyName_List.Add("Role", roleRepository.GetAllRoles().Where(r => r.Role == "ADMIN" || r.Role == "SUPERUSER" || r.Role == "STAFF"));
-            ViewBag.PropertyName_List = PropertyName_List;
-
+            ViewBag.Roles = roleRepository.GetAllRoles().Where(r => r.Role == "ADMIN" || r.Role == "SUPERUSER" || r.Role == "STAFF");
             return PartialView("_SystemUsers");
         }
 

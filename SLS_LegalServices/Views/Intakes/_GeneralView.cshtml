@@ -20,14 +20,13 @@
     {
         let LastName = $("#LastName").val();
         let FirstName = $("#FirstName").val();
-        let CaseIntern = $("#CaseIntern").val();
+        let CaseIntern = $("#InternId").val();
         let IUStudentId = $("#IUStudentId").val();
-        let CaseType = $("#CaseType").val();
+        let TypeId = $("#TypeId").val();
         let CaseId = $("#modelId").val();
         let AttorneysValues = $("#Attorneys").data("kendoMultiSelect").dataItems();
         let Attorneys = [];
         let Narrative = $("#NarrativeEditor").data("kendoEditor").value();
-        console.log(Narrative);
 
         for (let i = 0; i < AttorneysValues.length; i++)
         {
@@ -41,12 +40,12 @@
                 FirstName: FirstName,
                 InternId: CaseIntern,
                 IUStudentId: IUStudentId,
-                TypeId: CaseType,
+                TypeId: TypeId,
                 AttorneyIds: Attorneys,
                 Narrative: Narrative
             },
             function (data) {
-                //console.log(data);
+
                 if (url.includes('Create'))
                     window.location.href = "/Intakes/Details/?id=" + data;
                 else
@@ -120,8 +119,17 @@
             e.preventDefault();
         }
         else {
-            alert('Updated')
-            $('#caseNo').val("");
+
+            $.post('@Url.Action("PromoteToCase","Intakes")',
+                {
+
+                },
+                function (data)
+                {
+                    $('#caseNo').val("");
+                    alert('Intake Upgraded successfully!')
+                }
+            )
         }
     }
 
@@ -184,10 +192,10 @@
 
     <div class="grid-item">
         <div>
-            @Html.LabelFor(model => model.CaseIntern)
+            @Html.LabelFor(model => model.InternId)
         </div>
         <div>
-            @Html.EditorFor(model => model.CaseIntern)
+            @Html.EditorFor(model => model.InternId)
         </div>
     </div>
 
@@ -202,10 +210,10 @@
 
     <div class="grid-item">
         <div>
-            @Html.LabelFor(model => model.CaseType)
+            @Html.LabelFor(model => model.TypeId)
         </div>
         <div>
-            @Html.EditorFor(model => model.CaseType)
+            @Html.EditorFor(model => model.TypeId)
         </div>
     </div>
 

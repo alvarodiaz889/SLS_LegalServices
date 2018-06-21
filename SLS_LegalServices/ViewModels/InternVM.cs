@@ -33,5 +33,11 @@ namespace SLS_LegalServices.ViewModels
 
         [UIHint("InternAttorneyDDL")]
         public List<AttorneyVM> Attorneys { get; set; }
+
+        public string FullName {
+            get {
+                return FirstName + " " + LastName;
+            }
+        }
     }
 }

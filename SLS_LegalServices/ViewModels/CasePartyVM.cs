@@ -12,10 +12,7 @@ namespace SLS_LegalServices.ViewModels
         public int CasePartyId { get; set; }
         public int CaseId { get; set; }
 
-        [UIHint("DDLForGrid")]
-        [AdditionalMetadata("DataTextField", "Display")]
-        [AdditionalMetadata("DataValueField", "Value")]
-        [AdditionalMetadata("PropertyName", "PartyType")]
+        [UIHint("PartyTypesDDL")]
         [Display(Name = "Type")]
         public string PartyType { get; set; }
 

@@ -2910,7 +2910,7 @@
       <DependentUpon>SLS_DataModel.edmx</DependentUpon>
     </Content>
     <Content Include="Views\Account\LoginError.cshtml" />
-    <Content Include="Views\Shared\EditorTemplates\Roles.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\RolesDDL.cshtml" />
     <Content Include="Views\Shared\_Menu.cshtml" />
     <Content Include="Views\Admin\Index.cshtml" />
     <Content Include="Views\Admin\_SystemUsers.cshtml" />
@@ -2948,6 +2948,9 @@
     <Content Include="Views\Shared\EditorTemplates\FileUpload.cshtml" />
     <Content Include="Views\Test\Index.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\DDLForGrid.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\PartyTypesDDL.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\CaseInternDDL.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\CaseTypeDDL.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
