@@ -1,0 +1,10 @@
+﻿@model string
+
+@(Html.Kendo().DropDownListFor(m => m)
+    .BindTo((IEnumerable<GenericValuesLookupVM>)ViewBag.CitizenshipStatuses)
+    .DataValueField("Value")
+    .DataTextField("Display")
+    .OptionLabel("-- Select --")
+    .HtmlAttributes(new { @style = "width:100%" })
+//.Events(e => e.Change("whenChanging"))
+)

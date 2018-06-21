@@ -18,6 +18,5 @@ namespace SLS_LegalServices.ViewModels
         [Required]
         public string Number { get; set; }
 
-        public CaseVM Case { get; set; }
     }
 }

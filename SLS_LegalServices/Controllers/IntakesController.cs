@@ -35,8 +35,9 @@ namespace SLS_LegalServices.Controllers
         }
         public ActionResult Details(int id)
         {
+            var intake = repository.GetIntakeById(id);
+
             var views = new List<KeyValuePair<int, string>>() {
-                new KeyValuePair<int,string>(1,"_GeneralView"),
                 new KeyValuePair<int,string>(2,"_NotesView"),
                 new KeyValuePair<int,string>(3,"_ContactsView"),
                 new KeyValuePair<int,string>(4,"_PartiesView"),
@@ -46,22 +47,36 @@ namespace SLS_LegalServices.Controllers
                 new KeyValuePair<int,string>(8,"_MoneyView"),
                 new KeyValuePair<int,string>(9,"_LogView")
             };
-            var intake = repository.GetIntakeById(id);
+
+            //Edit
+            if (intake != null)
+            {
+                repository.LogIntake_MainInfo("Viewed", intake, intake);
+                if(intake.CaseNo == null)
+                    views.Add(new KeyValuePair<int, string>(1, "_GeneralView"));
+                else
+                    views.Add(new KeyValuePair<int, string>(1, "_CasesGeneralView"));
+            }
+            else//new Intake
+            {
+                views.Add(new KeyValuePair<int, string>(1, "_GeneralView"));
+            }
 
             ViewBag.SectionList = views.OrderBy(v => v.Key).Select(v => v.Value).ToList();
             ViewBag.Attorneys = repository.GetAllAttorneys();
             ViewBag.ReferralSources = repository.GetAllReferralSources();
             ViewBag.PartyTypes = repository.GetAllGenericValuesByType("PartyType");
 
-            if (intake != null)
-                repository.LogIntake_MainInfo("Viewed", intake, null);
-
             return View(intake);
         }
 
-        public JsonResult GetInterns(string text)
+        public JsonResult GetInterns(string text, int isCertified)
         {
-            var interns = repository.GetAllInterns();
+            List<InternVM> interns = repository.GetAllInterns();
+            if (isCertified == 1)//Non-certicied Intern
+                interns = interns.Where(s => s.CertifiedDate == null).ToList();
+            else if(isCertified == 2)//Certified intern
+                interns = interns.Where(s => s.CertifiedDate != null).ToList();
 
             if (!string.IsNullOrEmpty(text))
             {
@@ -97,6 +112,7 @@ namespace SLS_LegalServices.Controllers
             if (ModelState.IsValid)
             {
                 obj.CreatedById = Guid.Parse(User.Identity.GetUserId());
+                obj.Status = "Open";
                 id = repository.IntakeInsert(obj);
             }
             
@@ -137,18 +153,6 @@ namespace SLS_LegalServices.Controllers
             var referrals = context.ReferralSources.Where(r => r.Cases.Any(c => c.CaseId == caseId))
                 .Select(r => r.ReferralSourceId).ToArray();
             return Json(referrals);
-        }
-
-        [HttpPost]
-        public ActionResult PromoteToCase(int caseId, string caseNo)
-        {
-            {
-                var @case = repository.GetIntakeById(caseId);
-                @case.CaseNo = caseNo;
-                repository.IntakeUpdate(@case);
-            }
-
-            return Json(caseId);
         }
 
         protected override void Dispose(bool disposing)

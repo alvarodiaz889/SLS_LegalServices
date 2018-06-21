@@ -352,7 +352,6 @@
     <Compile Include="ViewModels\CaseDocumentVM.cs" />
     <Compile Include="ViewModels\CaseMoneyVM.cs" />
     <Compile Include="ViewModels\CasePartyVM.cs" />
-    <Compile Include="ViewModels\CaseVM.cs" />
     <Compile Include="ViewModels\EmailVM.cs" />
     <Compile Include="ViewModels\GenericValuesLookupVM.cs" />
     <Compile Include="ViewModels\IntakeVM.cs" />
@@ -2924,18 +2923,18 @@
     <Content Include="Views\Shared\EditorTemplates\InternSchedule.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\DaysOfWeek.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\EditIntern.cshtml" />
-    <Content Include="Views\Case\Index.cshtml" />
+    <Content Include="Views\Cases\Index.cshtml" />
     <Content Include="Views\Intakes\Index.cshtml" />
     <Content Include="Views\Intakes\Details.cshtml" />
-    <Content Include="Views\Intakes\_NotesView.cshtml" />
-    <Content Include="Views\Intakes\_GeneralView.cshtml" />
-    <Content Include="Views\Intakes\_ContactsView.cshtml" />
-    <Content Include="Views\Intakes\_PartiesView.cshtml" />
-    <Content Include="Views\Intakes\_ReferralSourcesView.cshtml" />
-    <Content Include="Views\Intakes\_DocumentsView.cshtml" />
-    <Content Include="Views\Intakes\_MoneyView.cshtml" />
-    <Content Include="Views\Intakes\_LogView.cshtml" />
-    <Content Include="Views\Intakes\_NarrativeView.cshtml" />
+    <Content Include="Views\Shared\_NotesView.cshtml" />
+    <Content Include="Views\Shared\_GeneralView.cshtml" />
+    <Content Include="Views\Shared\_ContactsView.cshtml" />
+    <Content Include="Views\Shared\_PartiesView.cshtml" />
+    <Content Include="Views\Shared\_ReferralSourcesView.cshtml" />
+    <Content Include="Views\Shared\_DocumentsView.cshtml" />
+    <Content Include="Views\Shared\_MoneyView.cshtml" />
+    <Content Include="Views\Shared\_LogView.cshtml" />
+    <Content Include="Views\Shared\_NarrativeView.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\DDLookup.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\TimePicker.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\EditAddress.cshtml" />
@@ -2951,6 +2950,13 @@
     <Content Include="Views\Shared\EditorTemplates\PartyTypesDDL.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\CaseInternDDL.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\CaseTypeDDL.cshtml" />
+    <Content Include="Views\Shared\_CasesGeneralView.cshtml" />
+    <Content Include="Views\Shared\Details.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\CaseStatusDDL.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\GendersDDL.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\CitizenshipStatus.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\SocialStatusDDL.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\AcademicStatusesDDL.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

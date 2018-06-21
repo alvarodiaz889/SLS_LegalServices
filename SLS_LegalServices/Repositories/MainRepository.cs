@@ -201,31 +201,20 @@ namespace SLS_LegalServices.Repositories
         public void LogIntake_MainInfo(string action, IntakeVM old, IntakeVM recent)
         {
             LogVM log;
+            string logType = (old.CaseNo == null) ? "intakes" : "cases";
+
             switch (action)
             {
-                case "Viewed": 
-                    log = new LogVM
-                    {
-                        Action = "Viewed",
-                        Active = 1,
-                        CaseId = old.CaseId,
-                        CreatedById = old.CreatedById,
-                        LogDate = DateTime.Now,
-                        LogType = "intakes",
-                        Detail = ""
-                    };
-                    CaseLogInsert(log);
-                    break;
-
+                case "Viewed":
                 case "Created":
                     log = new LogVM
                     {
-                        Action = "Created",
+                        Action = action,
                         Active = 1,
                         CaseId = recent.CaseId,
                         CreatedById = recent.CreatedById,
                         LogDate = DateTime.Now,
-                        LogType = "intakes",
+                        LogType = logType,
                         Detail = ""
                     };
                     CaseLogInsert(log);
@@ -240,6 +229,7 @@ namespace SLS_LegalServices.Repositories
                     if (old.IUStudentId != recent.IUStudentId) detail.AppendLine("IU Student Id Changed. - " + (recent.IUStudentId ?? string.Empty));
                     if (old.TypeId != recent.TypeId) detail.AppendLine("Type Changed.");
                     if (old.Narrative != recent.Narrative) detail.AppendLine("Narrative Changed.");
+                    if (old.Status != recent.Status) detail.AppendLine("Status Changed. - "  + recent.Status);
 
                     if (old.InternId != recent.InternId)
                     {
@@ -249,16 +239,16 @@ namespace SLS_LegalServices.Repositories
                         if (InternIdOne || InternIdTwo) detail.AppendLine("Intern Changed.");
                     }
 
-                    var AttorneysOne = old.Attorneys != null && old.Attorneys.Count > 0;
+                    var AttorneysOne = old.AttorneyIds != null && old.AttorneyIds.Length > 0;
                     var AttorneysTwo = recent.AttorneyIds != null && recent.AttorneyIds.Length > 0;
                     if (AttorneysOne && AttorneysTwo)
                     {
                         HashSet<int> ids = new HashSet<int>();
-                        foreach (var att in old.Attorneys)
-                            ids.Add(att.AttorneyId);
+                        foreach (var att in old.AttorneyIds)
+                            ids.Add(att);
                         foreach (var att in recent.AttorneyIds)
                             ids.Add(att);
-                        if (ids.Count() != old.Attorneys.Count)
+                        if (ids.Count() != old.AttorneyIds.Length)
                             detail.AppendLine("Attorney Changed.");
                         
                     }
@@ -269,12 +259,12 @@ namespace SLS_LegalServices.Repositories
 
                     log = new LogVM
                     {
-                        Action = "Updated",
+                        Action = action,
                         Active = 1,
                         CaseId = recent.CaseId,
                         CreatedById = old.CreatedById,
                         LogDate = DateTime.Now,
-                        LogType = "intakes",
+                        LogType = logType,
                         Detail = detail.ToString()
                     };
                     CaseLogInsert(log);
@@ -284,6 +274,7 @@ namespace SLS_LegalServices.Repositories
 
         private void LogIntake_OtherInfo(string detail, int? caseId, Guid createdById)
         {
+            string logType = caseId == null ? "intakes" : "cases";
             LogVM log = new LogVM
             {
                 Action = "Updated",
@@ -291,7 +282,7 @@ namespace SLS_LegalServices.Repositories
                 CaseId = caseId,
                 CreatedById = createdById,
                 LogDate = DateTime.Now,
-                LogType = "intakes",
+                LogType = logType,
                 Detail = detail
             };
             CaseLogInsert(log);
@@ -516,18 +507,28 @@ namespace SLS_LegalServices.Repositories
                 .Where(c => c.CaseId == id)
                 .Select(ModelHelper.GetIntakeFromModelFunc)
                 .FirstOrDefault();
+
             if (vm != null)
             {
-                vm.InternId = context.CaseInterns
-                    .Where(c => c.CaseId == vm.CaseId)
-                    .OrderByDescending(c => c.CreationDate)
-                    .Select(c => c.InternId)
-                    .FirstOrDefault();
-
-                vm.Attorneys = context.Attorneys
-                    .Where(a => a.CaseAttorneys.Any(ca => ca.CaseId == vm.CaseId))
-                    .Select(ModelHelper.GetAttorneyFromModel)
+                var interns = context.CaseInterns.Where(c => c.CaseId == vm.CaseId)
+                    .Select(c => new { c.InternId, c.CreationDate,c.Intern.CertifiedDate })
                     .ToList();
+
+                vm.InternId = interns.OrderByDescending(c => c.CreationDate)
+                    .Select(c => c.InternId).FirstOrDefault();
+
+                vm.NonCertifiedInternId = interns.Where(c => c.CreationDate == null)
+                    .OrderByDescending(c => c.CreationDate)
+                    .Select(c => c.InternId).FirstOrDefault();
+
+                vm.CertifiedInternId = interns.Where(c => c.CreationDate != null)
+                    .OrderByDescending(c => c.CreationDate)
+                    .Select(c => c.InternId).FirstOrDefault();
+
+                vm.AttorneyIds = context.Attorneys
+                    .Where(a => a.CaseAttorneys.Any(ca => ca.CaseId == vm.CaseId))
+                    .Select(a => a.AttorneyId)
+                    .ToArray();
 
                 vm.ReferralSources = context.ReferralSources.Where(r => r.Cases.Any(c => c.CaseId == vm.CaseId))
                         .Select(r => new ReferralSourceVM
@@ -545,7 +546,7 @@ namespace SLS_LegalServices.Repositories
             int rowsAfected = 0;
 
             Case caseObj = ModelHelper.GetIntakeFromViewModel(vm);
-            caseObj.Status = "Open";
+            caseObj.Status = vm.Status;
             caseObj.CreationDate = DateTime.Now;
 
             context.Cases.Add(caseObj);
@@ -564,18 +565,13 @@ namespace SLS_LegalServices.Repositories
 
         private void IntakeInsertUpdate(bool insert, IntakeVM vm)
         {
-            if(insert)
-                LogIntake_MainInfo("Created", null, vm);
-            else
-                LogIntake_MainInfo("Updated", GetIntakeById(vm.CaseId), vm);
-
             Case obj = context.Cases.Where(c => c.CaseId == vm.CaseId).FirstOrDefault();
             obj.FirstName = vm.FirstName;
             obj.LastName = vm.LastName;
             obj.IUStudentId = vm.IUStudentId;
             obj.TypeId = vm.TypeId;
             obj.Narrative = vm.Narrative;
-            //obj.Status = vm.Status;
+            obj.Status = vm.Status;
 
             context.Cases.Attach(obj);
             context.Entry(obj).State = EntityState.Modified;
@@ -618,10 +614,12 @@ namespace SLS_LegalServices.Repositories
                 }
                 context.SaveChanges();
             }
+
+            if (insert)
+                LogIntake_MainInfo("Created", vm, vm);
+            else
+                LogIntake_MainInfo("Updated", GetIntakeById(vm.CaseId), vm);
         }
-
-
-
 
         public void IntakeUpdate(IntakeVM vm)
         {
@@ -638,22 +636,61 @@ namespace SLS_LegalServices.Repositories
         #endregion
 
         #region Cases
-        public List<CaseVM> GetAllCases()
+        public List<IntakeVM> GetAllCases()
+        {
+            return context.Cases
+                .Where(c => c.CaseNo != null)
+                .Select(ModelHelper.GetIntakeFromModelFunc)
+                .ToList();
+        }
+
+        public IntakeVM GetCaseById(int id)
+        {
+            IntakeVM vm = context.Cases
+                .Where(c => c.CaseId == id)
+                .Select(ModelHelper.GetIntakeFromModelFunc)
+                .FirstOrDefault();
+            if (vm != null)
+            {
+                vm.InternId = context.CaseInterns
+                    .Where(c => c.CaseId == vm.CaseId)
+                    .OrderByDescending(c => c.CreationDate)
+                    .Select(c => c.InternId)
+                    .FirstOrDefault();
+
+                vm.AttorneyIds = context.Attorneys
+                    .Where(a => a.CaseAttorneys.Any(ca => ca.CaseId == vm.CaseId))
+                    .Select(a => a.AttorneyId)
+                    .ToArray();
+
+                vm.ReferralSources = context.ReferralSources.Where(r => r.Cases.Any(c => c.CaseId == vm.CaseId))
+                        .Select(r => new ReferralSourceVM
+                        {
+                            ReferralSource1 = r.ReferralSource1,
+                            ReferralSourceId = r.ReferralSourceId
+                        }).ToList();
+            }
+            return vm;
+        }
+
+        public void CaseInsert(int caseId, string caseNo)
+        {
+            Case @case = context.Cases.Where(c => c.CaseId == caseId).FirstOrDefault();
+            @case.CaseNo = caseNo;
+            context.Cases.Attach(@case);
+            context.Entry(@case).State = EntityState.Modified;
+            context.SaveChanges();
+
+            IntakeVM vm = GetIntakeById(caseId);
+            LogIntake_MainInfo("Created", vm, vm);
+        }
+
+        public void CaseDelete(IntakeVM vm)
         {
             throw new NotImplementedException();
         }
 
-        public void CaseInsert(CaseVM vm)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void CaseDelete(CaseVM vm)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void CaseUpdate(CaseVM vm)
+        public void CaseUpdate(IntakeVM vm)
         {
             throw new NotImplementedException();
         }

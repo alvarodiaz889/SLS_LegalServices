@@ -1,14 +1,14 @@
-﻿@model IEnumerable<AttorneyVM>
-@{ 
-        int[] ids = Model != null ? Model.Select(m => m.AttorneyId).ToArray() : new int[] { } ;
-    }
+﻿@model int[]
+@{
+    int[] ids = Model != null ? Model : new int[0];
+}
 @(Html.Kendo().MultiSelectFor(m => m)
-    .Name("Attorneys")
-    .ClearButton(false)
-    .Value(ids)
-    .BindTo((IEnumerable<AttorneyVM>)ViewBag.Attorneys)
-    .DataValueField("AttorneyId")
-    .DataTextField("DisplayName")
-    .Events(e => e.Change("whenChanging"))
+        .Name("Attorneys")
+        .ClearButton(false)
+        .BindTo((IEnumerable<AttorneyVM>)ViewBag.Attorneys)
+        .DataValueField("AttorneyId")
+        .DataTextField("DisplayName")
+        .Value(ids)
+        .Events(e => e.Change("whenChanging"))
 )
 

@@ -1,7 +1,9 @@
 ﻿@model Nullable<int>
-
+@{
+    var values = ViewData.ModelMetadata.AdditionalValues;
+    int IsCertified = (int)values["IsCertified"];
+}
 @(Html.Kendo().DropDownListFor(m => m)
-    .Name("InternId")
     .DataTextField("LastName")
     .DataValueField("InternId")
     .HtmlAttributes(new { style = "width:100%" })
@@ -11,7 +13,7 @@
     {
         source.Read(read =>
         {
-            read.Action("GetInterns", "Intakes");
+            read.Action("GetInterns", "Intakes",new { isCertified = IsCertified });
         })
         .ServerFiltering(true);
     })

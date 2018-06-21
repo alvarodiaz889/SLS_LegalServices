@@ -2,6 +2,7 @@
 @{
     var strFullName = Model != null ? Model.FullName : string.Empty;
     var strCreationDate = Model != null ? Model.CreationDate.ToString() : string.Empty;
+    var strStatus = Model != null ? Model.Status : string.Empty;
 }
 <script>
 
@@ -24,13 +25,14 @@
         let IUStudentId = $("#IUStudentId").val();
         let TypeId = $("#TypeId").val();
         let CaseId = $("#modelId").val();
+        let Status = $("#Status").val();
         let AttorneysValues = $("#Attorneys").data("kendoMultiSelect").dataItems();
-        let Attorneys = [];
+        let AttorneyIds = [];
         let Narrative = $("#NarrativeEditor").data("kendoEditor").value();
 
         for (let i = 0; i < AttorneysValues.length; i++)
         {
-            Attorneys.push(AttorneysValues[i].AttorneyId);
+            AttorneyIds.push(AttorneysValues[i].AttorneyId);
         }
 
         $.post(url,
@@ -41,8 +43,9 @@
                 InternId: CaseIntern,
                 IUStudentId: IUStudentId,
                 TypeId: TypeId,
-                AttorneyIds: Attorneys,
-                Narrative: Narrative
+                AttorneyIds: AttorneyIds,
+                Narrative: Narrative,
+                Status: Status
             },
             function (data) {
 
@@ -113,6 +116,14 @@
     function promoteToCase(e)
     {
         var caseNo = $('#caseNo').val();
+        let caseId = $("#modelId").val();
+
+        if (caseId == 0)
+        {
+            alert('There is not any intake');
+            e.preventDefault();
+        }
+
         if (caseNo.trim() == '')
         {
             alert('The case number must have a value');
@@ -120,14 +131,16 @@
         }
         else {
 
-            $.post('@Url.Action("PromoteToCase","Intakes")',
+            $.post('@Url.Action("Create","Cases")',
                 {
-
+                    caseId: caseId,
+                    caseNo: caseNo
                 },
                 function (data)
                 {
                     $('#caseNo').val("");
-                    alert('Intake Upgraded successfully!')
+                    alert('Intake Upgraded successfully!');
+                    window.location.href = "/Cases/Index/";
                 }
             )
         }
@@ -153,8 +166,11 @@
     })
 )
 
-
 <div style="padding:0; margin:0; height:100px">
+
+    <div>
+        <input id="Status" type="hidden" value="@strStatus" />
+    </div>
     <div class="float-left padding-ten" style="width:33%;">
         <button type="submit" class="button">Enrollment Not Verified</button>
     </div>
@@ -228,10 +244,10 @@
 
     <div class="grid-item">
         <div>
-            @Html.LabelFor(model => model.Attorneys)
+            @Html.LabelFor(model => model.AttorneyIds)
         </div>
         <div>
-            @Html.EditorFor(model => model.Attorneys)
+            @Html.EditorFor(model => model.AttorneyIds)
         </div>
     </div>
 

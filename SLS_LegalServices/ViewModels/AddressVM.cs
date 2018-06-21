@@ -32,7 +32,6 @@ namespace SLS_LegalServices.ViewModels
         [Required]
         public string Country { get; set; }
 
-        public CaseVM Case { get; set; }
         public string FullAddress {
             get {
                 string fullAddress = string.Empty;

@@ -19,6 +19,5 @@ namespace SLS_LegalServices.ViewModels
         [Required]
         public string Email1 { get; set; }
 
-        public CaseVM Case { get; set; }
     }
 }

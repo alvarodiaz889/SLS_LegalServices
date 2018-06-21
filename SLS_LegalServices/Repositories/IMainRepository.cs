@@ -31,8 +31,8 @@ namespace SLS_LegalServices.Repositories
         void CaseLogInsert(LogVM vm);
         void CaseLogDelete(LogVM vm);
         void CaseLogUpdate(LogVM vm);
-
         void LogIntake_MainInfo(string action, IntakeVM old, IntakeVM recent);
+
         #endregion
 
         #region Interns
@@ -61,10 +61,11 @@ namespace SLS_LegalServices.Repositories
         #endregion
 
         #region Cases
-        List<CaseVM> GetAllCases();
-        void CaseInsert(CaseVM vm);
-        void CaseDelete(CaseVM vm);
-        void CaseUpdate(CaseVM vm);
+        List<IntakeVM> GetAllCases();
+        IntakeVM GetCaseById(int id);
+        void CaseInsert(int caseId, string caseNo);
+        void CaseDelete(IntakeVM vm);
+        void CaseUpdate(IntakeVM vm);
         #endregion
 
         #region Telephone

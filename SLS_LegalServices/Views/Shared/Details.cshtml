@@ -1,0 +1,15 @@
+﻿@model IntakeVM
+@{ 
+    var id = (Model != null)? Model.CaseId :0; 
+}
+<input id="modelId" type="hidden" value="@id" />
+<div>
+@{
+    foreach (var viewName in (List<string>)ViewBag.SectionList)
+    {
+        <div class="item-border">
+            @Html.Partial(viewName,Model)
+        </div>
+    }
+}
+</div>

@@ -1,0 +1,258 @@
+﻿@model IntakeVM
+@{
+    var strFullName = Model != null ? Model.FullName : string.Empty;
+    var strCreationDate = Model != null ? Model.CreationDate.ToString() : string.Empty;
+    var strStatus = Model != null ? Model.Status : string.Empty;
+}
+<script>
+
+    function whenChanging()
+    {
+        let idValue = $("#modelId").val();
+        let urlAction = "@Url.Action("Update", "Intakes")"
+        updateRecord(urlAction);
+    }
+
+    function updateRecord(url)
+    {
+        let LastName = $("#LastName").val();
+        let FirstName = $("#FirstName").val();
+        let CaseIntern = $("#InternId").val();
+        let IUStudentId = $("#IUStudentId").val();
+        let TypeId = $("#TypeId").val();
+        let CaseId = $("#modelId").val();
+        let Status = $("#Status").val();
+        let AttorneysValues = $("#Attorneys").data("kendoMultiSelect").dataItems();
+        let AttorneyIds = [];
+        let Narrative = $("#NarrativeEditor").data("kendoEditor").value();
+
+        for (let i = 0; i < AttorneysValues.length; i++)
+        {
+            AttorneyIds.push(AttorneysValues[i].AttorneyId);
+        }
+
+        $.post(url,
+            {
+                CaseId: CaseId,
+                LastName: LastName,
+                FirstName: FirstName,
+                InternId: CaseIntern,
+                IUStudentId: IUStudentId,
+                TypeId: TypeId,
+                AttorneyIds: AttorneyIds,
+                Narrative: Narrative,
+                Status: Status
+            },
+            function (data) {
+
+                if (data) {
+                    $("#modelId").val(data);
+                    updateValues();
+                }
+            });
+
+    }
+
+    function updateValues()
+    {
+        $.get("@Url.Action("GetIntakeById", "Intakes")",
+            {
+                id: $("#modelId").val()
+            },
+            function (data) {
+                //console.log(data);
+                let lastName = data.LastName ? data.LastName : '';
+                let firstName = data.FirstName ? data.FirstName : '';
+                let fullName = (lastName && firstName) ? lastName + ', ' + firstName : lastName + ' ' + firstName;
+                let creationDate = convertDate(data.CreationDate);
+                let displayValue = creationDate.getMonth() + '/';
+                displayValue += creationDate.getDate() + '/'
+                displayValue += creationDate.getFullYear() + ' '
+                displayValue += formatAMPM(creationDate)
+                $("#fullName").text(fullName);
+                $("#lblCreationDate").text(displayValue);
+                //update the log
+                $("#LogGrid").data("kendoGrid").dataSource.read();
+        });
+    }
+
+    function convertDate(value) {
+        let first = 0;
+        let last = 0;
+        first = value.indexOf('(') + 1;
+        last = value.indexOf(')');
+        return new Date(parseInt(value.substring(first, last)));
+    }
+
+    function formatAMPM(date) {
+        var hours = date.getHours();
+        var minutes = date.getMinutes();
+        var ampm = hours >= 12 ? 'pm' : 'am';
+        hours = hours % 12;
+        hours = hours ? hours : 12; // the hour '0' should be '12'
+        minutes = minutes < 10 ? '0' + minutes : minutes;
+        var strTime = hours + ':' + minutes + ' ' + ampm;
+        return strTime;
+    }
+
+
+</script>
+
+<div style="height:100px;">
+
+    <div class="form-group">
+        <div class="form-group">
+            @Html.LabelFor(model => model.CaseNo)
+            <div>
+                @Html.TextBoxFor(model => model.CaseNo)
+            </div>
+        </div>
+        <div class="form-group">
+            <br />
+            <button type="submit" class="button" style="float:right">Export</button>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="form-group">
+            <br />
+            <button type="submit" class="button">Fly-sheet</button>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.Status)
+            <div>
+                @Html.EditorFor(model => model.Status)
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="padding-ten">
+    <h4 style="text-align:right" id="fullName">@strFullName</h4>
+</div>
+<div class="grid thirds">
+
+    <div class="grid-item">
+        <div>
+            @Html.LabelFor(model => model.LastName)
+        </div>
+        <div>
+            @Html.TextBoxFor(model => model.LastName, new { onchange = "whenChanging()" })
+        </div>
+    </div>
+
+    <div class="grid-item">
+        <div>
+            @Html.LabelFor(model => model.FirstName)
+        </div>
+        <div>
+            @Html.TextBoxFor(model => model.FirstName, new { onchange = "whenChanging()" })
+        </div>
+    </div>
+
+    <div class="grid-item">
+        <div>
+            @Html.LabelFor(model => model.NonCertifiedInternId)
+        </div>
+        <div>
+            @Html.EditorFor(model => model.NonCertifiedInternId)
+        </div>
+    </div>
+
+    <div class="grid-item">
+        <div>
+            @Html.LabelFor(model => model.IUStudentId)
+        </div>
+        <div>
+            @Html.TextBoxFor(model => model.IUStudentId, new { onchange = "whenChanging()" })
+        </div>
+    </div>
+
+    <div class="grid-item">
+        <div>
+            @Html.LabelFor(model => model.TypeId)
+        </div>
+        <div>
+            @Html.EditorFor(model => model.TypeId)
+        </div>
+    </div>
+
+    <div class="grid-item">
+        <div>
+            @Html.LabelFor(model => model.CertifiedInternId)
+        </div>
+        <div>
+            @Html.EditorFor(model => model.CertifiedInternId)
+        </div>
+    </div>
+
+    <div class="grid-item">
+        <div>
+            @Html.LabelFor(model => model.AttorneyIds)
+        </div>
+        <div>
+            @Html.EditorFor(model => model.AttorneyIds)
+        </div>
+    </div>
+
+    <div class="grid-item"></div>
+
+    <div class="grid-item">
+        <div>
+            @Html.LabelFor(model => model.CreationDate,new { @style = "text-align:right;" })
+        </div>
+        <div>
+            <label id="lblCreationDate" style="text-align:right;">@strCreationDate</label>
+        </div>
+    </div>
+
+    <div class="grid-item">
+        <div>
+            @Html.LabelFor(model => model.Gender)
+        </div>
+        <div>
+            @Html.EditorFor(model => model.Gender)
+        </div>
+    </div>
+
+    <div class="grid-item">
+        <div>
+            @Html.LabelFor(model => model.AcademicStatus)
+        </div>
+        <div>
+            @Html.EditorFor(model => model.AcademicStatus)
+        </div>
+    </div>
+
+    <div class="grid-item">
+        <br />
+        <button type="submit" class="button" style="width:60%;float:right">Enrollment Not Verified</button>
+    </div>
+
+    <div class="grid-item">
+        <div>
+            @Html.LabelFor(model => model.SocialStatus)
+        </div>
+        <div>
+            @Html.EditorFor(model => model.SocialStatus)
+        </div>
+    </div>
+
+    <div class="grid-item">
+        <div>
+            @Html.LabelFor(model => model.CitizenshipStatus)
+        </div>
+        <div>
+            @Html.EditorFor(model => model.CitizenshipStatus)
+        </div>
+    </div>
+
+
+    <div class="grid-item">
+        <br />
+        <button type="submit" class="button" style="width:60%;float:right">Student Activity Fee Not Verified</button>
+    </div>
+
+</div>
+
+
