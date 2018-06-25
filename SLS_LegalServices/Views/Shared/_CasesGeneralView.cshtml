@@ -17,7 +17,7 @@
     {
         let LastName = $("#LastName").val();
         let FirstName = $("#FirstName").val();
-        let CaseIntern = $("#InternId").val();
+        let InternId = $("#InternId").val();
         let IUStudentId = $("#IUStudentId").val();
         let TypeId = $("#TypeId").val();
         let CaseId = $("#modelId").val();
@@ -25,6 +25,13 @@
         let AttorneysValues = $("#Attorneys").data("kendoMultiSelect").dataItems();
         let AttorneyIds = [];
         let Narrative = $("#NarrativeEditor").data("kendoEditor").value();
+        //cases extra fields
+        let CaseNo = $("#CaseNo").val();
+        let CertifiedInternId = $("#CertifiedInternId").val();
+        let Gender = $("#Gender").val();
+        let AcademicStatus = $("#AcademicStatus").val();
+        let SocialStatus = $("#SocialStatus").val();
+        let CitizenshipStatus = $("#CitizenshipStatus").val();
 
         for (let i = 0; i < AttorneysValues.length; i++)
         {
@@ -36,12 +43,18 @@
                 CaseId: CaseId,
                 LastName: LastName,
                 FirstName: FirstName,
-                InternId: CaseIntern,
+                InternId: InternId,
                 IUStudentId: IUStudentId,
                 TypeId: TypeId,
                 AttorneyIds: AttorneyIds,
                 Narrative: Narrative,
-                Status: Status
+                CaseNo: CaseNo,
+                Status: Status,
+                CertifiedInternId: CertifiedInternId,
+                Gender: Gender,
+                AcademicStatus: AcademicStatus,
+                SocialStatus: SocialStatus,
+                CitizenshipStatus: CitizenshipStatus
             },
             function (data) {
 
@@ -104,7 +117,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.CaseNo)
             <div>
-                @Html.TextBoxFor(model => model.CaseNo)
+                @Html.TextBoxFor(model => model.CaseNo, new { onchange = "whenChanging()", @readonly = "readonly" })
             </div>
         </div>
         <div class="form-group">
@@ -152,10 +165,10 @@
 
     <div class="grid-item">
         <div>
-            @Html.LabelFor(model => model.NonCertifiedInternId)
+            @Html.LabelFor(model => model.InternId)
         </div>
         <div>
-            @Html.EditorFor(model => model.NonCertifiedInternId)
+            @Html.EditorFor(model => model.InternId)
         </div>
     </div>
 

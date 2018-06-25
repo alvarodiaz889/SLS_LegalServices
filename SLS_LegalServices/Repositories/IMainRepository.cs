@@ -20,6 +20,7 @@ namespace SLS_LegalServices.Repositories
 
         #region Attorneys
         List<AttorneyVM> GetAllAttorneys();
+        AttorneyVM GetAttorneyById(int id);
         void AttorneyInsert(AttorneyVM vm);
         void AttorneyDelete(AttorneyVM vm);
         void AttorneyUpdate(AttorneyVM vm);
@@ -37,6 +38,7 @@ namespace SLS_LegalServices.Repositories
 
         #region Interns
         List<InternVM> GetAllInterns();
+        InternVM GetAllInternById(int id);
         void InternInsert(InternVM vm);
         void InternDelete(InternVM vm);
         void InternUpdate(InternVM vm);

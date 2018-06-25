@@ -77,16 +77,12 @@ namespace SLS_LegalServices.ViewModels
         public int? InternId { get; set; }
 
         [UIHint("CaseInternDDL")]
-        [Display(Name = "Intern")]
-        [AdditionalMetadata("IsCertified", 1)]
-        public int? NonCertifiedInternId { get; set; }
-
-        [UIHint("CaseInternDDL")]
         [Display(Name = "Certified Intern")]
         [AdditionalMetadata("IsCertified", 2)]
         public int? CertifiedInternId { get; set; }
 
         [UIHint("AttorneysMultiSelect")]
+        [Display(Name = "Attorney(s)")]
         public int[] AttorneyIds { get; set; }
 
         public List<ReferralSourceVM> ReferralSources { get; set; }

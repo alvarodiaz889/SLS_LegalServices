@@ -73,10 +73,6 @@ namespace SLS_LegalServices.Controllers
         public JsonResult GetInterns(string text, int isCertified)
         {
             List<InternVM> interns = repository.GetAllInterns();
-            if (isCertified == 1)//Non-certicied Intern
-                interns = interns.Where(s => s.CertifiedDate == null).ToList();
-            else if(isCertified == 2)//Certified intern
-                interns = interns.Where(s => s.CertifiedDate != null).ToList();
 
             if (!string.IsNullOrEmpty(text))
             {

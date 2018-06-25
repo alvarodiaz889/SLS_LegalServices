@@ -24,11 +24,19 @@ namespace SLS_LegalServices.ViewModels
         [MaxLength(50)]
         public string FirstName { get; set; }
 
+        [Required]
         public string DisplayName { get; set; }
 
         public bool? Active { get; set; }
 
         public UserViewModel UserVM { get; set; }
-        
+
+        public string FullName {
+            get
+            {
+                return FirstName + " " + LastName;
+            }
+        }
+
     }
 }

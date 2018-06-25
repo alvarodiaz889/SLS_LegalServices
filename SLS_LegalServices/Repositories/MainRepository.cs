@@ -68,6 +68,10 @@ namespace SLS_LegalServices.Repositories
             return context.Attorneys.Select(ModelHelper.GetAttorneyFromModel).ToList();
         }
 
+        public AttorneyVM GetAttorneyById(int id)
+        {
+            return context.Attorneys.Where(a => a.AttorneyId == id).Select(ModelHelper.GetAttorneyFromModel).FirstOrDefault();
+        }
         public void AttorneyInsert(AttorneyVM vm)
         {
             User user = new User {
@@ -229,32 +233,93 @@ namespace SLS_LegalServices.Repositories
                     if (old.IUStudentId != recent.IUStudentId) detail.AppendLine("IU Student Id Changed. - " + (recent.IUStudentId ?? string.Empty));
                     if (old.TypeId != recent.TypeId) detail.AppendLine("Type Changed.");
                     if (old.Narrative != recent.Narrative) detail.AppendLine("Narrative Changed.");
-                    if (old.Status != recent.Status) detail.AppendLine("Status Changed. - "  + recent.Status);
 
                     if (old.InternId != recent.InternId)
                     {
                         //in case the record one record has 0 and the other null. Doesn't have to log it
                         var InternIdOne = old.InternId.HasValue && old.InternId != 0;
                         var InternIdTwo = recent.InternId.HasValue && recent.InternId != 0;
-                        if (InternIdOne || InternIdTwo) detail.AppendLine("Intern Changed.");
+                        if (InternIdOne || InternIdTwo)
+                        {
+                            var text = string.Empty;
+                            if (InternIdTwo) text = "Intern Changed. - " + GetAllInternById(recent.InternId.Value).FullName;
+                            else text = "Intern Removed.";
+                            detail.AppendLine(text);
+                        } 
                     }
-
+                    //validating attorney and gettin the names of the ones removed or added
                     var AttorneysOne = old.AttorneyIds != null && old.AttorneyIds.Length > 0;
                     var AttorneysTwo = recent.AttorneyIds != null && recent.AttorneyIds.Length > 0;
                     if (AttorneysOne && AttorneysTwo)
                     {
-                        HashSet<int> ids = new HashSet<int>();
-                        foreach (var att in old.AttorneyIds)
-                            ids.Add(att);
-                        foreach (var att in recent.AttorneyIds)
-                            ids.Add(att);
-                        if (ids.Count() != old.AttorneyIds.Length)
-                            detail.AppendLine("Attorney Changed.");
+                        int[] greater;
+                        int[] less;
+                        string operation;
+                        if (old.AttorneyIds.Length > recent.AttorneyIds.Length)
+                        {
+                            operation = "Removed";
+                            greater = old.AttorneyIds;
+                            less = recent.AttorneyIds;
+                        }
+                        else
+                        {
+                            operation = "Added";
+                            greater = recent.AttorneyIds;
+                            less = old.AttorneyIds;
+                        }
+                        //Got different Ids
+                        var ids = greater.Where(w => Array.IndexOf(less, w) == -1).ToArray();
+                        if (ids.Length > 0)
+                        {
+                            var names = context.Attorneys.Where(w => ids.Any(u => u == w.AttorneyId))
+                            .Select(ModelHelper.GetAttorneyFromModel).Select(w => w.DisplayName).ToArray();
+
+                            operation = "Attorney(s) " + string.Join(", ", names) + " " + operation;
+                            detail.AppendLine(operation);
+                        }
                         
                     }
-                    else if (AttorneysOne || AttorneysTwo)
+                    else if (AttorneysOne)
                     {
-                        detail.AppendLine("Attorney Changed.");
+                        var operation = "Removed";
+                        var names = context.Attorneys.Where(w => old.AttorneyIds.Any(u => u == w.AttorneyId))
+                            .Select(ModelHelper.GetAttorneyFromModel).Select(w => w.DisplayName).ToArray();
+
+                        operation = "Attorney(s) " + string.Join(", ", names) + " " + operation;
+                        detail.AppendLine(operation);
+                    }
+                    else if (AttorneysTwo)
+                    {
+                        var operation = "Added";
+                        var names = context.Attorneys.Where(w => recent.AttorneyIds.Any(u => u == w.AttorneyId))
+                            .Select(ModelHelper.GetAttorneyFromModel).Select(w => w.DisplayName).ToArray();
+
+                        operation = "Attorney(s) " + string.Join(", ", names) + " " + operation;
+                        detail.AppendLine(operation);
+                    }
+
+                    if (logType == "cases")
+                    {
+                        //Additional validations for cases
+                        if (old.CertifiedInternId != recent.CertifiedInternId)
+                        {
+                            //in case the record one record has 0 and the other null. Doesn't have to log it
+                            var InternIdOne = old.CertifiedInternId.HasValue && old.CertifiedInternId != 0;
+                            var InternIdTwo = recent.CertifiedInternId.HasValue && recent.CertifiedInternId != 0;
+                            if (InternIdOne || InternIdTwo)
+                            {
+                                var text = string.Empty;
+                                if (InternIdTwo) text = "Certified Intern Changed. - " + GetAllInternById(recent.CertifiedInternId.Value).FullName;
+                                else text = "Certified Intern Removed.";
+                                detail.AppendLine(text);
+                            }
+                        }
+                        if (old.CaseNo != recent.CaseNo) detail.AppendLine("Case Number Changed. - " + recent.CaseNo);
+                        if (old.Status != recent.Status) detail.AppendLine("Status Changed. - " + recent.Status);
+                        if (old.Gender != recent.Gender) detail.AppendLine("Gender Changed. - " + recent.Gender);
+                        if (old.AcademicStatus != recent.AcademicStatus) detail.AppendLine("Academic Status Changed. - " + recent.AcademicStatus);
+                        if (old.SocialStatus != recent.SocialStatus) detail.AppendLine("Social Status Changed. - " + recent.SocialStatus);
+                        if (old.CitizenshipStatus != recent.CitizenshipStatus) detail.AppendLine("Citizenship Status Changed. - " + recent.CitizenshipStatus);
                     }
 
                     log = new LogVM
@@ -307,6 +372,20 @@ namespace SLS_LegalServices.Repositories
                 o.Schedules = GetAllScheduleByIntern(o);
             });
             return interns;
+        }
+
+        public InternVM GetAllInternById(int id)
+        {
+            return context.Interns.Select(o => new InternVM()
+            {
+                UserId = o.UserId,
+                InternId = o.InternId,
+                UserName = o.User.UserName,
+                FirstName = o.User.FirstName,
+                LastName = o.User.LastName,
+                Status = o.Status,
+                CertifiedDate = o.CertifiedDate,
+            }).FirstOrDefault();
         }
 
         public void InternInsert(InternVM vm)
@@ -510,20 +589,15 @@ namespace SLS_LegalServices.Repositories
 
             if (vm != null)
             {
-                var interns = context.CaseInterns.Where(c => c.CaseId == vm.CaseId)
-                    .Select(c => new { c.InternId, c.CreationDate,c.Intern.CertifiedDate })
-                    .ToList();
-
-                vm.InternId = interns.OrderByDescending(c => c.CreationDate)
-                    .Select(c => c.InternId).FirstOrDefault();
-
-                vm.NonCertifiedInternId = interns.Where(c => c.CreationDate == null)
+                vm.InternId = context.CaseInterns.Where(c => c.CaseId == vm.CaseId)
                     .OrderByDescending(c => c.CreationDate)
-                    .Select(c => c.InternId).FirstOrDefault();
+                    .Select(c => c.InternId)
+                    .FirstOrDefault();
 
-                vm.CertifiedInternId = interns.Where(c => c.CreationDate != null)
+                vm.CertifiedInternId = context.CaseCertifiedInterns.Where(c => c.CaseId == vm.CaseId)
                     .OrderByDescending(c => c.CreationDate)
-                    .Select(c => c.InternId).FirstOrDefault();
+                    .Select(c => c.InternId)
+                    .FirstOrDefault();
 
                 vm.AttorneyIds = context.Attorneys
                     .Where(a => a.CaseAttorneys.Any(ca => ca.CaseId == vm.CaseId))
@@ -563,8 +637,14 @@ namespace SLS_LegalServices.Repositories
             return insertedId;
         }
 
+        public void IntakeUpdate(IntakeVM vm)
+        {
+            IntakeInsertUpdate(false, vm);
+        }
+
         private void IntakeInsertUpdate(bool insert, IntakeVM vm)
         {
+            var oldVM = GetIntakeById(vm.CaseId);
             Case obj = context.Cases.Where(c => c.CaseId == vm.CaseId).FirstOrDefault();
             obj.FirstName = vm.FirstName;
             obj.LastName = vm.LastName;
@@ -572,6 +652,11 @@ namespace SLS_LegalServices.Repositories
             obj.TypeId = vm.TypeId;
             obj.Narrative = vm.Narrative;
             obj.Status = vm.Status;
+            obj.Gender = vm.Gender;
+            obj.AcademicStatus = vm.AcademicStatus;
+            obj.SocialStatus = vm.SocialStatus;
+            obj.CitizenshipStatus = vm.CitizenshipStatus;
+            obj.CaseNo = vm.CaseNo;
 
             context.Cases.Attach(obj);
             context.Entry(obj).State = EntityState.Modified;
@@ -579,51 +664,109 @@ namespace SLS_LegalServices.Repositories
 
             if (vm.InternId.HasValue)
             {
-                List<CaseIntern> caseInternList = context.CaseInterns
-                    .Where(c => c.InternId == vm.InternId.Value)
-                    .Where(c => c.CaseId == vm.CaseId)
-                    .ToList();
-                if (caseInternList.Count == 0)
-                {
-                    CaseIntern ci = new CaseIntern
-                    {
-                        CaseId = obj.CaseId,
-                        InternId = vm.InternId.Value,
-                        CreationDate = DateTime.Now
-                    };
-                    context.CaseInterns.Add(ci);
-                    context.SaveChanges();
-                }
+                ValidateIntakeIntern(vm);
+            }
+
+            if (vm.CertifiedInternId.HasValue)
+            {
+                ValidateIntakeCertifiedIntern(vm);
             }
 
             if (vm.AttorneyIds != null)
             {
-                var actualAttorneys = context.CaseAttorneys.Where(ca => ca.CaseId == vm.CaseId).ToList();
-                context.CaseAttorneys.RemoveRange(actualAttorneys);
-                context.SaveChanges();
-
-                foreach (var attorneyId in vm.AttorneyIds)
-                {
-                    CaseAttorney ca = new CaseAttorney
-                    {
-                        CaseId = obj.CaseId,
-                        AttorneyId = attorneyId,
-                        CreationDate = DateTime.Now
-                    };
-                    context.CaseAttorneys.Add(ca);
-                }
-                context.SaveChanges();
+                ValidateIntakeAttorneys(vm);
+            }
+            else if (vm.AttorneyIds == null && oldVM.AttorneyIds != null)
+            {
+                RemoveAllAttorneysFromIntakesVM(vm);
             }
 
-            if (insert)
-                LogIntake_MainInfo("Created", vm, vm);
-            else
-                LogIntake_MainInfo("Updated", GetIntakeById(vm.CaseId), vm);
+            var action = insert ? "Created" : "Updated"; 
+            LogIntake_MainInfo(action, oldVM, vm);
         }
 
-        public void IntakeUpdate(IntakeVM vm)
+        private void ValidateIntakeIntern(IntakeVM vm)
         {
-            IntakeInsertUpdate(false, vm);
+            List<CaseIntern> caseInternList = context.CaseInterns
+                    .Where(c => c.InternId == vm.InternId.Value)
+                    .Where(c => c.CaseId == vm.CaseId)
+                    .OrderByDescending(c => c.CreationDate)
+                    .ToList();
+            if (caseInternList.Count == 0)
+            {
+                CaseIntern ci = new CaseIntern
+                {
+                    CaseId = vm.CaseId,
+                    InternId = vm.InternId.Value,
+                    CreationDate = DateTime.Now
+                };
+                context.CaseInterns.Add(ci);
+                context.SaveChanges();
+            }
+            else
+            {
+                CaseIntern ci = caseInternList.First();
+                if (ci.InternId != vm.InternId.Value)
+                {//if intern is different but already exist, we just update the creation date but then be feched in the ddl
+                    ci.CreationDate = DateTime.Now;
+                    context.CaseInterns.Attach(ci);
+                    context.Entry(ci).State = EntityState.Modified;
+                    context.SaveChanges();
+                }
+            }
+        }
+        private void ValidateIntakeCertifiedIntern(IntakeVM vm)
+        {
+            List<CaseCertifiedIntern> caseInternList = context.CaseCertifiedInterns
+                    .Where(c => c.InternId == vm.CertifiedInternId.Value)
+                    .Where(c => c.CaseId == vm.CaseId)
+                    .OrderByDescending(c => c.CreationDate)
+                    .ToList();
+            if (caseInternList.Count == 0)
+            {
+                CaseCertifiedIntern ci = new CaseCertifiedIntern
+                {
+                    CaseId = vm.CaseId,
+                    InternId = vm.CertifiedInternId.Value,
+                    CreationDate = DateTime.Now
+                };
+                context.CaseCertifiedInterns.Add(ci);
+                context.SaveChanges();
+            }
+            else
+            {
+                CaseCertifiedIntern ci = caseInternList.First();
+                if (ci.InternId != vm.CertifiedInternId.Value)
+                {//if intern is different but already exist, we just update the creation date but then be feched in the ddl
+                    ci.CreationDate = DateTime.Now;
+                    context.CaseCertifiedInterns.Attach(ci);
+                    context.Entry(ci).State = EntityState.Modified;
+                    context.SaveChanges();
+                }
+            }
+        }
+        private void ValidateIntakeAttorneys(IntakeVM vm)
+        {
+            RemoveAllAttorneysFromIntakesVM(vm);
+
+            foreach (var attorneyId in vm.AttorneyIds)
+            {
+                CaseAttorney ca = new CaseAttorney
+                {
+                    CaseId = vm.CaseId,
+                    AttorneyId = attorneyId,
+                    CreationDate = DateTime.Now
+                };
+                context.CaseAttorneys.Add(ca);
+            }
+            context.SaveChanges();
+        }
+
+        private void RemoveAllAttorneysFromIntakesVM(IntakeVM vm)
+        {
+            var actualAttorneys = context.CaseAttorneys.Where(ca => ca.CaseId == vm.CaseId).ToList();
+            context.CaseAttorneys.RemoveRange(actualAttorneys);
+            context.SaveChanges();
         }
 
         public void IntakeDelete(IntakeVM vm)
@@ -1207,6 +1350,5 @@ namespace SLS_LegalServices.Repositories
             context.Dispose();
         }
 
-        
     }
 }
