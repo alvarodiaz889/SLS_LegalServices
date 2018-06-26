@@ -24,14 +24,17 @@ namespace SLS_LegalServices.ViewModels
         }
 
         [UIHint("DaysOfWeek")]
+        [Required]
         public string DayOfWeek { get; set; }
 
         [UIHint("TimePicker")]
         [AdditionalMetadata("Name", "StartTime")]
+        [Required]
         public DateTime? StartTime { get; set; }
 
         [UIHint("TimePicker")]
         [AdditionalMetadata("Name", "EndTime")]
+        [Required]
         public DateTime? EndTime { get; set; }
     }
 }

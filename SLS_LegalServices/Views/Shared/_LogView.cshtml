@@ -31,7 +31,7 @@
                     m.Id(c => c.LogId);
                     m.Field(c => c.CaseId).DefaultValue(intakeId);
                 })
-                .Read(read => read.Action("ReadById", "CaseLog", new { caseId = intakeId }))
+                .Read(read => read.Action("ReadByCaseId", "CaseLog", new { caseId = intakeId }))
                 .Destroy(destroy => destroy.Action("Destroy", "CaseLog"))
                 .Update(update => update.Action("Update", "CaseLog"))
                 .Create(create => create.Action("Create", "CaseLog"))

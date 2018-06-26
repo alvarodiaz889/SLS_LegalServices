@@ -1,0 +1,24 @@
+﻿<div class="wrapper" style="height:700px">
+    @(Html.Kendo().TabStrip()
+        .Name("caseTabs")
+        .Items(tabstrip =>
+        {
+            tabstrip.Add().Text("Advised")
+                .Selected(true)
+                .LoadContentFrom(Url.Content("~/Cases/Advised"));
+
+            tabstrip.Add().Text("Closed")
+                .LoadContentFrom(Url.Content("~/Cases/Closed"));
+
+            tabstrip.Add().Text("No Action")
+                .LoadContentFrom(Url.Content("~/Cases/NoAction"));
+
+            tabstrip.Add().Text("Open")
+                .LoadContentFrom(Url.Content("~/Cases/Open"));
+
+            tabstrip.Add().Text("Pending")
+                .LoadContentFrom(Url.Content("~/Cases/Pending"));
+        })
+        .HtmlAttributes(new { @style = "height:700px" })
+    )
+</div>

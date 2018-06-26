@@ -2,6 +2,7 @@
 using Kendo.Mvc.UI;
 using SLS_LegalServices.Repositories;
 using SLS_LegalServices.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
@@ -16,18 +17,25 @@ namespace SLS_LegalServices.Controllers
         {
             this.repository = repository;
         }
-        public ActionResult Read([DataSourceRequest]DataSourceRequest request)
+        public ActionResult Read([DataSourceRequest]DataSourceRequest request, bool first, string startDate, string endDate)
         {
+            DateTime.TryParse(startDate, out DateTime start);
+            DateTime.TryParse(endDate, out DateTime end);
             List<LogVM> casetypes = repository.GetAllCaseLogs();
+            if(!first)
+                casetypes = casetypes.Where(w => (w.LogDate >= start && w.LogDate <= end.AddDays(1))).ToList();
             DataSourceResult result = casetypes.AsQueryable().ToDataSourceResult(request);
 
             return Json(result, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult ReadById([DataSourceRequest]DataSourceRequest request, int caseId)
+        public ActionResult ReadByCaseId([DataSourceRequest]DataSourceRequest request, int caseId)
         {
-            List<LogVM> casetypes = repository.GetAllCaseLogsByCaseId(caseId);
-            DataSourceResult result = casetypes.AsQueryable().ToDataSourceResult(request);
+            List<LogVM> caselogs = repository.GetAllCaseLogsByCaseId(caseId);
+            var cas = repository.GetCaseById(caseId);
+            if (cas.CaseNo != null)
+                caselogs = caselogs.Where(cl => cl.LogType.Trim() == "cases").ToList();
+            DataSourceResult result = caselogs.AsQueryable().ToDataSourceResult(request);
 
             return Json(result, JsonRequestBehavior.AllowGet);
         }

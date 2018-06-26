@@ -1,4 +1,4 @@
-﻿<div class="wrapper" style="height:500px">
+﻿<div class="wrapper" style="height:700px">
     @(Html.Kendo().TabStrip()
         .Name("tabstrip")
         .Items(tabstrip =>
@@ -19,6 +19,6 @@
             tabstrip.Add().Text("Case Log")
                 .LoadContentFrom(Url.Content("~/Admin/CaseLog"));
         })
-        .HtmlAttributes(new { @style = "height:500px" })
+        .HtmlAttributes(new { @style = "height:700px" })
     )
 </div>

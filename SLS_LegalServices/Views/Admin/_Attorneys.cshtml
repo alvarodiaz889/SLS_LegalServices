@@ -5,8 +5,12 @@
         }
     }
 
-    function onEdit(e) {
+    function OnAttorneyGridDetailExpand(e)
+    {
+        let id = e.detailRow.find('[data-role="grid"]').attr('id');
+        $('#'+id).data("kendoGrid").dataSource.read();
     }
+
 </script>
 @(Html.Kendo().Grid<AttorneyVM>()
           .Name("AttorneyGrid")
@@ -40,5 +44,36 @@
           )
           .ToolBar(toolbar => { toolbar.Create().Text("Add"); })
           .Editable(editable => editable.Mode(GridEditMode.InLine))
-          .Events(e => e.Edit("onEdit"))
+          .ClientDetailTemplateId("attorneyDetails")
+          .Events(e => e.DetailExpand("OnAttorneyGridDetailExpand"))
 )
+
+
+<script id="attorneyDetails" type="text/kendo-tmpl">
+    <div style="width:50%">
+        @(Html.Kendo().Grid<IntakeVM>()
+                .Name("AttorneyDetailsGrid_#=AttorneyId#")
+                .Columns(columns =>
+                {
+                    columns.Command(command => { command.Edit().Text(" ").CancelText(" ").UpdateText(" "); command.Destroy().Text(" "); }).Width(100);
+                    columns.Bound(c => c.CaseId).ClientTemplate("<a href='/Cases/Details/?id=\\#=CaseId\\#' >Open</a>");
+                    columns.Bound(c => c.CaseNo).Title("Case ID");
+                    columns.Bound(c => c.CertifiedInternFullName).Title("Certified Intern");
+                    columns.Bound(c => c.InternFullName).Title("Intern");
+                })
+                .Scrollable()
+                .DataSource(dataSource => dataSource
+                    .Ajax()
+                    .Model(m =>
+                    {
+                        m.Id(c => c.CaseId);
+                    })
+                    .Read(r => r.Action("GetCasesByAttorneyId", "Cases", new { attorneyId = "#=AttorneyId#" }))
+                    .Update(u => u.Action(" "," "))
+                    .Destroy(d => d.Action(" ", " "))
+                    .Create(c => c.Action(" ", " "))
+                )
+                .ToClientTemplate()
+        )
+    </div>
+</script>

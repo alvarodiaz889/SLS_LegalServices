@@ -2923,9 +2923,7 @@
     <Content Include="Views\Shared\EditorTemplates\InternSchedule.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\DaysOfWeek.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\EditIntern.cshtml" />
-    <Content Include="Views\Cases\Index.cshtml" />
     <Content Include="Views\Intakes\Index.cshtml" />
-    <Content Include="Views\Intakes\Details.cshtml" />
     <Content Include="Views\Shared\_NotesView.cshtml" />
     <Content Include="Views\Shared\_GeneralView.cshtml" />
     <Content Include="Views\Shared\_ContactsView.cshtml" />
@@ -2945,7 +2943,6 @@
     <Content Include="Views\Shared\EditorTemplates\YesNoDropDown.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\EditDocument.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\FileUpload.cshtml" />
-    <Content Include="Views\Test\Index.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\DDLForGrid.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\PartyTypesDDL.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\CaseInternDDL.cshtml" />
@@ -2957,6 +2954,8 @@
     <Content Include="Views\Shared\EditorTemplates\CitizenshipStatus.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\SocialStatusDDL.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\AcademicStatusesDDL.cshtml" />
+    <Content Include="Views\Cases\CasesTabs.cshtml" />
+    <Content Include="Views\Cases\_Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

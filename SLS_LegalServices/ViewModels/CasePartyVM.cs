@@ -10,16 +10,23 @@ namespace SLS_LegalServices.ViewModels
     public class CasePartyVM
     {
         public int CasePartyId { get; set; }
+
         public int CaseId { get; set; }
 
         [UIHint("PartyTypesDDL")]
         [Display(Name = "Type")]
         public string PartyType { get; set; }
 
+        [Required]
         public string FirstName { get; set; }
+
+        [Required]
         public string LastName { get; set; }
+
         public string OrganizationName { get; set; }
+
         public int AddressId { get; set; }
+
         public int EmailId { get; set; }
 
         [UIHint("YesNoDropDown")]

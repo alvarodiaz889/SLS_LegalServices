@@ -14,7 +14,6 @@ namespace SLS_LegalServices.Controllers
     public class CasesController : Controller
     {
         private IMainRepository repository;
-        SLS_LegalServicesEntities context = new SLS_LegalServicesEntities();
 
         public CasesController(IMainRepository mainRepository)
         {
@@ -23,12 +22,42 @@ namespace SLS_LegalServices.Controllers
 
         public ActionResult Index()
         {
-            return View();
+            return View("CasesTabs");
         }
 
-        public JsonResult Read([DataSourceRequest]DataSourceRequest request)
+        public ActionResult Advised()
         {
-            var cases = repository.GetAllCases();
+            ViewBag.Status = "Advised";
+            return PartialView("_Index");
+        }
+
+        public ActionResult Closed()
+        {
+            ViewBag.Status = "Closed";
+            return PartialView("_Index");
+        }
+
+        public ActionResult NoAction()
+        {
+            ViewBag.Status = "NoAction";
+            return PartialView("_Index");
+        }
+
+        public ActionResult Open()
+        {
+            ViewBag.Status = "Open";
+            return PartialView("_Index");
+        }
+
+        public ActionResult Pending()
+        {
+            ViewBag.Status = "Pending";
+            return PartialView("_Index");
+        }
+
+        public JsonResult Read([DataSourceRequest]DataSourceRequest request,string status)
+        {
+            var cases = repository.GetAllCasesByStatus(status);
             DataSourceResult result = cases.AsQueryable().ToDataSourceResult(request);
             return Json(result, JsonRequestBehavior.AllowGet);
         }
@@ -121,6 +150,18 @@ namespace SLS_LegalServices.Controllers
             }
 
             return Json(obj.CaseId);
+        }
+
+        public JsonResult GetCasesByAttorneyId([DataSourceRequest]DataSourceRequest request, int attorneyId)
+        {
+            var cases = repository.GetCasesByAttorneyId(attorneyId);
+            DataSourceResult result = cases.AsQueryable().ToDataSourceResult(request);
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+        protected override void Dispose(bool disposing)
+        {
+            repository.Dispose();
+            base.Dispose(disposing);
         }
     }
 }

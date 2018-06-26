@@ -125,18 +125,21 @@ namespace SLS_LegalServices.Repositories
         #region CaseLogs
         public List<LogVM> GetAllCaseLogs()
         {
-            return context.Logs.Select(o => new LogVM()
-            {
-                Action = o.Action,
-                Active = o.Active,
-                Detail = o.Detail,
-                LogDate = o.LogDate,
-                LogId = o.LogId,
-                CaseId = o.CaseId,
-                LogType = o.LogType,
-                UserName = o.User.UserName,
-                CaseCode = o.Case.CaseNo
-            }).ToList();
+            return context.Logs.Where(w => w.Case.CaseNo != null)
+                .Select(o => new LogVM()
+                {
+                    Action = o.Action,
+                    Active = o.Active,
+                    Detail = o.Detail,
+                    LogDate = o.LogDate,
+                    LogId = o.LogId,
+                    CaseId = o.CaseId,
+                    LogType = o.LogType,
+                    UserName = o.User.UserName,
+                    CaseCode = o.Case.CaseNo
+                })
+                .OrderByDescending(o => o.LogDate)
+                .ToList();
         }
 
         public List<LogVM> GetAllCaseLogsByCaseId(int caseId)
@@ -274,7 +277,7 @@ namespace SLS_LegalServices.Repositories
                             var names = context.Attorneys.Where(w => ids.Any(u => u == w.AttorneyId))
                             .Select(ModelHelper.GetAttorneyFromModel).Select(w => w.DisplayName).ToArray();
 
-                            operation = "Attorney(s) " + string.Join(", ", names) + " " + operation;
+                            operation = "Attorney(s) '" + string.Join(", ", names) + "' " + operation;
                             detail.AppendLine(operation);
                         }
                         
@@ -285,7 +288,7 @@ namespace SLS_LegalServices.Repositories
                         var names = context.Attorneys.Where(w => old.AttorneyIds.Any(u => u == w.AttorneyId))
                             .Select(ModelHelper.GetAttorneyFromModel).Select(w => w.DisplayName).ToArray();
 
-                        operation = "Attorney(s) " + string.Join(", ", names) + " " + operation;
+                        operation = "Attorney(s) '" + string.Join(", ", names) + "' " + operation;
                         detail.AppendLine(operation);
                     }
                     else if (AttorneysTwo)
@@ -294,7 +297,7 @@ namespace SLS_LegalServices.Repositories
                         var names = context.Attorneys.Where(w => recent.AttorneyIds.Any(u => u == w.AttorneyId))
                             .Select(ModelHelper.GetAttorneyFromModel).Select(w => w.DisplayName).ToArray();
 
-                        operation = "Attorney(s) " + string.Join(", ", names) + " " + operation;
+                        operation = "Attorney(s) '" + string.Join(", ", names) + "' " + operation;
                         detail.AppendLine(operation);
                     }
 
@@ -376,16 +379,17 @@ namespace SLS_LegalServices.Repositories
 
         public InternVM GetAllInternById(int id)
         {
-            return context.Interns.Select(o => new InternVM()
-            {
-                UserId = o.UserId,
-                InternId = o.InternId,
-                UserName = o.User.UserName,
-                FirstName = o.User.FirstName,
-                LastName = o.User.LastName,
-                Status = o.Status,
-                CertifiedDate = o.CertifiedDate,
-            }).FirstOrDefault();
+            return context.Interns.Where(c => c.InternId == id)
+                .Select(o => new InternVM()
+                {
+                    UserId = o.UserId,
+                    InternId = o.InternId,
+                    UserName = o.User.UserName,
+                    FirstName = o.User.FirstName,
+                    LastName = o.User.LastName,
+                    Status = o.Status,
+                    CertifiedDate = o.CertifiedDate,
+                }).FirstOrDefault();
         }
 
         public void InternInsert(InternVM vm)
@@ -576,8 +580,17 @@ namespace SLS_LegalServices.Repositories
         {
             return context.Cases
                 .Where(c => c.CaseNo == null)
-                .Select(ModelHelper.GetIntakeFromModelFunc)
-                .ToList();
+                .Select(c => new IntakeVM
+                {
+                    FirstName = c.FirstName,
+                    LastName = c.LastName,
+                    CaseId = c.CaseId,
+                    AdversePartyList = c.CaseParties.Where(cp => cp.CaseId == c.CaseId).Select(cp => (cp.FirstName + " " + cp.LastName)).ToList(),
+                    InternFullName = context.CaseInterns.Where(cint => cint.CaseId == c.CaseId)
+                        .Select(cint => (cint.Intern.User.FirstName + " " + cint.Intern.User.LastName)).FirstOrDefault(),
+                    Type = (c.CaseType.TypeCode + "-" + c.CaseType.Description),
+                    CreationDate = c.CreationDate
+                }).ToList();
         }
 
         public IntakeVM GetIntakeById(int id)
@@ -664,12 +677,12 @@ namespace SLS_LegalServices.Repositories
 
             if (vm.InternId.HasValue)
             {
-                ValidateIntakeIntern(vm);
+                ValidateIntakeIntern(oldVM, vm);
             }
 
             if (vm.CertifiedInternId.HasValue)
             {
-                ValidateIntakeCertifiedIntern(vm);
+                ValidateIntakeCertifiedIntern(oldVM, vm);
             }
 
             if (vm.AttorneyIds != null)
@@ -685,7 +698,7 @@ namespace SLS_LegalServices.Repositories
             LogIntake_MainInfo(action, oldVM, vm);
         }
 
-        private void ValidateIntakeIntern(IntakeVM vm)
+        private void ValidateIntakeIntern(IntakeVM oldVM, IntakeVM vm)
         {
             List<CaseIntern> caseInternList = context.CaseInterns
                     .Where(c => c.InternId == vm.InternId.Value)
@@ -705,9 +718,10 @@ namespace SLS_LegalServices.Repositories
             }
             else
             {
-                CaseIntern ci = caseInternList.First();
-                if (ci.InternId != vm.InternId.Value)
-                {//if intern is different but already exist, we just update the creation date but then be feched in the ddl
+                //if intern is different but already exist, we just update the creation date but then be retrieved in the ddl
+                if (oldVM.InternId != vm.InternId)
+                {
+                    CaseIntern ci = caseInternList.First();
                     ci.CreationDate = DateTime.Now;
                     context.CaseInterns.Attach(ci);
                     context.Entry(ci).State = EntityState.Modified;
@@ -715,7 +729,7 @@ namespace SLS_LegalServices.Repositories
                 }
             }
         }
-        private void ValidateIntakeCertifiedIntern(IntakeVM vm)
+        private void ValidateIntakeCertifiedIntern(IntakeVM oldVM, IntakeVM vm)
         {
             List<CaseCertifiedIntern> caseInternList = context.CaseCertifiedInterns
                     .Where(c => c.InternId == vm.CertifiedInternId.Value)
@@ -735,9 +749,10 @@ namespace SLS_LegalServices.Repositories
             }
             else
             {
-                CaseCertifiedIntern ci = caseInternList.First();
-                if (ci.InternId != vm.CertifiedInternId.Value)
-                {//if intern is different but already exist, we just update the creation date but then be feched in the ddl
+                //if intern is different but already exist, we just update the creation date but then be retrieved in the ddl
+                if (oldVM.CertifiedInternId != vm.CertifiedInternId)
+                {
+                    CaseCertifiedIntern ci = caseInternList.First();
                     ci.CreationDate = DateTime.Now;
                     context.CaseCertifiedInterns.Attach(ci);
                     context.Entry(ci).State = EntityState.Modified;
@@ -779,14 +794,46 @@ namespace SLS_LegalServices.Repositories
         #endregion
 
         #region Cases
-        public List<IntakeVM> GetAllCases()
+        public List<IntakeVM> GetAllCasesByStatus(string status)
         {
             return context.Cases
                 .Where(c => c.CaseNo != null)
-                .Select(ModelHelper.GetIntakeFromModelFunc)
-                .ToList();
+                .Where(c => c.Status.Trim().ToLower() == status.Trim().ToLower())
+                .Select(c => new IntakeVM {
+                    FirstName = c.FirstName,
+                    LastName = c.LastName,
+                    CaseId = c.CaseId,
+                    CaseNo = c.CaseNo,
+                    PhoneList = c.Telephones.Select(t => t.Number).ToList(),
+                    InternFullName = context.CaseInterns.Where(cint => cint.CaseId == c.CaseId)
+                        .Select(cint => (cint.Intern.User.FirstName + " " + cint.Intern.User.LastName)).FirstOrDefault(),
+                    AttorneyList = context.CaseAttorneys.Where(ca => ca.CaseId == c.CaseId).Select(a => a.Attorney.User.DisplayName).ToList(),
+                    Type = (c.CaseType.TypeCode + "-" + c.CaseType.Description)
+                }).ToList();
         }
 
+        public List<IntakeVM> GetCasesByAttorneyId(int attorneyId)
+        {
+            var caseIds = context.CaseAttorneys
+                .Where(c => c.AttorneyId == attorneyId)
+                .Where(c => c.Case.CaseNo != null )
+                .Where(c => c.Case.Status.ToLower().Trim() == "open")
+                .Select(c => c.CaseId)
+                .ToList();
+
+            return context.Cases
+                .Where(c => caseIds.Any(id => id == c.CaseId))
+                .Select(c => new IntakeVM
+                {
+                    CaseId = c.CaseId,
+                    CaseNo = c.CaseNo,
+                    CertifiedInternFullName = context.CaseCertifiedInterns.Where(cint => cint.CaseId == c.CaseId)
+                        .Select(cint => (cint.Intern.User.FirstName + " " + cint.Intern.User.LastName)).FirstOrDefault(),
+                    InternFullName = context.CaseInterns.Where(cint => cint.CaseId == c.CaseId)
+                        .Select(cint => (cint.Intern.User.FirstName + " " + cint.Intern.User.LastName)).FirstOrDefault()
+                })
+                .ToList();
+        }
         public IntakeVM GetCaseById(int id)
         {
             IntakeVM vm = context.Cases

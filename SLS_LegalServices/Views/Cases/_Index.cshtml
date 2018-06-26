@@ -1,0 +1,35 @@
+﻿
+<script>
+
+    function onRequestEnd(e) {
+        if (e.type == "update" || e.type == "create" || e.type == "destroy") {
+            $("#IntakesGrid").data("kendoGrid").dataSource.read();
+        }
+    }
+
+</script>
+
+@(Html.Kendo().Grid<IntakeVM>()
+    .Name("CassesGrid_" + (string)ViewBag.Status)
+    .Columns(columns =>
+    {
+        columns.Bound(c => c.CaseId).ClientTemplate("<a href='/Cases/Details/?id=#=CaseId#' >#=CaseNo#</a>").Title("Case");
+        columns.Bound(c => c.FullName).Title("Client");
+        columns.Bound(c => c.Phone).Title("Phone(s)");
+        columns.Bound(c => c.InternFullName).Title("Intern");
+        columns.Bound(c => c.Attorneys).Title("Attorney(s)");
+        columns.Bound(c => c.Type).Title("Type");
+    })
+    .Scrollable()
+    .DataSource(dataSource => dataSource
+        .Ajax()
+        .Model(m => m.Id(c => c.CaseId))
+        .Read(read => read.Action("Read", "Cases", new { status = ViewBag.Status }))
+        .Destroy(destroy => destroy.Action("Destroy", "Cases"))
+        .Update(update => update.Action("Update", "Cases"))
+        .Create(create => create.Action("Create", "Cases"))
+        .Events(e => { e.RequestEnd("onRequestEnd"); })
+    )
+    .Editable(editable => editable.Mode(GridEditMode.InLine))
+)
+

@@ -63,8 +63,9 @@ namespace SLS_LegalServices.Repositories
         #endregion
 
         #region Cases
-        List<IntakeVM> GetAllCases();
+        List<IntakeVM> GetAllCasesByStatus(string status);
         IntakeVM GetCaseById(int id);
+        List<IntakeVM> GetCasesByAttorneyId(int attorneyId);
         void CaseInsert(int caseId, string caseNo);
         void CaseDelete(IntakeVM vm);
         void CaseUpdate(IntakeVM vm);
