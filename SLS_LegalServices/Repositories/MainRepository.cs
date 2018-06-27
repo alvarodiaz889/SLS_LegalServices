@@ -587,7 +587,9 @@ namespace SLS_LegalServices.Repositories
                     CaseId = c.CaseId,
                     AdversePartyList = c.CaseParties.Where(cp => cp.CaseId == c.CaseId).Select(cp => (cp.FirstName + " " + cp.LastName)).ToList(),
                     InternFullName = context.CaseInterns.Where(cint => cint.CaseId == c.CaseId)
-                        .Select(cint => (cint.Intern.User.FirstName + " " + cint.Intern.User.LastName)).FirstOrDefault(),
+                        .OrderByDescending(cint => cint.CreationDate)
+                        .Select(cint => (cint.Intern.User.FirstName + " " + cint.Intern.User.LastName))
+                        .FirstOrDefault(),
                     Type = (c.CaseType.TypeCode + "-" + c.CaseType.Description),
                     CreationDate = c.CreationDate
                 }).ToList();
@@ -806,6 +808,7 @@ namespace SLS_LegalServices.Repositories
                     CaseNo = c.CaseNo,
                     PhoneList = c.Telephones.Select(t => t.Number).ToList(),
                     InternFullName = context.CaseInterns.Where(cint => cint.CaseId == c.CaseId)
+                        .OrderByDescending(cint => cint.CreationDate)
                         .Select(cint => (cint.Intern.User.FirstName + " " + cint.Intern.User.LastName)).FirstOrDefault(),
                     AttorneyList = context.CaseAttorneys.Where(ca => ca.CaseId == c.CaseId).Select(a => a.Attorney.User.DisplayName).ToList(),
                     Type = (c.CaseType.TypeCode + "-" + c.CaseType.Description)

@@ -1,6 +1,7 @@
 ﻿@model EmailVM
 @{
     var IsFromParty = (bool)ViewData["IsFromParty"];
+    if (IsFromParty) { Model.Type = "Case Party"; }
 }
 <div>
 
@@ -15,6 +16,10 @@
                 @Html.TextBoxFor(s => s.Type)
             </div>
         </div>
+    }
+    else
+    {
+        @Html.HiddenFor(s => s.Type)
     }
         <div class="form-group">
             @Html.LabelFor(s => s.Email1)

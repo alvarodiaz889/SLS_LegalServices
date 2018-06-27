@@ -30,6 +30,7 @@ namespace SLS_LegalServices.Controllers
         [HttpPost]
         public ActionResult Create([DataSourceRequest] DataSourceRequest request, CasePartyVM obj)
         {
+
             if (ModelState.IsValid)
             {
                 repository.SetLoggedUserId(Guid.Parse(User.Identity.GetUserId()));

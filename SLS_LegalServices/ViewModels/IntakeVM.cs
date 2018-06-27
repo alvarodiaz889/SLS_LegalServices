@@ -16,7 +16,16 @@ namespace SLS_LegalServices.ViewModels
         [UIHint("CaseTypeDDL")]
         [Display(Name = "Type")]
         public int? TypeId { get; set; }
-        public string Type { get; set; }
+
+        private string _type;
+        public string Type
+        {
+            get
+            {
+                return (_type == "-") ? string.Empty : _type;
+            }
+            set { _type = value; }
+        }
 
 
         [UIHint("CaseStatusDDL")]

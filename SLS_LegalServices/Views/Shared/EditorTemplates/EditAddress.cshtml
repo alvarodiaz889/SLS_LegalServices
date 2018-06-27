@@ -1,6 +1,7 @@
 ﻿@model AddressVM
 @{
     var IsFromParty = (bool)ViewData["IsFromParty"];
+    if (IsFromParty) { Model.Type = "Case Party"; }
 }
 
 

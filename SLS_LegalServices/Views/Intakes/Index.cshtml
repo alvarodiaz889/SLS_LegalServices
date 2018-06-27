@@ -17,7 +17,7 @@
     .Name("IntakesGrid")
     .Columns(columns =>
     {
-        columns.Command(command => { command.Edit().Text(" ");});
+        columns.Command(command => { command.Edit().Text(" ");}).Width(80);
         columns.Bound(c => c.CaseId).Visible(false);
         columns.Bound(c => c.FullName).Title("Client");
         columns.Bound(c => c.AdverseParty).Title("Adverse Party");
@@ -25,6 +25,7 @@
         columns.Bound(c => c.Interview);
         columns.Bound(c => c.Type);
         columns.Bound(c => c.CreationDate).Format("{0:dd/MM/yyyy hh:mm tt}").Title("Created").Width(200);
+        columns.Template(@<text> </text>).Title("");
     })
     .Scrollable()
     .DataSource(dataSource => dataSource
