@@ -38,7 +38,7 @@ namespace SLS_LegalServices.Repositories
 
         #region Interns
         List<InternVM> GetAllInterns();
-        InternVM GetAllInternById(int id);
+        InternVM GetInternById(int id);
         void InternInsert(InternVM vm);
         void InternDelete(InternVM vm);
         void InternUpdate(InternVM vm);
@@ -63,6 +63,8 @@ namespace SLS_LegalServices.Repositories
         #endregion
 
         #region Cases
+
+        List<IntakeVM> GetAllCasesBy(Func<Case, bool> predicate);
         List<IntakeVM> GetAllCasesByStatus(string status);
         IntakeVM GetCaseById(int id);
         List<IntakeVM> GetCasesByAttorneyId(int attorneyId);

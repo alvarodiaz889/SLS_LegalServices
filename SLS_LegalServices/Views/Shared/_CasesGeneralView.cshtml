@@ -6,9 +6,28 @@
 }
 <script>
 
+    function whenCaseNumberChanging()
+    {
+        let caseNo = $("#CaseNo").val().trim();
+
+        $.post('@Url.Action("ValidateCaseNumber", "Cases")',
+            {
+                caseNo: caseNo
+            },
+            function (data) {
+                console.log(data);
+                if (data) {
+                    whenChanging();
+                }
+                else
+                {
+                    alert("This case number is already taken.");
+                }
+            });
+    }
+
     function whenChanging()
     {
-        let idValue = $("#modelId").val();
         let urlAction = "@Url.Action("Update", "Intakes")"
         updateRecord(urlAction);
     }
@@ -117,7 +136,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.CaseNo)
             <div>
-                @Html.TextBoxFor(model => model.CaseNo, new { onchange = "whenChanging()", @readonly = "readonly" })
+                @Html.TextBoxFor(model => model.CaseNo, new { onchange = "whenCaseNumberChanging()" })
             </div>
         </div>
         <div class="form-group">

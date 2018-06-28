@@ -52,23 +52,11 @@
         <EntityTypeShape EntityType="SLS_LegalServicesDataModel.CaseDocument" Width="1.5" PointX="8.25" PointY="18.25" />
         <AssociationConnector Association="SLS_LegalServicesDataModel.FK_CaseDocuments_Cases" />
         <AssociationConnector Association="SLS_LegalServicesDataModel.FK_CaseDocuments_Users" />
-        <EntityTypeShape EntityType="SLS_LegalServicesDataModel.Log" Width="1.5" PointX="11.25" PointY="22.125" />
-        <AssociationConnector Association="SLS_LegalServicesDataModel.FK_Log_Cases" />
-        <AssociationConnector Association="SLS_LegalServicesDataModel.FK_Log_Users" ManuallyRouted="true" >
-          <ConnectorPoint PointX="1.1874974999999992" PointY="24.268697916666671" />
-          <ConnectorPoint PointX="1.1874974999999992" PointY="24.676045587357606" />
-          <ConnectorPoint PointX="1.6041666666666667" PointY="24.676045587357606" />
-          <ConnectorPoint PointX="1.7708333333333333" PointY="24.676045587357606" />
-          <ConnectorPoint PointX="6.822916666666667" PointY="24.676045587357603" />
-          <ConnectorPoint PointX="7.359700520833333" PointY="24.676045587357606" />
-          <ConnectorPoint PointX="7.9293741749999995" PointY="24.676045587357606" />
-          <ConnectorPoint PointX="7.9293741749999995" PointY="24.961037539261191" />
-          <ConnectorPoint PointX="10.072916666666666" PointY="24.961037539261191" />
-          <ConnectorPoint PointX="10.239583333333334" PointY="24.961037539261191" />
-          <ConnectorPoint PointX="11.25" PointY="24.961037539261191" />
-        </AssociationConnector>
         <EntityTypeShape EntityType="SLS_LegalServicesDataModel.ReferralSource" Width="1.5" PointX="8.25" PointY="9.625" />
         <AssociationConnector Association="SLS_LegalServicesDataModel.CaseReferralSources" />
+        <EntityTypeShape EntityType="SLS_LegalServicesDataModel.Log" Width="1.5" PointX="11.25" PointY="22.125" />
+        <AssociationConnector Association="SLS_LegalServicesDataModel.FK_Log_Cases" />
+        <AssociationConnector Association="SLS_LegalServicesDataModel.FK_Log_Users" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

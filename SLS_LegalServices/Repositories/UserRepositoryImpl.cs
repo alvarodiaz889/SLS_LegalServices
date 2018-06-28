@@ -177,6 +177,20 @@ namespace SLS_LegalServices.Repositories
             var user = userManager.FindById(id);
             userManager.Delete(user);
         }
+
+        public List<UserViewModel> GetUsersBy(Func<User, bool> predicate)
+        {
+            return context.Users.Where(predicate)
+                .Select(u => new UserViewModel
+                {
+                    UserId = u.UserId,
+                    UserName = u.UserName,
+                    FirstName = u.FirstName,
+                    Active = u.Active,
+                    DisplayName = u.DisplayName,
+                    LastName = u.LastName,
+                }).ToList();
+        }
         public void Dispose()
         {
             context.Dispose();

@@ -115,7 +115,7 @@
 
     function promoteToCase(e)
     {
-        var caseNo = $('#caseNo').val();
+        var caseNo = $('#caseNo').val().trim();
         let caseId = $("#modelId").val();
 
         if (caseId == 0)
@@ -129,23 +129,38 @@
             alert('The case number must have a value');
             e.preventDefault();
         }
-        else {
 
-            $.post('@Url.Action("Create","Cases")',
-                {
-                    caseId: caseId,
-                    caseNo: caseNo
-                },
-                function (data)
-                {
-                    $('#caseNo').val("");
-                    alert('Intake Upgraded successfully!');
-                    window.location.href = "/Cases/Index/";
+        $.post('@Url.Action("ValidateCaseNumber", "Cases")',
+            {
+                caseNo: caseNo
+            },
+            function (data)
+            {
+                if (data) {
+                    $.post('@Url.Action("Create","Cases")',
+                        {
+                            caseId: caseId,
+                            caseNo: caseNo
+                        },
+                        function (data) {
+                            $('#caseNo').val("");
+                            alert('Intake Upgraded successfully!');
+                            window.location.href = "/Cases/Index/";
+                        });
                 }
-            )
-        }
+                else
+                {
+                    alert("This case number is already taken.");
+                    $('#caseNo').val("");
+                    e.preventDefault();
+                }
+            }
+        )
+
+        
     }
 
+    
 
 </script>
 

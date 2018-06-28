@@ -124,6 +124,14 @@ namespace SLS_LegalServices.Controllers
         }
 
         [HttpPost]
+        public ActionResult ValidateCaseNumber(string caseNo)
+        {
+            bool byCaseNo(Case x) => x.CaseNo == caseNo.Trim();
+            var list = repository.GetAllCasesBy(byCaseNo);
+            return Json(list.Count == 0);
+        }
+
+        [HttpPost]
         public ActionResult Create(int caseId, string caseNo)
         {
             repository.CaseInsert(caseId, caseNo);

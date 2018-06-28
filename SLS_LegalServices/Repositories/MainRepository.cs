@@ -245,7 +245,7 @@ namespace SLS_LegalServices.Repositories
                         if (InternIdOne || InternIdTwo)
                         {
                             var text = string.Empty;
-                            if (InternIdTwo) text = "Intern Changed. - " + GetAllInternById(recent.InternId.Value).FullName;
+                            if (InternIdTwo) text = "Intern Changed. - " + GetInternById(recent.InternId.Value).FullName;
                             else text = "Intern Removed.";
                             detail.AppendLine(text);
                         } 
@@ -312,7 +312,7 @@ namespace SLS_LegalServices.Repositories
                             if (InternIdOne || InternIdTwo)
                             {
                                 var text = string.Empty;
-                                if (InternIdTwo) text = "Certified Intern Changed. - " + GetAllInternById(recent.CertifiedInternId.Value).FullName;
+                                if (InternIdTwo) text = "Certified Intern Changed. - " + GetInternById(recent.CertifiedInternId.Value).FullName;
                                 else text = "Certified Intern Removed.";
                                 detail.AppendLine(text);
                             }
@@ -342,7 +342,8 @@ namespace SLS_LegalServices.Repositories
 
         private void LogIntake_OtherInfo(string detail, int? caseId, Guid createdById)
         {
-            string logType = caseId == null ? "intakes" : "cases";
+            var @case = context.Cases.Where(c => c.CaseId == caseId.Value).FirstOrDefault();
+            string logType = (@case.CaseNo == null) ? "intakes" : "cases";
             LogVM log = new LogVM
             {
                 Action = "Updated",
@@ -377,7 +378,7 @@ namespace SLS_LegalServices.Repositories
             return interns;
         }
 
-        public InternVM GetAllInternById(int id)
+        public InternVM GetInternById(int id)
         {
             return context.Interns.Where(c => c.InternId == id)
                 .Select(o => new InternVM()
@@ -796,6 +797,12 @@ namespace SLS_LegalServices.Repositories
         #endregion
 
         #region Cases
+
+        public List<IntakeVM> GetAllCasesBy(Func<Case, bool> predicate)
+        {
+            return context.Cases.Where(predicate).Select(ModelHelper.GetIntakeFromModelFunc).ToList();
+        }
+
         public List<IntakeVM> GetAllCasesByStatus(string status)
         {
             return context.Cases

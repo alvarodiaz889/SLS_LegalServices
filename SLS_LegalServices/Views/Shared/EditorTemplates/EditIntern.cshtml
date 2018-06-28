@@ -6,6 +6,7 @@
     {
         @Html.ValidationSummary(true, "")
 
+        @Html.HiddenFor(s => s.UserId)
 
         <div class="form-group">
             @Html.LabelFor(s => s.UserName)

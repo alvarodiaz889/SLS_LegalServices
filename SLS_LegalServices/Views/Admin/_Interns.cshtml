@@ -75,6 +75,43 @@
     {
         $("#InternGrid").data("kendoGrid").dataSource.read();
     }
+
+    function onSaveIntern(e) {
+        let userName = $("#UserName").val().trim();
+        let userId = $("#UserId").val();
+        let isValid = false;
+
+        if (userName != '') {
+            $.ajax({
+                url: '@Url.Action("GetUserByUserName","User")',
+                type: 'POST',
+                async: false,
+                cache: false,
+                timeout: 10000,
+                data: { userName: userName, userId: userId },
+                error: function () {
+                    return true;
+                },
+                success: function (data) {
+                    if (data) {
+                        isValid = true;
+                    }
+                    else {
+                        alert("User Name already exists.");
+                    }
+                }
+            });
+        }
+        else
+        {
+            alert("User Name must have a valid value.");
+        }
+
+        console.log(isValid);
+
+        if (!isValid)
+            e.preventDefault();
+    }
 </script>
 <input type="hidden" id="parentIdInput" />
 @(Html.Kendo().Grid<InternVM>()
@@ -111,7 +148,7 @@
             .TemplateName("EditIntern").Window(w => w.Title("Edit Intern").Name("editWindow").Width(800)))
           .HtmlAttributes(new { @style = "height:auto;"})
           .ClientDetailTemplateId("detailTemplate")
-          .Events(e => e.DetailCollapse("OnDetailCollapse"))
+          .Events(e => e.DetailCollapse("OnDetailCollapse").Save("onSaveIntern"))
 )
 
 <script id="detailTemplate" type="text/kendo-tmpl">

@@ -11,6 +11,42 @@
         $('#'+id).data("kendoGrid").dataSource.read();
     }
 
+    function onSaveAttorney(e) {
+        let userName = e.sender.dataItem(e.container).UserName.trim();
+        let userId = e.sender.dataItem(e.container).UserId;
+        let isValid = false;
+
+        if (userName != '') {
+            $.ajax({
+                url: '@Url.Action("GetUserByUserName","User")',
+                type: 'POST',
+                async: false,
+                cache: false,
+                timeout: 10000,
+                data: { userName: userName, userId: userId },
+                error: function () {
+                    return true;
+                },
+                success: function (data) {
+                    if (data) {
+                        isValid = true;
+                    }
+                    else {
+                        alert("User Name already exists.");
+                    }
+                }
+            });
+        }
+        else
+        {
+            alert("User Name must have a valid value.");
+        }
+
+        console.log(isValid);
+
+        if (!isValid)
+            e.preventDefault();
+    }
 </script>
 @(Html.Kendo().Grid<AttorneyVM>()
           .Name("AttorneyGrid")
@@ -18,7 +54,8 @@
           {
               columns.Command(command => { command.Edit().Text(" ").CancelText(" ").UpdateText(" "); command.Destroy().Text(" "); }).Width(100);
               columns.Bound(c => c.AttorneyId).Visible(false);
-              columns.Bound(c => c.UserName).Width(120);
+              columns.Bound(c => c.UserId).Visible(false);
+              columns.Bound(c => c.UserName);
               columns.Bound(c => c.LastName);
               columns.Bound(c => c.FirstName);
               columns.Bound(c => c.DisplayName);
@@ -45,7 +82,7 @@
           .ToolBar(toolbar => { toolbar.Create().Text("Add"); })
           .Editable(editable => editable.Mode(GridEditMode.InLine))
           .ClientDetailTemplateId("attorneyDetails")
-          .Events(e => e.DetailExpand("OnAttorneyGridDetailExpand"))
+          .Events(e => e.DetailExpand("OnAttorneyGridDetailExpand").Save("onSaveAttorney"))
 )
 
 
@@ -55,7 +92,6 @@
                 .Name("AttorneyDetailsGrid_#=AttorneyId#")
                 .Columns(columns =>
                 {
-                    columns.Command(command => { command.Edit().Text(" ").CancelText(" ").UpdateText(" "); command.Destroy().Text(" "); }).Width(100);
                     columns.Bound(c => c.CaseId).ClientTemplate("<a href='/Cases/Details/?id=\\#=CaseId\\#' >Open</a>");
                     columns.Bound(c => c.CaseNo).Title("Case ID");
                     columns.Bound(c => c.CertifiedInternFullName).Title("Certified Intern");

@@ -6,74 +6,82 @@
     }
 
     function onSave(e) {
-        var userName = e.sender.dataItem(e.container).UserName;
-        if (userName != null) {
-            if (userName.trim().length == 0) {
-                e.preventDefault();
-                alert("Username is Required.");
-            } else {
-                // check for dups
-                $.post("@Url.Action("GetUserViaAjax", "User")", { userName: userName }, function (data) {
-                    if (data != '' && e.model.isNew()) {
-                        e.preventDefault();
-                        alert('This Username already exists in the system.');
-                    }
-                });
-            }
-        } else {
-            e.preventDefault();
-            alert("Username is Required.");
-        }
-    }
+        let userName = e.sender.dataItem(e.container).UserName.trim();
+        let userId = e.sender.dataItem(e.container).UserId;
+        let isValid = false;
 
-    function onEdit(e) {
-        //alert('On Edit');
-        var isNewUser = e.model.isNew();
-        if (!isNewUser) {
-            // disable UserName editing
-            var userNameObject = e.container.find("input[name=UserName]");
-            userNameObject.prop('disabled', true);
+        if (userName != '')
+        {
+            $.ajax({
+                url: '@Url.Action("GetUserByUserName","User")',
+                type: 'POST',
+                async: false,
+                cache: false,
+                timeout: 10000,
+                data: { userName: userName, userId: userId },
+                error: function () {
+                    return true;
+                },
+                success: function (data) {
+                    if (data) {
+                        isValid = true;
+                    }
+                    else {
+                        alert("User Name already exists.");
+                    }
+                }
+            });
         }
+        else
+        {
+            alert("User Name must have a valid value.");
+        }
+
+        console.log(isValid);
+
+        if (!isValid)
+            e.preventDefault();
     }
 
 </script>
 
 @(Html.Kendo().Grid<UserViewModel>()
-            .Name("UsersGrid")
-            .Columns(columns =>
-            {
-            columns.Command(command => { command.Edit().Text(" ").CancelText(" ").UpdateText(" "); command.Destroy().Text(" "); }).Width(100); 
+        .Name("UsersGrid")
+        .Columns(columns =>
+        {
+            columns.Command(command => { command.Edit().Text(" ").CancelText(" ").UpdateText(" "); command.Destroy().Text(" "); }).Width(100);
+            columns.Bound(o => o.UserId).Visible(false);
             columns.Bound(o => o.UserName).HtmlAttributes(new { @style = "vertical-align: top;" });
             columns.Bound(o => o.LastName).HtmlAttributes(new { @style = "vertical-align: top;" });
             columns.Bound(o => o.FirstName).HtmlAttributes(new { @style = "vertical-align: top;" });
             columns.Bound(o => o.Role).HtmlAttributes(new { @style = "vertical-align: top;" });
             columns.Template(@<text> </text>).Title("");
-            })
-            .Scrollable()
-            .DataSource(dataSource => dataSource
-                .Ajax()
-                .ServerOperation(true)
-                .Model(model =>
-                    {
-                        model.Id(c => c.UserName);
-                        model.Field(e => e.UserId).DefaultValue(new Guid());
-                    })
-                .Read(read => read.Action("Read", "User"))
-                .Destroy(destroy => destroy.Action("Destroy", "User"))
-                .Update(update => update.Action("Update", "User"))
-                .Create(create => create.Action("Create", "User"))
-                .Events(events => events.RequestEnd("onRequestEnd"))
-            )
-            .Pageable(pageable => pageable
-            .ButtonCount(5)
-                                .PageSizes(new[] { 5, 10, 25, 50, 100 })
-            )
-        .Sortable()
-        .Filterable()
-        .ToolBar(toolbar => { toolbar.Create().Text("Add"); })
-        .Editable(editable => editable.Mode(GridEditMode.InLine))
-        .NoRecords("No Users.")
-        .Events(e => e.Save("onSave").Edit("onEdit"))
+        })
+        .Scrollable()
+        .DataSource(dataSource => dataSource
+            .Ajax()
+            .ServerOperation(true)
+            .Model(model =>
+                {
+                    model.Id(c => c.UserId);
+                    model.Field(e => e.UserId).DefaultValue(new Guid());
+                })
+            .Read(read => read.Action("Read", "User"))
+            .Destroy(destroy => destroy.Action("Destroy", "User"))
+            .Update(update => update.Action("Update", "User"))
+            .Create(create => create.Action("Create", "User"))
+            .Events(events => events.RequestEnd("onRequestEnd"))
+        )
+        .Pageable(pageable => pageable
+        .ButtonCount(5)
+                            .PageSizes(new[] { 5, 10, 25, 50, 100 })
+        )
+    .Sortable()
+    .Filterable()
+    .ToolBar(toolbar => { toolbar.Create().Text("Add"); })
+    .Editable(editable => editable.Mode(GridEditMode.InLine))
+    .NoRecords("No Users.")
+    .Events(e => e.Save("onSave"))
 )
 
 

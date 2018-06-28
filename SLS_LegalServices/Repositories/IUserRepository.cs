@@ -17,6 +17,7 @@ namespace SLS_LegalServices.Repositories
         void DeleteApplicationUser(string id);
         List<UserViewModel> GetAllUsers();
         UserViewModel GetUserByUserName(string userName);
+        List<UserViewModel> GetUsersBy(Func<User, bool> predicate);
         void Dispose();
 
     }

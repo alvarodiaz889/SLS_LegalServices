@@ -232,7 +232,7 @@
             <PropertyRef Name="LogId" />
           </Key>
           <Property Name="LogId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="LogType" Type="nchar" MaxLength="50" Nullable="false" />
+          <Property Name="LogType" Type="varchar" MaxLength="10" Nullable="false" />
           <Property Name="CaseId" Type="int" />
           <Property Name="LogDate" Type="datetime" Nullable="false" />
           <Property Name="CreatedById" Type="uniqueidentifier" Nullable="false" />
@@ -292,7 +292,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_CaseAttorneys_Attorney">
-          <End Role="Attorney" Type="Self.Attorney" Multiplicity="1" />
+          <End Role="Attorney" Type="Self.Attorney" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="CaseAttorneys" Type="Self.CaseAttorneys" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Attorney">
@@ -304,7 +306,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_CaseAttorneys_Cases">
-          <End Role="Cases" Type="Self.Cases" Multiplicity="1" />
+          <End Role="Cases" Type="Self.Cases" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="CaseAttorneys" Type="Self.CaseAttorneys" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Cases">
@@ -954,6 +958,11 @@
             <End Role="User" EntitySet="Users" />
             <End Role="CaseDocument" EntitySet="CaseDocuments" />
           </AssociationSet>
+          <EntitySet Name="ReferralSources" EntityType="SLS_LegalServicesDataModel.ReferralSource" />
+          <AssociationSet Name="CaseReferralSources" Association="SLS_LegalServicesDataModel.CaseReferralSources">
+            <End Role="Case" EntitySet="Cases" />
+            <End Role="ReferralSource" EntitySet="ReferralSources" />
+          </AssociationSet>
           <EntitySet Name="Logs" EntityType="SLS_LegalServicesDataModel.Log" />
           <AssociationSet Name="FK_Log_Cases" Association="SLS_LegalServicesDataModel.FK_Log_Cases">
             <End Role="Case" EntitySet="Cases" />
@@ -962,11 +971,6 @@
           <AssociationSet Name="FK_Log_Users" Association="SLS_LegalServicesDataModel.FK_Log_Users">
             <End Role="User" EntitySet="Users" />
             <End Role="Log" EntitySet="Logs" />
-          </AssociationSet>
-          <EntitySet Name="ReferralSources" EntityType="SLS_LegalServicesDataModel.ReferralSource" />
-          <AssociationSet Name="CaseReferralSources" Association="SLS_LegalServicesDataModel.CaseReferralSources">
-            <End Role="Case" EntitySet="Cases" />
-            <End Role="ReferralSource" EntitySet="ReferralSources" />
           </AssociationSet>
           </EntityContainer>
         <EntityType Name="Address">
@@ -1130,8 +1134,8 @@
           <NavigationProperty Name="Emails" Relationship="SLS_LegalServicesDataModel.FK_Emails_Cases" FromRole="Case" ToRole="Email" />
           <NavigationProperty Name="Telephones" Relationship="SLS_LegalServicesDataModel.FK_Telephones_Cases" FromRole="Case" ToRole="Telephone" />
           <NavigationProperty Name="CaseDocuments" Relationship="SLS_LegalServicesDataModel.FK_CaseDocuments_Cases" FromRole="Case" ToRole="CaseDocument" />
-          <NavigationProperty Name="Logs" Relationship="SLS_LegalServicesDataModel.FK_Log_Cases" FromRole="Case" ToRole="Log" />
           <NavigationProperty Name="ReferralSources" Relationship="SLS_LegalServicesDataModel.CaseReferralSources" FromRole="Case" ToRole="ReferralSource" />
+          <NavigationProperty Name="Logs" Relationship="SLS_LegalServicesDataModel.FK_Log_Cases" FromRole="Case" ToRole="Log" />
         </EntityType>
         <EntityType Name="CaseStatusLookup">
           <Key>
@@ -1578,12 +1582,24 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="ReferralSource">
+          <Key>
+            <PropertyRef Name="ReferralSourceId" />
+          </Key>
+          <Property Name="ReferralSourceId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ReferralSource1" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Cases" Relationship="SLS_LegalServicesDataModel.CaseReferralSources" FromRole="ReferralSource" ToRole="Case" />
+        </EntityType>
+        <Association Name="CaseReferralSources">
+          <End Type="SLS_LegalServicesDataModel.Case" Role="Case" Multiplicity="*" />
+          <End Type="SLS_LegalServicesDataModel.ReferralSource" Role="ReferralSource" Multiplicity="*" />
+        </Association>
         <EntityType Name="Log">
           <Key>
             <PropertyRef Name="LogId" />
           </Key>
           <Property Name="LogId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="LogType" Type="String" Nullable="false" MaxLength="50" FixedLength="true" Unicode="true" />
+          <Property Name="LogType" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="CaseId" Type="Int32" />
           <Property Name="LogDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="CreatedById" Type="Guid" Nullable="false" />
@@ -1618,18 +1634,6 @@
               <PropertyRef Name="CreatedById" />
             </Dependent>
           </ReferentialConstraint>
-        </Association>
-        <EntityType Name="ReferralSource">
-          <Key>
-            <PropertyRef Name="ReferralSourceId" />
-          </Key>
-          <Property Name="ReferralSourceId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ReferralSource1" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="Cases" Relationship="SLS_LegalServicesDataModel.CaseReferralSources" FromRole="ReferralSource" ToRole="Case" />
-        </EntityType>
-        <Association Name="CaseReferralSources">
-          <End Type="SLS_LegalServicesDataModel.Case" Role="Case" Multiplicity="*" />
-          <End Type="SLS_LegalServicesDataModel.ReferralSource" Role="ReferralSource" Multiplicity="*" />
         </Association>
         </Schema>
     </edmx:ConceptualModels>
@@ -1888,20 +1892,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Logs">
-            <EntityTypeMapping TypeName="SLS_LegalServicesDataModel.Log">
-              <MappingFragment StoreEntitySet="Log">
-                <ScalarProperty Name="Active" ColumnName="Active" />
-                <ScalarProperty Name="Detail" ColumnName="Detail" />
-                <ScalarProperty Name="Action" ColumnName="Action" />
-                <ScalarProperty Name="CreatedById" ColumnName="CreatedById" />
-                <ScalarProperty Name="LogDate" ColumnName="LogDate" />
-                <ScalarProperty Name="CaseId" ColumnName="CaseId" />
-                <ScalarProperty Name="LogType" ColumnName="LogType" />
-                <ScalarProperty Name="LogId" ColumnName="LogId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="ReferralSources">
             <EntityTypeMapping TypeName="SLS_LegalServicesDataModel.ReferralSource">
               <MappingFragment StoreEntitySet="ReferralSources">
@@ -1918,6 +1908,20 @@
               <ScalarProperty Name="CaseId" ColumnName="CaseId" />
             </EndProperty>
           </AssociationSetMapping>
+          <EntitySetMapping Name="Logs">
+            <EntityTypeMapping TypeName="SLS_LegalServicesDataModel.Log">
+              <MappingFragment StoreEntitySet="Log">
+                <ScalarProperty Name="Active" ColumnName="Active" />
+                <ScalarProperty Name="Detail" ColumnName="Detail" />
+                <ScalarProperty Name="Action" ColumnName="Action" />
+                <ScalarProperty Name="CreatedById" ColumnName="CreatedById" />
+                <ScalarProperty Name="LogDate" ColumnName="LogDate" />
+                <ScalarProperty Name="CaseId" ColumnName="CaseId" />
+                <ScalarProperty Name="LogType" ColumnName="LogType" />
+                <ScalarProperty Name="LogId" ColumnName="LogId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

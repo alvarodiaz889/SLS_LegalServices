@@ -4,7 +4,6 @@
         .Items(tabstrip =>
         {
             tabstrip.Add().Text("Advised")
-                .Selected(true)
                 .LoadContentFrom(Url.Content("~/Cases/Advised"));
 
             tabstrip.Add().Text("Closed")
@@ -14,6 +13,7 @@
                 .LoadContentFrom(Url.Content("~/Cases/NoAction"));
 
             tabstrip.Add().Text("Open")
+                .Selected(true)
                 .LoadContentFrom(Url.Content("~/Cases/Open"));
 
             tabstrip.Add().Text("Pending")

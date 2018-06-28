@@ -39,5 +39,7 @@ namespace SLS_LegalServices.ViewModels
                 return FirstName + " " + LastName;
             }
         }
+
+        public string Color { get => "Red"; }
     }
 }

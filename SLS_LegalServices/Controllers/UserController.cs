@@ -34,9 +34,7 @@ namespace SLS_LegalServices.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = userRepository.GetUserByUserName(uvm.UserName);
-                if (user == null)
-                    userRepository.Insert(uvm);
+                userRepository.Insert(uvm);
             }
 
             return Json(new[] { uvm }.ToDataSourceResult(request, ModelState));
@@ -59,15 +57,12 @@ namespace SLS_LegalServices.Controllers
             return Json(new[] { uvm }.ToDataSourceResult(request, ModelState));
         }
 
-        [AcceptVerbs(HttpVerbs.Post)]
-        public string GetUserViaAjax(string userName)
+        [HttpPost]
+        public ActionResult GetUserByUserName(string userName, string userId)
         {
-            UserViewModel uvm = userRepository.GetUserByUserName(userName);
-
-            if (uvm != null)
-                return uvm.UserName;
-            else
-                return "";
+            bool function(User u) => u.UserName == userName && u.UserId.ToString() != userId;
+            var users = userRepository.GetUsersBy(function);
+            return Json(users.Count() == 0);
         }
 
         protected override void Dispose(bool disposing)
