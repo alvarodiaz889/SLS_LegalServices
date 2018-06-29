@@ -21,14 +21,25 @@ namespace SLS_LegalServices.Controllers
 
         public ActionResult Index()
         {
+            ViewBag.Interns = repository.GetAllInterns();
             return View();
         }
         public ActionResult Read([DataSourceRequest]DataSourceRequest request)
         {
             var schedules = new List<ScheduleVM>()
             {
-                new ScheduleVM{ Title = "Title 1", Description = "Description 1", ScheduleId = 1, End = DateTime.Now.AddHours(1), Start = DateTime.Now },
-                new ScheduleVM{ Title = "Title 2", Description = "Description 2", ScheduleId = 2, End = DateTime.Now.AddHours(2), Start = DateTime.Now.AddHours(1) }
+                new ScheduleVM{
+                    Title = "Title 1",
+                    Description = "Description 1",
+                    ScheduleId = 1,
+                    End = DateTime.Now.AddHours(1),
+                    Start = DateTime.Now,
+                    IsAllDay = false,
+                    InternId = 19,
+                    RecurrenceRule = "Never",
+                    EndTimezone = "Etc/UTC",
+                    StartTimezone = "Etc/UTC"
+                }
             };
             DataSourceResult result = schedules.AsQueryable().ToDataSourceResult(request);
 

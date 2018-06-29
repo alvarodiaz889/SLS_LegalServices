@@ -20,6 +20,6 @@ namespace SLS_LegalServices.ViewModels
 
         public int ScheduleId { get; set; }
         public int InternId { get; set; }
-        public List<InternVM> Interns { get; set; }
+        public InternVM Intern { get; set; }
     }
 }

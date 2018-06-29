@@ -15,10 +15,11 @@
             resource.Add(m => m.InternId)
                 .Title("Interns")
                 .Name("Interns")
-                .DataSource(d => d.Read("GetInterns", "Schedule"))
                 .DataTextField("FullName")
                 .DataValueField("InternId")
-                .DataColorField("Color");
+                .DataColorField("Color")
+                //.DataSource(d => d.Read("GetInterns", "Schedule"));
+                .BindTo(ViewBag.Interns);
         })
         .Events(events => events
             .Add("scheduler_add")
@@ -28,28 +29,16 @@
             .Move("scheduler_move")
             .MoveEnd("scheduler_moveEnd")
         )
-        .DataSource(dataSource =>
-                dataSource.Custom()
-                .Schema(schema => schema
-                    .Model(m =>
-                    {
-                        m.ClearFields();
-                        m.Id(f => f.ScheduleId);
-                        m.Field("title", typeof(string)).From("Title");
-                        //m.Field(f => f.Attendees).DefaultValue(new List<int>() { 1 });
-                        m.Field("recurrenceId", typeof(int)).From("RecurrenceID");
-                        m.Field("start", typeof(DateTime)).From("Start");
-                        m.Field("end", typeof(DateTime)).From("End");
-                        m.Field("description", typeof(string)).From("Description");
-                        m.Field("recurrenceID", typeof(int)).From("RecurrenceID");
-                        m.Field("recurrenceRule", typeof(string)).From("RecurrenceRule");
-                        m.Field("recurrenceException", typeof(string)).From("RecurrenceException");
-                        m.Field("isAllDay", typeof(bool)).From("IsAllDay");
-                        m.Field("startTimezone", typeof(string)).From("StartTimezone");
-                        m.Field("endTimezone", typeof(string)).From("EndTimezone");
-                    }))
-            )
-        .BindTo(Model)
+        .DataSource(d => d
+            .Model(m =>
+            {
+                m.Id(f => f.ScheduleId);
+            })
+            .Read("Read", "Schedule")
+            .Create("Create", "Schedule")
+            .Destroy("Destroy", "Schedule")
+            .Update("Update", "Schedule")
+    )
 )
 
 <script>
