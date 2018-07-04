@@ -29,6 +29,7 @@ namespace SLS_LegalServices
             this.CaseDocuments = new HashSet<CaseDocument>();
             this.ReferralSources = new HashSet<ReferralSource>();
             this.Logs = new HashSet<Log>();
+            this.CaseAppts = new HashSet<CaseAppt>();
         }
     
         public int CaseId { get; set; }
@@ -76,5 +77,7 @@ namespace SLS_LegalServices
         public virtual ICollection<ReferralSource> ReferralSources { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Log> Logs { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<CaseAppt> CaseAppts { get; set; }
     }
 }

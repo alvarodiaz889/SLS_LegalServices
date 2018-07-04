@@ -58,6 +58,17 @@
           <Property Name="AttorneyId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="UserId" Type="uniqueidentifier" Nullable="false" />
         </EntityType>
+        <EntityType Name="CaseAppt">
+          <Key>
+            <PropertyRef Name="CaseApptId" />
+          </Key>
+          <Property Name="CaseApptId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CaseId" Type="int" Nullable="false" />
+          <Property Name="StartDate" Type="datetime" Nullable="false" />
+          <Property Name="EndDate" Type="datetime" Nullable="false" />
+          <Property Name="InternId" Type="int" Nullable="false" />
+          <Property Name="Notes" Type="nvarchar" MaxLength="500" />
+        </EntityType>
         <EntityType Name="CaseAttorneys">
           <Key>
             <PropertyRef Name="AttorneyId" />
@@ -288,6 +299,30 @@
             </Principal>
             <Dependent Role="Attorney">
               <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CaseAppt_Cases">
+          <End Role="Cases" Type="Self.Cases" Multiplicity="1" />
+          <End Role="CaseAppt" Type="Self.CaseAppt" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Cases">
+              <PropertyRef Name="CaseId" />
+            </Principal>
+            <Dependent Role="CaseAppt">
+              <PropertyRef Name="CaseId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CaseAppt_Intern">
+          <End Role="Intern" Type="Self.Intern" Multiplicity="1" />
+          <End Role="CaseAppt" Type="Self.CaseAppt" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Intern">
+              <PropertyRef Name="InternId" />
+            </Principal>
+            <Dependent Role="CaseAppt">
+              <PropertyRef Name="InternId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -683,6 +718,7 @@
           <EntitySet Name="AspNetUserRoles" EntityType="Self.AspNetUserRoles" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetUsers" EntityType="Self.AspNetUsers" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Attorney" EntityType="Self.Attorney" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CaseAppt" EntityType="Self.CaseAppt" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CaseAttorneys" EntityType="Self.CaseAttorneys" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CaseCertifiedInterns" EntityType="Self.CaseCertifiedInterns" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CaseDocuments" EntityType="Self.CaseDocuments" Schema="dbo" store:Type="Tables" />
@@ -710,6 +746,14 @@
           <AssociationSet Name="FK_Attorney_Users" Association="Self.FK_Attorney_Users">
             <End Role="Users" EntitySet="Users" />
             <End Role="Attorney" EntitySet="Attorney" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CaseAppt_Cases" Association="Self.FK_CaseAppt_Cases">
+            <End Role="Cases" EntitySet="Cases" />
+            <End Role="CaseAppt" EntitySet="CaseAppt" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CaseAppt_Intern" Association="Self.FK_CaseAppt_Intern">
+            <End Role="Intern" EntitySet="Intern" />
+            <End Role="CaseAppt" EntitySet="CaseAppt" />
           </AssociationSet>
           <AssociationSet Name="FK_CaseAttorneys_Attorney" Association="Self.FK_CaseAttorneys_Attorney">
             <End Role="Attorney" EntitySet="Attorney" />
@@ -972,6 +1016,15 @@
             <End Role="User" EntitySet="Users" />
             <End Role="Log" EntitySet="Logs" />
           </AssociationSet>
+          <EntitySet Name="CaseAppts" EntityType="SLS_LegalServicesDataModel.CaseAppt" />
+          <AssociationSet Name="FK_CaseAppt_Cases" Association="SLS_LegalServicesDataModel.FK_CaseAppt_Cases">
+            <End Role="Case" EntitySet="Cases" />
+            <End Role="CaseAppt" EntitySet="CaseAppts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CaseAppt_Intern" Association="SLS_LegalServicesDataModel.FK_CaseAppt_Intern">
+            <End Role="Intern" EntitySet="Interns" />
+            <End Role="CaseAppt" EntitySet="CaseAppts" />
+          </AssociationSet>
           </EntityContainer>
         <EntityType Name="Address">
           <Key>
@@ -1136,6 +1189,7 @@
           <NavigationProperty Name="CaseDocuments" Relationship="SLS_LegalServicesDataModel.FK_CaseDocuments_Cases" FromRole="Case" ToRole="CaseDocument" />
           <NavigationProperty Name="ReferralSources" Relationship="SLS_LegalServicesDataModel.CaseReferralSources" FromRole="Case" ToRole="ReferralSource" />
           <NavigationProperty Name="Logs" Relationship="SLS_LegalServicesDataModel.FK_Log_Cases" FromRole="Case" ToRole="Log" />
+          <NavigationProperty Name="CaseAppts" Relationship="SLS_LegalServicesDataModel.FK_CaseAppt_Cases" FromRole="Case" ToRole="CaseAppt" />
         </EntityType>
         <EntityType Name="CaseStatusLookup">
           <Key>
@@ -1189,6 +1243,7 @@
           <NavigationProperty Name="Intern_Attorney" Relationship="SLS_LegalServicesDataModel.FK_Intern_Attorney_Intern" FromRole="Intern" ToRole="Intern_Attorney" />
           <NavigationProperty Name="User" Relationship="SLS_LegalServicesDataModel.FK_Intern_Users" FromRole="Intern" ToRole="User" />
           <NavigationProperty Name="InternSchedules" Relationship="SLS_LegalServicesDataModel.FK_InternSchedule_Intern" FromRole="Intern" ToRole="InternSchedule" />
+          <NavigationProperty Name="CaseAppts" Relationship="SLS_LegalServicesDataModel.FK_CaseAppt_Intern" FromRole="Intern" ToRole="CaseAppt" />
         </EntityType>
         <EntityType Name="Intern_Attorney">
           <Key>
@@ -1635,6 +1690,43 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="CaseAppt">
+          <Key>
+            <PropertyRef Name="CaseApptId" />
+          </Key>
+          <Property Name="CaseApptId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CaseId" Type="Int32" Nullable="false" />
+          <Property Name="StartDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="EndDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="InternId" Type="Int32" Nullable="false" />
+          <Property Name="Notes" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Case" Relationship="SLS_LegalServicesDataModel.FK_CaseAppt_Cases" FromRole="CaseAppt" ToRole="Case" />
+          <NavigationProperty Name="Intern" Relationship="SLS_LegalServicesDataModel.FK_CaseAppt_Intern" FromRole="CaseAppt" ToRole="Intern" />
+        </EntityType>
+        <Association Name="FK_CaseAppt_Cases">
+          <End Type="SLS_LegalServicesDataModel.Case" Role="Case" Multiplicity="1" />
+          <End Type="SLS_LegalServicesDataModel.CaseAppt" Role="CaseAppt" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Case">
+              <PropertyRef Name="CaseId" />
+            </Principal>
+            <Dependent Role="CaseAppt">
+              <PropertyRef Name="CaseId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CaseAppt_Intern">
+          <End Type="SLS_LegalServicesDataModel.Intern" Role="Intern" Multiplicity="1" />
+          <End Type="SLS_LegalServicesDataModel.CaseAppt" Role="CaseAppt" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Intern">
+              <PropertyRef Name="InternId" />
+            </Principal>
+            <Dependent Role="CaseAppt">
+              <PropertyRef Name="InternId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1919,6 +2011,18 @@
                 <ScalarProperty Name="CaseId" ColumnName="CaseId" />
                 <ScalarProperty Name="LogType" ColumnName="LogType" />
                 <ScalarProperty Name="LogId" ColumnName="LogId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CaseAppts">
+            <EntityTypeMapping TypeName="SLS_LegalServicesDataModel.CaseAppt">
+              <MappingFragment StoreEntitySet="CaseAppt">
+                <ScalarProperty Name="Notes" ColumnName="Notes" />
+                <ScalarProperty Name="InternId" ColumnName="InternId" />
+                <ScalarProperty Name="EndDate" ColumnName="EndDate" />
+                <ScalarProperty Name="StartDate" ColumnName="StartDate" />
+                <ScalarProperty Name="CaseId" ColumnName="CaseId" />
+                <ScalarProperty Name="CaseApptId" ColumnName="CaseApptId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

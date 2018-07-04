@@ -36,10 +36,10 @@ namespace SLS_LegalServices.ViewModels
 
         public string FullName {
             get {
-                return FirstName + " " + LastName;
+                return LastName + " " + FirstName;
             }
         }
 
-        public string Color { get => "Red"; }
+        public string Color { get => "Blue"; }
     }
 }

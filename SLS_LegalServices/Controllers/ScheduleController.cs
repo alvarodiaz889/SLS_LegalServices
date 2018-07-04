@@ -24,59 +24,45 @@ namespace SLS_LegalServices.Controllers
             ViewBag.Interns = repository.GetAllInterns();
             return View();
         }
-        public ActionResult Read([DataSourceRequest]DataSourceRequest request)
+        public ActionResult Read([DataSourceRequest]DataSourceRequest request, string date)
         {
-            var schedules = new List<ScheduleVM>()
-            {
-                new ScheduleVM{
-                    Title = "Title 1",
-                    Description = "Description 1",
-                    ScheduleId = 1,
-                    End = DateTime.Now.AddHours(1),
-                    Start = DateTime.Now,
-                    IsAllDay = false,
-                    InternId = 19,
-                    RecurrenceRule = "Never",
-                    EndTimezone = "Etc/UTC",
-                    StartTimezone = "Etc/UTC"
-                }
-            };
+            var schedules = repository.GetAllCaseApptByDay(date);
             DataSourceResult result = schedules.AsQueryable().ToDataSourceResult(request);
-
-            return Json(result, JsonRequestBehavior.AllowGet);
-        }
-
-        public ActionResult GetInterns([DataSourceRequest]DataSourceRequest request)
-        {
-            var interns = repository.GetAllInterns();
-            DataSourceResult result = interns.AsQueryable().ToDataSourceResult(request);
-
             return Json(result, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
-        public ActionResult Create([DataSourceRequest] DataSourceRequest request, ScheduleVM obj)
+        public ActionResult GetInternSchedule(string date)
+        {
+            var internSchedules = repository.GetInternSchedulesByInternAndDay(date);
+            return Json(internSchedules);
+        }
+
+        [HttpPost]
+        public ActionResult Create([DataSourceRequest] DataSourceRequest request, CaseApptVM obj)
         {
             if (ModelState.IsValid)
             {
+                repository.CaseApptInsert(obj);
             }
 
             return Json(new[] { obj }.ToDataSourceResult(request, ModelState));
         }
 
         [HttpPost]
-        public ActionResult Destroy([DataSourceRequest] DataSourceRequest request, ScheduleVM obj)
+        public ActionResult Update([DataSourceRequest] DataSourceRequest request, CaseApptVM obj)
         {
+            if (ModelState.IsValid)
+            {
+                repository.CaseApptUpdate(obj);
+            }
             return Json(new[] { obj }.ToDataSourceResult(request, ModelState));
         }
 
         [HttpPost]
-        public ActionResult Update([DataSourceRequest] DataSourceRequest request, ScheduleVM obj)
+        public ActionResult Destroy([DataSourceRequest] DataSourceRequest request, CaseApptVM obj)
         {
-            if (ModelState.IsValid)
-            {
-                
-            }
+            repository.CaseApptDelete(obj);
             return Json(new[] { obj }.ToDataSourceResult(request, ModelState));
         }
 

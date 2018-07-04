@@ -240,6 +240,9 @@
     <Compile Include="Case.cs">
       <DependentUpon>SLS_DataModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="CaseAppt.cs">
+      <DependentUpon>SLS_DataModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="CaseAttorney.cs">
       <DependentUpon>SLS_DataModel.tt</DependentUpon>
     </Compile>
@@ -364,7 +367,7 @@
     <Compile Include="ViewModels\ReferralSourceVM.cs" />
     <Compile Include="ViewModels\RoleViewModel.cs" />
     <Compile Include="ViewModels\AttorneyVM.cs" />
-    <Compile Include="ViewModels\ScheduleVM.cs" />
+    <Compile Include="ViewModels\CaseApptVM.cs" />
     <Compile Include="ViewModels\TelephoneVM.cs" />
     <Compile Include="ViewModels\UserViewModel.cs" />
   </ItemGroup>

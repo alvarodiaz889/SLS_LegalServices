@@ -48,5 +48,6 @@ namespace SLS_LegalServices
         public virtual DbSet<CaseDocument> CaseDocuments { get; set; }
         public virtual DbSet<ReferralSource> ReferralSources { get; set; }
         public virtual DbSet<Log> Logs { get; set; }
+        public virtual DbSet<CaseAppt> CaseAppts { get; set; }
     }
 }

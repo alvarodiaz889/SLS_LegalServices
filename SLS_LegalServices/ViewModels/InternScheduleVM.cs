@@ -32,9 +32,27 @@ namespace SLS_LegalServices.ViewModels
         [Required]
         public DateTime? StartTime { get; set; }
 
+        public string StartHour
+        {
+            get
+            {
+                return StartTime.Value.ToString("hh:mm tt");
+            }
+        }
+
         [UIHint("TimePicker")]
         [AdditionalMetadata("Name", "EndTime")]
         [Required]
         public DateTime? EndTime { get; set; }
+
+        public string EndHour
+        {
+            get
+            {
+                return EndTime.Value.ToString("hh:mm tt");
+            }
+        }
+
+        public string InternFullName { get; set; }
     }
 }

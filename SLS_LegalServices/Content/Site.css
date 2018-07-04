@@ -72,3 +72,13 @@
 .margin-ten {
     margin: 10px !important;
 }
+
+.k-green-cell {
+    background-color: #c6efce !important;
+}
+
+div.k-event {
+    background-color: #ffeb9c !important;
+    border-color: #ffeb9c !important;
+    color: #000000 !important;
+}

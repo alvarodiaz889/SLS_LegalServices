@@ -1,157 +1,126 @@
-﻿@(Html.Kendo().Scheduler<ScheduleVM>()
+﻿<input id="dateKeeper" type="hidden" value="@DateTime.Now.ToString("MM/dd/yyyy")" />
+
+@(Html.Kendo().Scheduler<SLS_LegalServices.ViewModels.CaseApptVM>()
         .Name("scheduler")
-        .Date(new DateTime(2013, 6, 13))
-        .StartTime(new DateTime(2013, 6, 13, 7, 00, 00))
-        .EndTime(new DateTime(2013, 6, 13, 23, 00, 00))
+        .Date(DateTime.Now)
+        .StartTime(new DateTime(2013, 6, 13, 6, 00, 00))
+        .EndTime(new DateTime(2013, 6, 13, 18, 00, 00))
+        .WorkDayStart(new DateTime(2013, 6, 13, 6, 00, 00))
+        .WorkDayEnd(new DateTime(2013, 6, 13, 18, 00, 00))
         .Height(600)
-        .Views(views =>
+        .AllDaySlot(false)
+        .Views((Kendo.Mvc.UI.Fluent.SchedulerViewFactory<SLS_LegalServices.ViewModels.CaseApptVM> views) =>
         {
             views.DayView();
         })
-        .Timezone("Etc/UTC")
         .Group(group => group.Resources("Interns"))
-        .Resources(resource =>
+        .Resources((Kendo.Mvc.UI.Fluent.SchedulerResourceFactory<SLS_LegalServices.ViewModels.CaseApptVM> resource) =>
         {
             resource.Add(m => m.InternId)
                 .Title("Interns")
                 .Name("Interns")
                 .DataTextField("FullName")
                 .DataValueField("InternId")
-                .DataColorField("Color")
-                //.DataSource(d => d.Read("GetInterns", "Schedule"));
                 .BindTo(ViewBag.Interns);
         })
-        .Events(events => events
-            .Add("scheduler_add")
-            .Save("scheduler_save")
-            .Resize("scheduler_resize")
-            .ResizeEnd("scheduler_resizeEnd")
-            .Move("scheduler_move")
-            .MoveEnd("scheduler_moveEnd")
-        )
-        .DataSource(d => d
-            .Model(m =>
+        .Events(e => {
+            e.DataBound("scheduler_databound");
+            e.Navigate("scheduler_navigate");
+        })
+        .DataSource((Kendo.Mvc.UI.Fluent.SchedulerAjaxDataSourceBuilder<CaseApptVM> d) => d
+            .Model((Kendo.Mvc.UI.Fluent.DataSourceSchedulerModelDescriptorFactory<CaseApptVM> m) =>
             {
-                m.Id(f => f.ScheduleId);
+                m.Id(f => f.CaseApptId);
             })
-            .Read("Read", "Schedule")
-            .Create("Create", "Schedule")
-            .Destroy("Destroy", "Schedule")
-            .Update("Update", "Schedule")
-    )
+            .Read(read => read.Action("Read", "Schedule").Data("getDate"))
+            .Create(create => create.Action("Create", "Schedule"))
+            .Destroy(dest => dest.Action("Destroy", "Schedule"))
+            .Update(update =>update.Action("Update", "Schedule"))
+        )
 )
 
 <script>
-    function scheduler_resize(e) {
-        if (roomIsOccupied(e.start, e.end, e.event, e.resources) || attendeeIsOccupied(e.start, e.end, e.event, e.resources)) {
-            this.wrapper.find(".k-marquee-color").addClass("invalid-slot");
-            e.preventDefault();
-        }
-    }
 
-    function scheduler_resizeEnd(e) {
-        if (!checkAvailability(e.start, e.end, e.events)) {
-            e.preventDefault();
-        }
-    }
+    function scheduler_databound(e) {
+        var rows = $("table.k-scheduler-layout > tbody > tr:eq(0) .k-scheduler-table")
+        .find("tr:eq(1)");
+        rows.hide();
 
-    function scheduler_move(e) {
-        if (roomIsOccupied(e.start, e.end, e.event, e.resources) || attendeeIsOccupied(e.start, e.end, e.event, e.resources)) {
-            this.wrapper.find(".k-event-drag-hint").addClass("invalid-slot");
-        }
-    }
+        $.post("@Url.Action("GetInternSchedule", "Schedule")",
+            {
+                date: $('#dateKeeper').val()
+            },
+            function (data)
+            {
+                let yAxis = [];
+                let xAxis = [];
+                let hours = [];
+                let interns = [];
 
-    function scheduler_moveEnd(e) {
-        if (!checkAvailability(e.start, e.end, e.event, e.resources)) {
-            e.preventDefault();
-        }
-    }
-
-    function scheduler_add(e) {
-        if (!checkAvailability(e.event.start, e.event.end, e.event)) {
-            e.preventDefault();
-        }
-    }
-
-    function scheduler_save(e) {
-        if (!checkAvailability(e.event.start, e.event.end, e.event)) {
-            e.preventDefault();
-        }
-    }
-
-    function occurrencesInRangeByResource(start, end, resourceFieldName, event, resources) {
-        var scheduler = $("#scheduler").getKendoScheduler();
-
-        var occurrences = scheduler.occurrencesInRange(start, end);
-
-        var idx = occurrences.indexOf(event);
-        if (idx > -1) {
-            occurrences.splice(idx, 1);
-        }
-
-        event = $.extend({}, event, resources);
-
-        return filterByResource(occurrences, resourceFieldName, event[resourceFieldName]);
-    }
-
-    function filterByResource(occurrences, resourceFieldName, value) {
-        var result = [];
-        var occurrence;
-
-        for (var idx = 0, length = occurrences.length; idx < length; idx++) {
-            occurrence = occurrences[idx];
-            var resourceValue = occurrence[resourceFieldName];
-
-            if (resourceValue === value) {
-                result.push(occurrence);
-            } else if (resourceValue instanceof kendo.data.ObservableArray) {
-                if (value) {
-                    for (var i = 0; i < value.length; i++) {
-                        if (resourceValue.indexOf(value[i]) != -1) {
-                            result.push(occurrence);
-                            break;
+                $("table.k-scheduler-layout > tbody > tr:eq(1) > td:eq(0) .k-scheduler-table")
+                    .find("th")
+                    .each(function (key, val)
+                    {
+                        let hour = $(this).html().trim();
+                        if (hour.length > 1)
+                        {
+                            hours.push(hour);
+                            hours.push(hour.replace(":00",":30"));
                         }
+                    });
+
+                $("table.k-scheduler-layout > tbody > tr:eq(0) > td:eq(1) .k-scheduler-table > tbody > tr:eq(0)")
+                    .find("th")
+                    .each(function (key, val) {
+                        interns.push($(this).html().trim());
+                    });
+
+                for (let i = 0; i < data.length; i++)
+                {
+                    for (let j = 0; j < interns.length; j++)
+                    {
+                        if (data[i].InternFullName == interns[j])
+                        {
+                            let startHour = kendo.parseDate(data[i].StartHour);
+                            let endHour = kendo.parseDate(data[i].EndHour);
+
+                            for (let k = 0; k < hours.length; k++)
+                            {
+                                let tableHour = kendo.parseDate(hours[k]);
+
+                                if (tableHour >= startHour && tableHour < endHour)
+                                    enableBackgroundColor(j,k);
+
+                            }
+                        }
+
                     }
                 }
-            }
-        }
-        return result;
+
+                //console.log(hours);
+                //console.log(interns);
+                //console.log(data);
+            });
     }
 
-    function attendeeIsOccupied(start, end, event, resources) {
-        var occurrences = occurrencesInRangeByResource(start, end, "Attendees", event, resources);
-        if (occurrences.length > 0) {
-            return true;
-        }
-        return false;
+    function enableBackgroundColor(x, y)
+    {
+        console.log(x + "-" + y);
+        let query = "table.k-scheduler-layout > tbody > tr:eq(1) > td:eq(1) .k-scheduler-table > tbody > tr:eq(" + y + ") > td:eq(" + x + ")";
+        console.log($(query));
+        $(query).addClass("k-green-cell");
     }
 
-    function roomIsOccupied(start, end, event, resources) {
-        var occurrences = occurrencesInRangeByResource(start, end, "RoomID", event, resources);
-        if (occurrences.length > 0) {
-            return true;
-        }
-        return false;
+
+    function scheduler_navigate(e) {
+        $('#dateKeeper').val(kendo.format("{0:d}", e.date));
     }
 
-    function checkAvailability(start, end, event, resources) {
-        if (attendeeIsOccupied(start, end, event, resources)) {
-            setTimeout(function () {
-                alert("This person is not available in this time period.");
-            }, 0);
-
-            return false;
+    function getDate()
+    {
+        return {
+            date: $('#dateKeeper').val()
         }
-
-        if (roomIsOccupied(start, end, event, resources)) {
-            setTimeout(function () {
-                alert("This room is not available in this time period.");
-            }, 0);
-
-            return false;
-        }
-
-        return true;
     }
 
 </script>

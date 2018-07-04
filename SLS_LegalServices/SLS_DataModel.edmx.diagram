@@ -57,6 +57,9 @@
         <EntityTypeShape EntityType="SLS_LegalServicesDataModel.Log" Width="1.5" PointX="11.25" PointY="22.125" />
         <AssociationConnector Association="SLS_LegalServicesDataModel.FK_Log_Cases" />
         <AssociationConnector Association="SLS_LegalServicesDataModel.FK_Log_Users" />
+        <EntityTypeShape EntityType="SLS_LegalServicesDataModel.CaseAppt" Width="1.5" PointX="11.25" PointY="26.125" />
+        <AssociationConnector Association="SLS_LegalServicesDataModel.FK_CaseAppt_Cases" />
+        <AssociationConnector Association="SLS_LegalServicesDataModel.FK_CaseAppt_Intern" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

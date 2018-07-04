@@ -130,8 +130,21 @@ namespace SLS_LegalServices.Repositories
 
         #region GenericValuesLookup
         List<GenericValuesLookupVM> GetAllGenericValuesByType(string type);
-        
+
         #endregion
+
+        #region Schedule
+
+        List<CaseApptVM> GetAllCaseApptByDay(string date);
+
+        List<InternScheduleVM> GetInternSchedulesByInternAndDay(string date);
+
+        void CaseApptInsert(CaseApptVM obj);
+        void CaseApptUpdate(CaseApptVM obj);
+        void CaseApptDelete(CaseApptVM obj);
+
+        #endregion
+
 
         void Dispose();
     }

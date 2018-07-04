@@ -1402,10 +1402,91 @@ namespace SLS_LegalServices.Repositories
         }
 
         #endregion
+
+        #region Schedule
+
+        public List<CaseApptVM> GetAllCaseApptByDay(string date)
+        {
+            var year = Convert.ToInt32(date.Split('/')[2]);
+            var month = Convert.ToInt32(date.Split('/')[0]);
+            var day = Convert.ToInt32(date.Split('/')[1]);
+            var realDate = new DateTime(year, month, day);
+
+            return context.CaseAppts.Where(c => c.StartDate.Day == realDate.Day)
+                .Select(s => new CaseApptVM
+                {
+                    CaseApptId = s.CaseApptId,
+                    Start = s.StartDate,
+                    End = s.EndDate,
+                    CaseId = s.CaseId,
+                    CaseNo = s.Case.CaseNo,
+                    InternFullName = s.Intern.User.LastName + " " + s.Intern.User.FirstName,
+                    InternId = s.InternId,
+                    Description = s.Notes,
+                    EndTimezone = "Etc/UTC",
+                    StartTimezone = "Etc/UTC"
+                })
+                .ToList();
+        }
+
+        public List<InternScheduleVM> GetInternSchedulesByInternAndDay(string date)
+        {
+            var year = Convert.ToInt32(date.Split('/')[2]);
+            var month = Convert.ToInt32(date.Split('/')[0]);
+            var day = Convert.ToInt32(date.Split('/')[1]);
+            var realDate = new DateTime(year, month, day);
+
+            return context.InternSchedules.Where(s => s.DayOfWeek == realDate.DayOfWeek.ToString())
+                .Select(s => new InternScheduleVM {
+                    StartTime = s.StartTime.Value,
+                    EndTime = s.EndTime.Value,
+                    InternId = s.InternId,
+                    InternFullName = s.Intern.User.LastName + " " + s.Intern.User.FirstName
+                })
+                .ToList();
+        }
+
+        public void CaseApptInsert(CaseApptVM obj)
+        {
+            CaseAppt caseAppt = new CaseAppt {
+                CaseId = obj.CaseId,
+                InternId = obj.CaseId,
+                Notes = obj.Description,
+                EndDate = obj.End,
+                StartDate = obj.Start
+            };
+            context.CaseAppts.Add(caseAppt);
+            context.SaveChanges();
+        }
+
+        public void CaseApptUpdate(CaseApptVM obj)
+        {
+            CaseAppt caseAppt = context.CaseAppts.Where(c => c.CaseApptId == obj.CaseApptId).FirstOrDefault();
+            caseAppt.CaseId = obj.CaseId;
+            caseAppt.InternId = obj.CaseId;
+            caseAppt.Notes = obj.Description;
+            caseAppt.EndDate = obj.End;
+            caseAppt.StartDate = obj.Start;
+
+            context.CaseAppts.Attach(caseAppt);
+            context.Entry(caseAppt).State = EntityState.Modified;
+            context.SaveChanges();
+        }
+
+        public void CaseApptDelete(CaseApptVM obj)
+        {
+            CaseAppt caseAppt = context.CaseAppts.Where(c => c.CaseApptId == obj.CaseApptId).FirstOrDefault();
+            context.CaseAppts.Remove(caseAppt);
+            context.SaveChanges();
+        }
+
+        #endregion
+
         public void Dispose()
         {
             context.Dispose();
         }
 
+        
     }
 }
